@@ -1,12 +1,23 @@
-# Sklep
+const express = require("express");
+const path = require("path");
 
-Render:
-- Build Command: `npm install`
-- Start Command: `npm start`
-- Root Directory: puste
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-Dodaj w Render → Environment:
-`DISCORD_WEBHOOK_URL` = webhook kanału #zamowienia.
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-Ceny i produkty zmieniamy w `public/app.js`.
-Baner później podmienimy na przesłany przez Ciebie.
+app.use(express.static(__dirname));
+
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "index.html"));
+});
+
+app.post("/webhook", (req, res) => {
+  console.log("Otrzymano zamówienie:", req.body);
+  res.json({ success: true });
+});
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Sklep działa na porcie ${PORT}`);
+});
