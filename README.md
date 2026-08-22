@@ -1,7 +1,0 @@
-{
-  "name":"discord-shop",
-  "version":"1.0.0",
-  "private":true,
-  "scripts":{"start":"node server.js"},
-  "dependencies":{"express":"^5.1.0"}
-}
