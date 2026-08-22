@@ -1,893 +1,808 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-
-<meta charset="UTF-8">
-
-<meta
-    name="viewport"
-    content="width=device-width, initial-scale=1.0"
->
-
-<title>KupGraj — Sklep</title>
-
-<style>
-
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-html {
-    scroll-behavior: smooth;
-}
-
-body {
-    font-family: Arial, Helvetica, sans-serif;
-    background:
-        radial-gradient(
-            circle at left,
-            rgba(120, 60, 255, 0.18),
-            transparent 35%
-        ),
-        radial-gradient(
-            circle at right,
-            rgba(0, 255, 130, 0.10),
-            transparent 35%
-        ),
-        #080b10;
-    color: #ffffff;
-    min-height: 100vh;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button {
-    font-family: inherit;
-}
-
-/* =========================================================
-   HEADER
-========================================================= */
-
-header {
-    position: sticky;
-    top: 0;
-    z-index: 1000;
-
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    padding: 18px 7%;
-
-    background: rgba(8, 11, 16, 0.88);
-    backdrop-filter: blur(15px);
-
-    border-bottom: 1px solid rgba(255,255,255,0.06);
-}
-
-.logo {
-    font-size: 28px;
-    font-weight: 900;
-
-    background:
-        linear-gradient(
-            90deg,
-            #a45cff,
-            #55ff91
-        );
-
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-nav {
-    display: flex;
-    align-items: center;
-    gap: 24px;
-}
-
-nav a {
-    color: #bdbdbd;
-    transition: 0.2s;
-}
-
-nav a:hover {
-    color: #55ff91;
-}
-
-.cart-button {
-    border: 1px solid rgba(85,255,145,0.5);
-    background: rgba(85,255,145,0.08);
-    color: #55ff91;
-
-    padding: 10px 16px;
-    border-radius: 10px;
-
-    cursor: pointer;
-    font-weight: 700;
-
-    transition: 0.2s;
-}
-
-.cart-button:hover {
-    background: rgba(85,255,145,0.18);
-    transform: translateY(-2px);
-}
-
-/* =========================================================
-   HERO
-========================================================= */
-
-.hero {
-    min-height: 560px;
-
-    display: flex;
-    align-items: center;
-
-    padding: 80px 7%;
-
-    background:
-        linear-gradient(
-            110deg,
-            rgba(90,40,180,0.35),
-            rgba(0,255,120,0.08)
-        );
-}
-
-.hero-content {
-    max-width: 760px;
-}
-
-.hero small {
-    color: #55ff91;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.hero h1 {
-    font-size: clamp(45px, 7vw, 82px);
-    line-height: 0.98;
-    margin: 20px 0;
-}
-
-.hero h1 span {
-    background:
-        linear-gradient(
-            90deg,
-            #a45cff,
-            #55ff91
-        );
-
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-}
-
-.hero p {
-    max-width: 650px;
-    color: #bcbcbc;
-    font-size: 18px;
-    line-height: 1.7;
-}
-
-.hero-buttons {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 14px;
-    margin-top: 30px;
-}
-
-.hero-button {
-    display: inline-block;
-    padding: 14px 22px;
-    border-radius: 12px;
-    font-weight: 800;
-    transition: 0.2s;
-}
-
-.hero-button.primary {
-    background: #55ff91;
-    color: #07110b;
-}
-
-.hero-button.secondary {
-    border: 1px solid #55ff91;
-    color: #55ff91;
-}
-
-.hero-button:hover {
-    transform: translateY(-3px);
-}
-
-/* =========================================================
-   CATEGORIES
-========================================================= */
-
-.categories {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 12px;
-
-    padding: 35px 7%;
-}
-
-.category {
-    border: 1px solid rgba(255,255,255,0.08);
-
-    background: #11151c;
-    color: #aaa;
-
-    padding: 12px 20px;
-    border-radius: 10px;
-
-    cursor: pointer;
-
-    transition: 0.2s;
-}
-
-.category:hover,
-.category.active {
-    border-color: #55ff91;
-    color: #55ff91;
-
-    box-shadow:
-        0 0 20px rgba(85,255,145,0.08);
-}
-
-/* =========================================================
-   SECTIONS
-========================================================= */
-
-.section {
-    padding: 70px 7%;
-}
-
-.section-title {
-    text-align: center;
-    max-width: 700px;
-    margin: 0 auto 45px;
-}
-
-.section-title small {
-    color: #55ff91;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.section-title h2 {
-    font-size: 42px;
-    margin: 12px 0;
-}
-
-.section-title p {
-    color: #999;
-    line-height: 1.6;
-}
-
-/* =========================================================
-   PRODUCTS
-========================================================= */
-
-.products {
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(270px, 1fr)
-        );
-
-    gap: 22px;
-}
-
-.product {
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.045),
-            rgba(255,255,255,0.015)
-        );
-
-    border: 1px solid rgba(255,255,255,0.07);
-
-    border-radius: 18px;
-
-    padding: 22px;
-
-    transition: 0.25s;
-
-    overflow: hidden;
-}
-
-.product:hover {
-    transform: translateY(-7px);
-
-    border-color: rgba(85,255,145,0.55);
-
-    box-shadow:
-        0 15px 45px rgba(0,0,0,0.25);
-}
-
-.product-image {
-    height: 170px;
-
-    border-radius: 14px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-bottom: 22px;
-}
-
-.product-image.minecraft {
-    background:
-        linear-gradient(
-            135deg,
-            rgba(75,130,255,0.35),
-            rgba(80,255,150,0.08)
-        );
-}
-
-.product-image.discord {
-    background:
-        linear-gradient(
-            135deg,
-            rgba(150,70,255,0.35),
-            rgba(85,255,145,0.08)
-        );
-}
-
-.big-icon {
-    font-size: 72px;
-}
-
-.product-category {
-    color: #55ff91;
-    font-size: 12px;
-    font-weight: 800;
-    letter-spacing: 2px;
-}
-
-.product h3 {
-    margin: 8px 0;
-    font-size: 25px;
-}
-
-.product-description {
-    color: #aaa;
-    line-height: 1.6;
-    min-height: 50px;
-}
-
-.features {
-    list-style: none;
-    margin: 18px 0;
-}
-
-.features li {
-    color: #c5c5c5;
-    padding: 6px 0;
-}
-
-.features li::before {
-    content: "✓";
-    color: #55ff91;
-    font-weight: 900;
-    margin-right: 8px;
-}
-
-.product-bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    margin-top: 22px;
-}
-
-.price {
-    font-size: 25px;
-    font-weight: 900;
-}
-
-.add {
-    border: none;
-
-    background: #55ff91;
-    color: #06100a;
-
-    padding: 11px 15px;
-
-    border-radius: 9px;
-
-    cursor: pointer;
-    font-weight: 800;
-
-    transition: 0.2s;
-}
-
-.add:hover {
-    transform: translateY(-2px);
-    box-shadow:
-        0 8px 25px rgba(85,255,145,0.18);
-}
-
-.info {
-    margin-top: 25px;
-
-    padding: 15px;
-
-    border-radius: 10px;
-
-    background: rgba(85,255,145,0.05);
-    border: 1px solid rgba(85,255,145,0.12);
-
-    color: #aaa;
-}
-
-/* =========================================================
-   WHY US
-========================================================= */
-
-.why-us {
-    padding: 70px 7%;
-}
-
-.why-grid {
-    display: grid;
-
-    grid-template-columns:
-        repeat(
-            auto-fit,
-            minmax(220px, 1fr)
-        );
-
-    gap: 18px;
-}
-
-.why-card {
-    background: #10141b;
-
-    border: 1px solid rgba(255,255,255,0.06);
-
-    border-radius: 15px;
-
-    padding: 25px;
-}
-
-.why-icon {
-    font-size: 35px;
-    margin-bottom: 15px;
-}
-
-.why-card h3 {
-    margin-bottom: 10px;
-}
-
-.why-card p {
-    color: #999;
-    line-height: 1.6;
-}
-
-/* =========================================================
-   FOOTER
-========================================================= */
-
-footer {
-    padding: 50px 7%;
-
-    text-align: center;
-
-    color: #777;
-
-    border-top: 1px solid rgba(255,255,255,0.06);
-}
-
-footer strong {
-    color: #55ff91;
-    font-size: 22px;
-}
-
-footer a:hover {
-    color: #55ff91;
-}
-
-/* =========================================================
-   CART
-========================================================= */
-
-#cartModal {
-    position: fixed;
-
-    inset: 0;
-
-    z-index: 5000;
-
-    background:
-        rgba(0,0,0,0.72);
-
-    backdrop-filter: blur(8px);
-
-    display: none;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 20px;
-}
-
-#cartModal.open {
-    display: flex;
-}
-
-.cart-box {
-    width: 100%;
-    max-width: 620px;
-
-    max-height: 90vh;
-    overflow-y: auto;
-
-    background: #0e1218;
-
-    border:
-        1px solid
-        rgba(255,255,255,0.08);
-
-    border-radius: 20px;
-
-    padding: 25px;
-
-    box-shadow:
-        0 30px 80px rgba(0,0,0,0.5);
-}
-
-.cart-header {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 22px;
-}
-
-.cart-header h2 {
-    font-size: 25px;
-}
-
-.close {
-    border: none;
-    background: transparent;
-
-    color: #aaa;
-
-    font-size: 32px;
-
-    cursor: pointer;
-}
-
-.close:hover {
-    color: #fff;
-}
-
-.cart-item {
-    display: flex;
-
-    align-items: center;
-    justify-content: space-between;
-
-    gap: 15px;
-
-    padding: 14px;
-
-    margin-bottom: 10px;
-
-    border-radius: 10px;
-
-    background: rgba(255,255,255,0.04);
-}
-
-.cart-item-name {
-    font-weight: 700;
-}
-
-.cart-item-price {
-    color: #55ff91;
-    margin-top: 4px;
-}
-
-.remove {
-    border: 1px solid #ff5555;
-
-    background: transparent;
-    color: #ff6666;
-
-    padding: 7px 10px;
-
-    border-radius: 7px;
-
-    cursor: pointer;
-}
-
-.cart-total {
-    display: flex;
-
-    justify-content: space-between;
-
-    margin-top: 20px;
-
-    padding-top: 20px;
-
-    border-top:
-        1px solid
-        rgba(255,255,255,0.07);
-
-    font-size: 22px;
-    font-weight: 800;
-}
-
-.checkout {
-    width: 100%;
-
-    border: none;
-
-    background: #55ff91;
-    color: #06100a;
-
-    padding: 15px;
-
-    border-radius: 10px;
-
-    margin-top: 20px;
-
-    cursor: pointer;
-
-    font-weight: 900;
-    font-size: 16px;
-
-    transition: 0.2s;
-}
-
-.checkout:hover {
-    transform: translateY(-2px);
-
-    box-shadow:
-        0 10px 30px rgba(85,255,145,0.16);
-}
-
-/* =========================================================
-   FORMULARZ
-========================================================= */
-
-#orderForm {
-    display: none;
-}
-
-#orderForm.show {
-    display: block;
-}
-
-#orderForm input,
-#orderForm textarea {
-    width: 100%;
-
-    margin-bottom: 12px;
-
-    padding: 14px;
-
-    border-radius: 10px;
-
-    border:
-        1px solid
-        rgba(255,255,255,0.08);
-
-    background: #090d12;
-
-    color: #fff;
-
-    outline: none;
-
-    font-family: inherit;
-}
-
-#orderForm input:focus,
-#orderForm textarea:focus {
-    border-color: #55ff91;
-}
-
-#orderForm textarea {
-    min-height: 110px;
-    resize: vertical;
-}
-
-#error {
-    color: #ff6565;
-
-    margin-top: 15px;
-
-    text-align: center;
-}
-
-/* =========================================================
-   SUCCESS
-========================================================= */
-
-#success {
-    display: none;
-
-    text-align: center;
-}
-
-#success .icon {
-    font-size: 65px;
-    margin-bottom: 10px;
-}
-
-#success h3 {
-    font-size: 28px;
-    margin-bottom: 12px;
-}
-
-#success p {
-    color: #aaa;
-    line-height: 1.6;
-}
-
-.success-info {
-    margin-top: 22px;
-
-    padding: 20px;
-
-    text-align: left;
-
-    border-radius: 14px;
-
-    background:
-        rgba(85,255,145,0.05);
-
-    border:
-        1px solid
-        rgba(85,255,145,0.15);
-}
-
-.success-info strong {
-    display: block;
-    color: #55ff91;
-    margin-bottom: 15px;
-}
-
-.success-step {
-    color: #ccc;
-    padding: 7px 0;
-}
-
-.discord-success-button {
-    display: block;
-
-    margin-top: 22px;
-
-    padding: 14px;
-
-    border-radius: 10px;
-
-    background: #5865F2;
-
-    color: #fff;
-
-    font-weight: 900;
-
-    transition: 0.2s;
-}
-
-.discord-success-button:hover {
-    transform: translateY(-2px);
-
-    filter: brightness(1.12);
-}
-
-/* =========================================================
-   RESPONSIVE
-========================================================= */
-
-@media (max-width: 700px) {
-
-    header {
-        padding: 15px 5%;
-    }
-
-    nav a {
-        display: none;
-    }
-
-    .hero {
-        padding: 60px 5%;
-    }
-
-    .section,
-    .why-us {
-        padding: 55px 5%;
-    }
-
-    .hero h1 {
-        font-size: 48px;
-    }
-
-    .section-title h2 {
-        font-size: 34px;
-    }
-
-    .product-bottom {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .product-bottom .add {
-        width: 100%;
-    }
-
-}
-
-/* =========================================================
-   HEADER CART COUNT
-========================================================= */
-
-.cart-count {
-    display: inline-flex;
-
-    min-width: 20px;
-    height: 20px;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 0 5px;
-
-    margin-left: 5px;
-
-    border-radius: 20px;
-
-    background: #55ff91;
-    color: #06100a;
-
-    font-size: 12px;
-    font-weight: 900;
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanie,pl — Sklep</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+
+            background:
+                radial-gradient(
+                    circle at 0% 20%,
+                    rgba(135, 45, 255, 0.28),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 100% 30%,
+                    rgba(40, 255, 125, 0.18),
+                    transparent 32%
+                ),
+                radial-gradient(
+                    circle at 50% 100%,
+                    rgba(100, 30, 180, 0.12),
+                    transparent 35%
+                ),
+                #07090b;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: -1;
+
+            background:
+                linear-gradient(
+                    110deg,
+                    rgba(133, 48, 255, 0.06),
+                    transparent 40%,
+                    rgba(40, 255, 130, 0.05)
+                );
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        header {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            min-height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 12px 5%;
+
+            background: rgba(6, 8, 10, 0.88);
+            border-bottom: 1px solid rgba(255,255,255,0.08);
+
+            backdrop-filter: blur(18px);
+        }
+
+        .logo {
+            font-size: 25px;
+            font-weight: 950;
+            letter-spacing: -1px;
+        }
+
+        .logo span {
+            color: #55ff91;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+        }
+
+        nav a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 800;
+            transition: .25s;
+        }
+
+        nav a:hover {
+            color: #63ff9b;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .discord-button,
+        .cart-button {
+            border-radius: 11px;
+            padding: 11px 16px;
+            cursor: pointer;
+            font-weight: 900;
+            transition: .25s;
+        }
+
+        .discord-button {
+            color: #fff;
+            text-decoration: none;
+            background: rgba(113, 65, 190, .18);
+            border: 1px solid rgba(140, 90, 255, .45);
+        }
+
+        .discord-button:hover {
+            transform: translateY(-2px);
+            border-color: #8e61ff;
+            box-shadow: 0 0 25px rgba(132, 82, 255, .25);
+        }
+
+        .cart-button {
+            color: #07100a;
+            background: #55ff91;
+            border: 1px solid #55ff91;
+        }
+
+        .cart-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(60,255,130,.25);
+        }
+
+        .cart-count {
+            background: #07100a;
+            color: #55ff91;
+            padding: 3px 7px;
+            border-radius: 20px;
+            margin-left: 4px;
+            font-size: 12px;
+        }
+
+        .banner-container {
+            width: 100%;
+            padding: 24px 3% 0;
+        }
+
+        .banner-container img {
+            display: block;
+            width: 100%;
+            max-width: 1800px;
+            max-height: 580px;
+            margin: 0 auto;
+
+            object-fit: cover;
+            object-position: center;
+
+            border-radius: 20px;
+            border: 1px solid rgba(104,255,150,.25);
+
+            box-shadow:
+                0 0 70px rgba(80,255,140,.10),
+                0 30px 90px rgba(0,0,0,.5);
+        }
+
+        .hero {
+            text-align: center;
+            padding: 75px 20px 50px;
+        }
+
+        .hero small {
+            color: #55ff91;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .hero h1 {
+            margin-top: 15px;
+            font-size: clamp(42px, 7vw, 78px);
+            line-height: 1;
+            font-weight: 950;
+        }
+
+        .hero h1 span {
+            background: linear-gradient(
+                90deg,
+                #a45cff,
+                #55ff91
+            );
+
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .hero p {
+            max-width: 720px;
+            margin: 25px auto 0;
+            color: #999;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .hero-button {
+            padding: 14px 22px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 900;
+            transition: .25s;
+        }
+
+        .hero-button.primary {
+            color: #061008;
+            background: #55ff91;
+        }
+
+        .hero-button.secondary {
+            color: #fff;
+            background: rgba(255,255,255,.04);
+            border: 1px solid rgba(255,255,255,.1);
+        }
+
+        .hero-button:hover {
+            transform: translateY(-3px);
+        }
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+
+            padding: 0 20px;
+            margin-bottom: 60px;
+        }
+
+        .category {
+            position: relative;
+
+            color: #aaa;
+            background: rgba(12,14,16,.75);
+
+            border: 1px solid rgba(255,255,255,.10);
+            border-radius: 12px;
+
+            padding: 13px 24px;
+
+            cursor: pointer;
+            font-weight: 900;
+
+            transition: .25s;
+        }
+
+        .category:hover,
+        .category.active {
+            color: #07100a;
+            background: #55ff91;
+            border-color: #55ff91;
+
+            box-shadow:
+                0 0 25px rgba(85,255,145,.20);
+        }
+
+        .section {
+            width: 90%;
+            max-width: 1250px;
+            margin: 0 auto 95px;
+        }
+
+        .section-title small {
+            color: #55ff91;
+            font-weight: 900;
+            letter-spacing: 2px;
+        }
+
+        .section-title h2 {
+            margin-top: 8px;
+            font-size: 38px;
+        }
+
+        .section-title p {
+            color: #888;
+            margin-top: 9px;
+            margin-bottom: 27px;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+
+        .product {
+            position: relative;
+            overflow: hidden;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(22,23,28,.92),
+                    rgba(9,11,13,.96)
+                );
+
+            border: 1px solid rgba(255,255,255,.08);
+            border-radius: 19px;
+
+            padding: 21px;
+
+            display: flex;
+            flex-direction: column;
+
+            transition: .3s;
+        }
+
+        .product:hover {
+            transform: translateY(-7px);
+            border-color: rgba(85,255,145,.48);
+
+            box-shadow:
+                0 25px 70px rgba(0,0,0,.45),
+                0 0 30px rgba(85,255,145,.07);
+        }
+
+        .product-image {
+            position: relative;
+
+            height: 175px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 20px;
+            overflow: hidden;
+
+            border-radius: 14px;
+
+            background:
+                radial-gradient(
+                    circle at center,
+                    rgba(85,255,145,.15),
+                    transparent 60%
+                ),
+                #080a0c;
+
+            border: 1px solid rgba(255,255,255,.06);
+        }
+
+        .product-image.minecraft {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(88,255,150,.20),
+                    transparent 55%
+                ),
+                linear-gradient(
+                    145deg,
+                    #111b15,
+                    #090d0b
+                );
+        }
+
+        .product-image.discord {
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(140,85,255,.25),
+                    transparent 55%
+                ),
+                linear-gradient(
+                    145deg,
+                    #171321,
+                    #09090d
+                );
+        }
+
+        .big-icon {
+            font-size: 72px;
+            filter: drop-shadow(0 10px 25px rgba(0,0,0,.5));
+        }
+
+        .product-category {
+            color: #55ff91;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1.5px;
+            margin-bottom: 8px;
+        }
+
+        .product h3 {
+            font-size: 22px;
+            margin-bottom: 10px;
+        }
+
+        .product p {
+            color: #888;
+            line-height: 1.6;
+            margin-bottom: 18px;
+        }
+
+        .price {
+            font-size: 28px;
+            font-weight: 950;
+            margin-top: auto;
+            margin-bottom: 15px;
+        }
+
+        .buy {
+            width: 100%;
+            padding: 13px;
+
+            border-radius: 11px;
+            border: 1px solid #55ff91;
+
+            background: #55ff91;
+            color: #061008;
+
+            cursor: pointer;
+            font-weight: 950;
+
+            transition: .25s;
+        }
+
+        .buy:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(85,255,145,.22);
+        }
+
+        .why-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+        }
+
+        .why-card {
+            background: rgba(15,17,20,.8);
+            border: 1px solid rgba(255,255,255,.07);
+            border-radius: 16px;
+            padding: 25px;
+        }
+
+        .why-icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .why-card h3 {
+            margin-bottom: 10px;
+        }
+
+        .why-card p {
+            color: #888;
+            line-height: 1.6;
+        }
+
+        footer {
+            padding: 45px 20px;
+            text-align: center;
+            color: #777;
+            border-top: 1px solid rgba(255,255,255,.06);
+        }
+
+        footer strong {
+            color: #fff;
+        }
+
+        footer a {
+            color: #55ff91;
+            text-decoration: none;
+            font-weight: 900;
+        }
+
+        #cartModal {
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0,0,0,.72);
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 5000;
+        }
+
+        #cartModal.open {
+            display: flex;
+        }
+
+        .cart-box {
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+            overflow-y: auto;
+
+            background: #101316;
+
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 20px;
+
+            padding: 25px;
+
+            box-shadow:
+                0 30px 100px rgba(0,0,0,.65);
+        }
+
+        .cart-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 20px;
+        }
+
+        .cart-header h2 {
+            font-size: 25px;
+        }
+
+        .close {
+            width: 38px;
+            height: 38px;
+
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,.08);
+
+            background: rgba(255,255,255,.05);
+            color: #fff;
+
+            font-size: 25px;
+            cursor: pointer;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 15px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,.06);
+        }
+
+        .cart-item-name {
+            font-weight: 900;
+        }
+
+        .cart-item-price {
+            color: #55ff91;
+            margin-top: 5px;
+        }
+
+        .remove {
+            background: rgba(255,70,70,.12);
+            color: #ff6d6d;
+
+            border: 1px solid rgba(255,70,70,.25);
+            border-radius: 8px;
+
+            padding: 8px 12px;
+
+            cursor: pointer;
+            font-weight: 800;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+
+            padding: 20px 0;
+
+            font-size: 21px;
+            font-weight: 950;
+        }
+
+        .cart-total span:last-child {
+            color: #55ff91;
+        }
+
+        .checkout {
+            width: 100%;
+
+            padding: 14px;
+
+            border-radius: 12px;
+            border: 1px solid #55ff91;
+
+            background: #55ff91;
+            color: #061008;
+
+            cursor: pointer;
+            font-weight: 950;
+            font-size: 15px;
+
+            transition: .25s;
+        }
+
+        .checkout:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(85,255,145,.20);
+        }
+
+        #orderForm {
+            display: none;
+        }
+
+        #orderForm.show {
+            display: block;
+        }
+
+        #orderForm input,
+        #orderForm textarea {
+            width: 100%;
+
+            background: rgba(255,255,255,.04);
+            color: #fff;
+
+            border: 1px solid rgba(255,255,255,.1);
+            border-radius: 11px;
+
+            padding: 13px 14px;
+
+            outline: none;
+
+            margin-bottom: 12px;
+
+            font-family: inherit;
+        }
+
+        #orderForm textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        #orderForm input:focus,
+        #orderForm textarea:focus {
+            border-color: #55ff91;
+        }
+
+        #error {
+            color: #ff6666;
+            margin-top: 12px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        #success {
+            display: none;
+            text-align: center;
+        }
+
+        #success .icon {
+            font-size: 65px;
+            margin-bottom: 15px;
+        }
+
+        #success h3 {
+            font-size: 25px;
+            margin-bottom: 12px;
+        }
+
+        #success p {
+            color: #999;
+            line-height: 1.6;
+        }
+
+        .success-info {
+            margin-top: 22px;
+
+            text-align: left;
+
+            padding: 18px;
+
+            background: rgba(85,255,145,.05);
+
+            border: 1px solid rgba(85,255,145,.15);
+            border-radius: 13px;
+        }
+
+        .success-step {
+            color: #aaa;
+            margin-top: 12px;
+            line-height: 1.5;
+        }
+
+        .discord-success-button {
+            display: block;
+
+            margin-top: 20px;
+
+            padding: 14px;
+
+            border-radius: 12px;
+
+            background: #55ff91;
+            color: #061008;
+
+            text-decoration: none;
+
+            font-weight: 950;
+
+            transition: .25s;
+        }
+
+        .discord-success-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 25px rgba(85,255,145,.25);
+        }
+
+        @media (max-width: 900px) {
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .why-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            nav {
+                display: none;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            header {
+                padding: 12px 4%;
+            }
+
+            .header-right .discord-button {
+                display: none;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .why-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .hero {
+                padding-top: 50px;
+            }
+
+            .hero h1 {
+                font-size: 48px;
+            }
+
+            .section-title h2 {
+                font-size: 30px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-<!-- =======================================================
-     HEADER
-======================================================= -->
-
 <header>
 
     <div class="logo">
-        KupGraj
+        Tanie<span>,pl</span>
     </div>
 
     <nav>
+        <a href="#minecraft">Minecraft</a>
+        <a href="#discord">Discord</a>
+        <a href="#inne-gry">Inne gry</a>
+        <a href="#dlaczego-my">Dlaczego my?</a>
+    </nav>
 
-        <a href="#minecraft">
-            Minecraft
-        </a>
+    <div class="header-right">
 
-        <a href="#discord">
-            Discord
-        </a>
-
-        <a href="#dlaczego">
-            Dlaczego my?
+        <a
+            href="https://discord.gg/yXUzU44Pu"
+            target="_blank"
+            class="discord-button"
+        >
+            💜 Discord
         </a>
 
         <button
@@ -896,67 +811,61 @@ footer a:hover {
         >
             🛒 Koszyk
             <span
-                id="cartCount"
                 class="cart-count"
+                id="cartCount"
             >
                 0
             </span>
         </button>
 
-    </nav>
+    </div>
 
 </header>
 
-<!-- =======================================================
-     HERO
-======================================================= -->
+<div class="banner-container">
+
+    <img
+        src="banner.png"
+        alt="Tanie,pl"
+    >
+
+</div>
 
 <section class="hero">
 
-    <div class="hero-content">
+    <small>● SKLEP ONLINE</small>
 
-        <small>
-            ● KUPGRAJ
-        </small>
+    <h1>
+        Witaj w
+        <span>Tanie,pl</span>
+    </h1>
 
-        <h1>
-            Twój sklep.
-            <br>
-            <span>Twoja gra.</span>
-        </h1>
+    <p>
+        Minecraft Premium, konfiguracje Discord
+        oraz produkty do innych gier.
+        Szybko, wygodnie i w atrakcyjnych cenach.
+    </p>
 
-        <p>
-            Minecraft Premium, konfiguracje Discord
-            oraz inne produkty w atrakcyjnych cenach.
-            Szybka obsługa i kontakt przez Discord.
-        </p>
+    <div class="hero-buttons">
 
-        <div class="hero-buttons">
+        <a
+            href="#minecraft"
+            class="hero-button primary"
+        >
+            🛒 Zobacz ofertę
+        </a>
 
-            <a
-                href="#minecraft"
-                class="hero-button primary"
-            >
-                🛒 Zobacz ofertę
-            </a>
-
-            <a
-                href="https://discord.gg/yXUzU44Pu"
-                target="_blank"
-                class="hero-button secondary"
-            >
-                💜 Dołącz na Discord
-            </a>
-
-        </div>
+        <a
+            href="https://discord.gg/yXUzU44Pu"
+            target="_blank"
+            class="hero-button secondary"
+        >
+            💜 Dołącz na Discord
+        </a>
 
     </div>
 
 </section>
-
-<!-- =======================================================
-     KATEGORIE
-======================================================= -->
 
 <div class="categories">
 
@@ -978,14 +887,17 @@ footer a:hover {
         class="category"
         onclick="filterCategory('discord', this)"
     >
-        🤖 Discord
+        ⚙️ Discord
+    </button>
+
+    <button
+        class="category"
+        onclick="filterCategory('inne', this)"
+    >
+        🎮 Inne gry
     </button>
 
 </div>
-
-<!-- =======================================================
-     MINECRAFT
-======================================================= -->
 
 <section
     class="section"
@@ -995,145 +907,83 @@ footer a:hover {
 
     <div class="section-title">
 
-        <small>
-            ● MINECRAFT
-        </small>
+        <small>● MINECRAFT</small>
 
-        <h2>
-            Konta Minecraft
-        </h2>
+        <h2>🎮 Minecraft Premium</h2>
 
         <p>
-            Wybierz poziom dostępu odpowiadający Twoim potrzebom.
+            Wybierz odpowiednią wersję konta Minecraft.
         </p>
 
     </div>
 
     <div class="products">
 
-        <article class="product">
+        <div class="product">
 
             <div class="product-image minecraft">
-                <div class="big-icon">
-                    ⛏️
-                </div>
+                <div class="big-icon">⛏️</div>
             </div>
 
             <div class="product-category">
-                MINECRAFT
+                MINECRAFT PREMIUM
             </div>
 
-            <h3>
-                KOSZT KONTA
-            </h3>
+            <h3>KOSZT KONTA</h3>
 
-            <p class="product-description">
-                Konto bez dostępu do maila, gotowe do użycia.
+            <p>
+                Konto bez dostępu do maila.
+                Gotowe do użycia.
+                Instrukcję aktywacji otrzymasz przed zakupem.
             </p>
 
-            <ul class="features">
-
-                <li>
-                    Konto bez dostępu do maila
-                </li>
-
-                <li>
-                    Gotowe do użycia
-                </li>
-
-                <li>
-                    Instrukcję aktywacji otrzymasz przed zakupem
-                </li>
-
-            </ul>
-
-            <div class="product-bottom">
-
-                <div class="price">
-                    25 zł
-                </div>
-
-                <button
-                    class="add"
-                    onclick="addToCart('Minecraft — KOSZT KONTA', 25)"
-                >
-                    Dodaj do koszyka
-                </button>
-
+            <div class="price">
+                25 zł
             </div>
 
-        </article>
+            <button
+                class="buy"
+                onclick="addToCart('Minecraft — KOSZT KONTA', 25)"
+            >
+                🛒 Dodaj do koszyka
+            </button>
 
-        <article class="product">
+        </div>
+
+        <div class="product">
 
             <div class="product-image minecraft">
-
-                <div class="big-icon">
-                    💎
-                </div>
-
+                <div class="big-icon">💎</div>
             </div>
 
             <div class="product-category">
-                MINECRAFT
+                MINECRAFT PREMIUM
             </div>
 
-            <h3>
-                PEŁNY DOSTĘP
-            </h3>
+            <h3>PEŁNY DOSTĘP</h3>
 
-            <p class="product-description">
+            <p>
                 Pełny dostęp do konta oraz maila.
+                Możliwość pełnego zarządzania kontem.
+                Instrukcję aktywacji otrzymasz przed zakupem.
             </p>
 
-            <ul class="features">
-
-                <li>
-                    Pełny dostęp do konta
-                </li>
-
-                <li>
-                    Dostęp również do maila
-                </li>
-
-                <li>
-                    Możliwość pełnego zarządzania kontem
-                </li>
-
-                <li>
-                    Instrukcję aktywacji otrzymasz przed zakupem
-                </li>
-
-            </ul>
-
-            <div class="product-bottom">
-
-                <div class="price">
-                    35 zł
-                </div>
-
-                <button
-                    class="add"
-                    onclick="addToCart('Minecraft — PEŁNY DOSTĘP', 35)"
-                >
-                    Dodaj do koszyka
-                </button>
-
+            <div class="price">
+                35 zł
             </div>
 
-        </article>
+            <button
+                class="buy"
+                onclick="addToCart('Minecraft — PEŁNY DOSTĘP', 35)"
+            >
+                🛒 Dodaj do koszyka
+            </button>
 
-    </div>
+        </div>
 
-    <div class="info">
-        🔐 Instrukcję aktywacji otrzymasz przed zakupem.
     </div>
 
 </section>
-
-<!-- =======================================================
-     DISCORD
-======================================================= -->
 
 <section
     class="section"
@@ -1143,237 +993,181 @@ footer a:hover {
 
     <div class="section-title">
 
-        <small>
-            ● DISCORD
-        </small>
+        <small>● DISCORD</small>
 
-        <h2>
-            Konfiguracje Discord
-        </h2>
+        <h2>⚙️ Konfiguracje Discord</h2>
 
         <p>
-            Od podstawowego serwera po kompletną konfigurację.
+            Gotowe konfiguracje dopasowane do Twojego serwera.
         </p>
 
     </div>
 
     <div class="products">
 
-        <article class="product">
+        <div class="product">
 
             <div class="product-image discord">
-
-                <div class="big-icon">
-                    ⚙️
-                </div>
-
+                <div class="big-icon">⚙️</div>
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>
-                START
-            </h3>
+            <h3>START</h3>
 
-            <p class="product-description">
-                Podstawowa konfiguracja serwera.
+            <p>
+                Podstawowe boty, estetyczny wygląd,
+                kanały, kategorie, role
+                oraz podstawowa konfiguracja.
             </p>
 
-            <ul class="features">
-
-                <li>
-                    Podstawowe boty
-                </li>
-
-                <li>
-                    Estetyczny wygląd
-                </li>
-
-                <li>
-                    Kanały i kategorie
-                </li>
-
-                <li>
-                    Podstawowe role
-                </li>
-
-                <li>
-                    Podstawowa konfiguracja
-                </li>
-
-            </ul>
-
-            <div class="product-bottom">
-
-                <div class="price">
-                    20 zł
-                </div>
-
-                <button
-                    class="add"
-                    onclick="addToCart('Discord — START', 20)"
-                >
-                    Dodaj do koszyka
-                </button>
-
+            <div class="price">
+                20 zł
             </div>
 
-        </article>
+            <button
+                class="buy"
+                onclick="addToCart('Discord — START', 20)"
+            >
+                🛒 Dodaj do koszyka
+            </button>
 
-        <article class="product">
+        </div>
+
+        <div class="product">
 
             <div class="product-image discord">
-
-                <div class="big-icon">
-                    🤖
-                </div>
-
+                <div class="big-icon">🤖</div>
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>
-                PRO
-            </h3>
+            <h3>PRO</h3>
 
-            <p class="product-description">
-                Średnio zaawansowana konfiguracja serwera.
+            <p>
+                Więcej botów, średnio zaawansowana konfiguracja,
+                estetyczne kanały, role dopasowane do klienta
+                oraz rozbudowana organizacja serwera.
             </p>
 
-            <ul class="features">
-
-                <li>
-                    Więcej botów
-                </li>
-
-                <li>
-                    Średnio zaawansowana konfiguracja
-                </li>
-
-                <li>
-                    Estetyczne kanały
-                </li>
-
-                <li>
-                    Role dopasowane do klienta
-                </li>
-
-                <li>
-                    Rozbudowana organizacja serwera
-                </li>
-
-            </ul>
-
-            <div class="product-bottom">
-
-                <div class="price">
-                    40 zł
-                </div>
-
-                <button
-                    class="add"
-                    onclick="addToCart('Discord — PRO', 40)"
-                >
-                    Dodaj do koszyka
-                </button>
-
+            <div class="price">
+                40 zł
             </div>
 
-        </article>
+            <button
+                class="buy"
+                onclick="addToCart('Discord — PRO', 40)"
+            >
+                🛒 Dodaj do koszyka
+            </button>
 
-        <article class="product">
+        </div>
+
+        <div class="product">
 
             <div class="product-image discord">
-
-                <div class="big-icon">
-                    🛡️
-                </div>
-
+                <div class="big-icon">🛡️</div>
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>
-                FULL
-            </h3>
+            <h3>FULL</h3>
 
-            <p class="product-description">
-                Kompleksowa konfiguracja całego serwera.
+            <p>
+                Pełna konfiguracja serwera,
+                zaawansowane boty i systemy
+                oraz kompleksowa organizacja.
             </p>
 
-            <ul class="features">
-
-                <li>
-                    Pełna konfiguracja serwera
-                </li>
-
-                <li>
-                    Zaawansowane boty i systemy
-                </li>
-
-                <li>
-                    Profesjonalny wygląd
-                </li>
-
-                <li>
-                    Role oraz kanały dopasowane do klienta
-                </li>
-
-                <li>
-                    Rozbudowane systemy serwerowe
-                </li>
-
-                <li>
-                    Indywidualne podejście do zamówienia
-                </li>
-
-            </ul>
-
-            <div class="product-bottom">
-
-                <div class="price">
-                    60 zł
-                </div>
-
-                <button
-                    class="add"
-                    onclick="addToCart('Discord — FULL', 60)"
-                >
-                    Dodaj do koszyka
-                </button>
-
+            <div class="price">
+                60 zł
             </div>
 
-        </article>
+            <button
+                class="buy"
+                onclick="addToCart('Discord — FULL', 60)"
+            >
+                🛒 Dodaj do koszyka
+            </button>
+
+        </div>
 
     </div>
 
 </section>
 
-<!-- =======================================================
-     DLACZEGO MY
-======================================================= -->
-
 <section
-    class="why-us"
-    id="dlaczego"
+    class="section"
+    id="inne-gry"
+    data-category="inne"
 >
 
     <div class="section-title">
 
-        <small>
-            ● KUPGRAJ
-        </small>
+        <small>● GRY</small>
 
-        <h2>
-            Dlaczego my?
-        </h2>
+        <h2>🎮 Inne gry</h2>
+
+        <p>
+            Zapytaj nas o dostępne produkty do innych gier.
+        </p>
+
+    </div>
+
+    <div class="products">
+
+        <div class="product">
+
+            <div class="product-image">
+                <div class="big-icon">🎮</div>
+            </div>
+
+            <div class="product-category">
+                INNE GRY
+            </div>
+
+            <h3>Inne produkty</h3>
+
+            <p>
+                Nie znalazłeś interesującego Cię produktu?
+                Napisz do nas na Discordzie.
+            </p>
+
+            <div class="price">
+                Zapytaj
+            </div>
+
+            <a
+                href="https://discord.gg/yXUzU44Pu"
+                target="_blank"
+                class="buy"
+                style="text-align:center;text-decoration:none;"
+            >
+                💜 Napisz na Discordzie
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+<section
+    class="section"
+    id="dlaczego-my"
+>
+
+    <div class="section-title">
+
+        <small>● Tanie,pl</small>
+
+        <h2>Dlaczego my?</h2>
 
         <p>
             Kilka powodów, dla których warto skorzystać z naszej oferty.
@@ -1385,13 +1179,9 @@ footer a:hover {
 
         <div class="why-card">
 
-            <div class="why-icon">
-                💰
-            </div>
+            <div class="why-icon">💰</div>
 
-            <h3>
-                Dobre ceny
-            </h3>
+            <h3>Dobre ceny</h3>
 
             <p>
                 Staramy się utrzymywać atrakcyjne ceny
@@ -1402,13 +1192,9 @@ footer a:hover {
 
         <div class="why-card">
 
-            <div class="why-icon">
-                ⚡
-            </div>
+            <div class="why-icon">⚡</div>
 
-            <h3>
-                Szybka realizacja
-            </h3>
+            <h3>Szybka realizacja</h3>
 
             <p>
                 Po złożeniu zamówienia otrzymujesz
@@ -1419,13 +1205,9 @@ footer a:hover {
 
         <div class="why-card">
 
-            <div class="why-icon">
-                🛡️
-            </div>
+            <div class="why-icon">🛡️</div>
 
-            <h3>
-                Bezpieczeństwo
-            </h3>
+            <h3>Bezpieczeństwo</h3>
 
             <p>
                 Zamówienia są przesyłane bezpośrednio
@@ -1436,13 +1218,9 @@ footer a:hover {
 
         <div class="why-card">
 
-            <div class="why-icon">
-                💜
-            </div>
+            <div class="why-icon">💜</div>
 
-            <h3>
-                Wsparcie Discord
-            </h3>
+            <h3>Wsparcie Discord</h3>
 
             <p>
                 Masz pytanie? Dołącz do naszego Discorda
@@ -1455,18 +1233,11 @@ footer a:hover {
 
 </section>
 
-<!-- =======================================================
-     FOOTER
-======================================================= -->
-
 <footer>
 
-    <strong>
-        KupGraj
-    </strong>
+    <strong>Tanie,pl</strong>
 
-    <br>
-    <br>
+    <br><br>
 
     <a
         href="https://discord.gg/yXUzU44Pu"
@@ -1475,16 +1246,11 @@ footer a:hover {
         💜 Discord
     </a>
 
-    <br>
-    <br>
+    <br><br>
 
-    © 2026 KupGraj — Wszystkie prawa zastrzeżone.
+    © 2026 Tanie,pl — Wszystkie prawa zastrzeżone.
 
 </footer>
-
-<!-- =======================================================
-     KOSZYK
-======================================================= -->
 
 <div id="cartModal">
 
@@ -1492,9 +1258,7 @@ footer a:hover {
 
         <div class="cart-header">
 
-            <h2>
-                🛒 Koszyk
-            </h2>
+            <h2>🛒 Koszyk</h2>
 
             <button
                 class="close"
@@ -1530,17 +1294,11 @@ footer a:hover {
 
         </div>
 
-        <!-- =================================================
-             FORMULARZ
-        ================================================= -->
-
         <div id="orderForm">
 
             <div class="cart-header">
 
-                <h2>
-                    📋 Zamówienie
-                </h2>
+                <h2>📋 Zamówienie</h2>
 
                 <button
                     class="close"
@@ -1554,13 +1312,7 @@ footer a:hover {
             <input
                 id="customerName"
                 type="text"
-                placeholder="Nick Discord"
-            >
-
-            <input
-                id="customerContact"
-                type="text"
-                placeholder="Discord / e-mail"
+                placeholder="Nick / imię"
             >
 
             <textarea
@@ -1579,10 +1331,6 @@ footer a:hover {
 
         </div>
 
-        <!-- =================================================
-             SUKCES
-        ================================================= -->
-
         <div id="success">
 
             <div class="icon">
@@ -1594,13 +1342,13 @@ footer a:hover {
             </h3>
 
             <p>
-                🎉 Twoje zamówienie zostało przekazane do obsługi.
+                🎉 Dziękujemy za złożenie zamówienia!
             </p>
 
             <div class="success-info">
 
                 <strong>
-                    🛒 Co teraz?
+                    Aby rozpocząć realizację zamówienia:
                 </strong>
 
                 <div class="success-step">
@@ -1608,29 +1356,21 @@ footer a:hover {
                 </div>
 
                 <div class="success-step">
-                    2️⃣ Wejdź na kanał 📨・zamówienia.
+                    2️⃣ Wejdź na kanał 📨・zamów.
                 </div>
 
                 <div class="success-step">
-                    3️⃣ Napisz, że złożyłeś zamówienie przez sklep.
-                </div>
-
-                <div class="success-step">
-                    ⏳ Poczekaj na obsługę.
+                    3️⃣ Napisz tam, że złożyłeś zamówienie przez stronę.
                 </div>
 
             </div>
 
-            <p style="margin-top:20px;">
-                🔄 Za chwilę zostaniesz automatycznie
-                przekierowany na Discorda...
-            </p>
-
             <a
                 href="https://discord.gg/yXUzU44Pu"
+                target="_blank"
                 class="discord-success-button"
             >
-                🟢 PRZEJDŹ NA DISCORDA
+                🟢 DOŁĄCZ DO DISCORDA
             </a>
 
         </div>
@@ -1639,84 +1379,60 @@ footer a:hover {
 
 </div>
 
-<!-- =======================================================
-     JAVASCRIPT
-======================================================= -->
-
 <script>
 
-let cart = [];
+    let cart = [];
 
-/* =========================================================
-   DODAWANIE DO KOSZYKA
-========================================================= */
+    function addToCart(name, price) {
 
-function addToCart(name, price) {
+        cart.push({
+            name: name,
+            price: price
+        });
 
-    cart.push({
-        name: name,
-        price: price
-    });
+        updateCart();
+        openCart();
+    }
 
-    updateCart();
+    function updateCart() {
 
-    openCart();
-}
+        const items =
+            document.getElementById("cartItems");
 
-/* =========================================================
-   AKTUALIZACJA KOSZYKA
-========================================================= */
+        const count =
+            document.getElementById("cartCount");
 
-function updateCart() {
+        const total =
+            document.getElementById("cartTotal");
 
-    const items =
-        document.getElementById(
-            "cartItems"
-        );
+        count.textContent = cart.length;
 
-    const count =
-        document.getElementById(
-            "cartCount"
-        );
+        items.innerHTML = "";
 
-    const total =
-        document.getElementById(
-            "cartTotal"
-        );
+        let sum = 0;
 
-    count.textContent =
-        cart.length;
+        if (cart.length === 0) {
 
-    items.innerHTML = "";
+            items.innerHTML = `
+                <p style="
+                    text-align:center;
+                    color:#777;
+                    padding:35px 0;
+                ">
+                    Koszyk jest pusty.
+                </p>
+            `;
 
-    let sum = 0;
+        } else {
 
-    if (cart.length === 0) {
+            cart.forEach((item, index) => {
 
-        items.innerHTML = `
-            <p style="
-                text-align:center;
-                color:#777;
-                padding:35px 0;
-            ">
-                Koszyk jest pusty.
-            </p>
-        `;
-
-    } else {
-
-        cart.forEach(
-            (item, index) => {
-
-                sum += item.price;
+                sum += Number(item.price) || 0;
 
                 const row =
-                    document.createElement(
-                        "div"
-                    );
+                    document.createElement("div");
 
-                row.className =
-                    "cart-item";
+                row.className = "cart-item";
 
                 row.innerHTML = `
 
@@ -1743,175 +1459,115 @@ function updateCart() {
 
                 items.appendChild(row);
 
-            }
-        );
+            });
 
+        }
+
+        total.textContent = sum + " zł";
     }
 
-    total.textContent =
-        sum + " zł";
-}
+    function removeItem(index) {
 
-/* =========================================================
-   USUWANIE
-========================================================= */
+        cart.splice(index, 1);
 
-function removeItem(index) {
-
-    cart.splice(
-        index,
-        1
-    );
-
-    updateCart();
-}
-
-/* =========================================================
-   OTWIERANIE KOSZYKA
-========================================================= */
-
-function openCart() {
-
-    document
-        .getElementById("cartModal")
-        .classList.add("open");
-
-    document
-        .getElementById("cartView")
-        .style.display = "block";
-
-    document
-        .getElementById("orderForm")
-        .classList.remove("show");
-
-    document
-        .getElementById("success")
-        .style.display = "none";
-
-    updateCart();
-}
-
-/* =========================================================
-   ZAMYKANIE
-========================================================= */
-
-function closeCart() {
-
-    document
-        .getElementById("cartModal")
-        .classList.remove("open");
-}
-
-/* =========================================================
-   FORMULARZ
-========================================================= */
-
-function showOrderForm() {
-
-    if (cart.length === 0) {
-
-        alert(
-            "Najpierw dodaj produkt do koszyka."
-        );
-
-        return;
+        updateCart();
     }
 
-    document
-        .getElementById("cartView")
-        .style.display = "none";
+    function openCart() {
 
-    document
-        .getElementById("orderForm")
-        .classList.add("show");
-}
-
-/* =========================================================
-   WYSYŁANIE ZAMÓWIENIA
-========================================================= */
-
-async function sendOrder() {
-
-    const name =
         document
-            .getElementById(
-                "customerName"
-            )
-            .value
-            .trim();
+            .getElementById("cartModal")
+            .classList.add("open");
 
-    const contact =
         document
-            .getElementById(
-                "customerContact"
-            )
-            .value
-            .trim();
+            .getElementById("cartView")
+            .style.display = "block";
 
-    const message =
         document
-            .getElementById(
-                "customerMessage"
-            )
-            .value
-            .trim();
+            .getElementById("orderForm")
+            .classList.remove("show");
 
-    const error =
-        document.getElementById(
-            "error"
-        );
+        document
+            .getElementById("success")
+            .style.display = "none";
 
-    error.textContent = "";
-
-    /* =====================================================
-       WALIDACJA
-    ===================================================== */
-
-    if (!name) {
-
-        error.textContent =
-            "❌ Wpisz nick Discord.";
-
-        return;
+        updateCart();
     }
 
-    if (!contact) {
+    function closeCart() {
 
-        error.textContent =
-            "❌ Wpisz kontakt.";
-
-        return;
+        document
+            .getElementById("cartModal")
+            .classList.remove("open");
     }
 
-    if (cart.length === 0) {
+    function showOrderForm() {
 
-        error.textContent =
-            "❌ Koszyk jest pusty.";
+        if (cart.length === 0) {
 
-        return;
+            alert(
+                "Najpierw dodaj produkt do koszyka."
+            );
+
+            return;
+        }
+
+        document
+            .getElementById("cartView")
+            .style.display = "none";
+
+        document
+            .getElementById("orderForm")
+            .classList.add("show");
     }
 
-    /* =====================================================
-       SUMA
-    ===================================================== */
+    async function sendOrder() {
 
-    const total =
-        cart.reduce(
-            (sum, item) =>
-                sum + item.price,
-            0
-        );
+        const name =
+            document
+                .getElementById("customerName")
+                .value
+                .trim();
 
-    try {
+        const message =
+            document
+                .getElementById("customerMessage")
+                .value
+                .trim();
 
-        /* =================================================
-           WYSŁANIE DO SERVER.JS
-        ================================================= */
+        const error =
+            document.getElementById("error");
 
-        const response =
-            await fetch(
-                "/api/order",
-                {
+        error.textContent = "";
+
+        if (!name) {
+
+            error.textContent =
+                "❌ Wpisz swój nick lub imię.";
+
+            return;
+        }
+
+        if (cart.length === 0) {
+
+            error.textContent =
+                "❌ Koszyk jest pusty.";
+
+            return;
+        }
+
+        const total =
+            cart.reduce(
+                (sum, item) =>
+                    sum + (Number(item.price) || 0),
+                0
+            );
+
+        try {
+
+            const response =
+                await fetch("/api/order", {
+
                     method: "POST",
 
                     headers: {
@@ -1919,155 +1575,97 @@ async function sendOrder() {
                             "application/json"
                     },
 
-                    body:
-                        JSON.stringify({
+                    body: JSON.stringify({
 
-                            customer: {
+                        customer: {
+
+                            name: name,
+
+                            contact:
+                                "Kontakt przez Discord",
+
+                            message:
+                                message || "Brak"
+
+                        },
+
+                        cart:
+                            cart.map(item => ({
 
                                 name:
-                                    name,
+                                    item.name,
 
-                                contact:
-                                    contact,
+                                price:
+                                    Number(item.price) || 0,
 
-                                message:
-                                    message
+                                quantity:
+                                    1
 
-                            },
+                            })),
 
-                            cart:
-                                cart.map(
-                                    item => ({
+                        total:
+                            total
 
-                                        name:
-                                            item.name,
+                    })
 
-                                        price:
-                                            item.price,
+                });
 
-                                        quantity:
-                                            1
+            const data =
+                await response.json();
 
-                                    })
-                                ),
+            if (
+                !response.ok ||
+                !data.success
+            ) {
 
-                            total:
-                                total
-
-                        })
-
-                }
-            );
-
-        const data =
-            await response.json();
-
-        /* =================================================
-           BŁĄD SERWERA
-        ================================================= */
-
-        if (!response.ok) {
-
-            throw new Error(
-                data.error ||
-                "Nie udało się wysłać zamówienia."
-            );
-
-        }
-
-        /* =================================================
-           SUKCES
-        ================================================= */
-
-        document
-            .getElementById(
-                "orderForm"
-            )
-            .classList.remove(
-                "show"
-            );
-
-        document
-            .getElementById(
-                "success"
-            )
-            .style.display =
-                "block";
-
-        cart = [];
-
-        updateCart();
-
-        /* =================================================
-           AUTOMATYCZNE PRZEJŚCIE NA DISCORD
-        ================================================= */
-
-        setTimeout(
-            () => {
-
-                window.location.href =
-                    "https://discord.gg/yXUzU44Pu";
-
-            },
-            3000
-        );
-
-    } catch (err) {
-
-        console.error(
-            "❌ Błąd wysyłania zamówienia:",
-            err
-        );
-
-        error.textContent =
-            "❌ " +
-            (
-                err.message ||
-                "Wystąpił błąd."
-            );
-
-    }
-
-}
-
-/* =========================================================
-   FILTROWANIE KATEGORII
-========================================================= */
-
-function filterCategory(
-    category,
-    button
-) {
-
-    document
-        .querySelectorAll(
-            ".category"
-        )
-        .forEach(
-            btn => {
-
-                btn.classList.remove(
-                    "active"
+                throw new Error(
+                    data.error ||
+                    "Nie udało się wysłać zamówienia."
                 );
 
             }
-        );
 
-    button.classList.add(
-        "active"
-    );
+            /*
+             * Zamówienie zostało wysłane.
+             * Klient przechodzi na Discorda.
+             */
 
-    document
-        .querySelectorAll(
-            "[data-category]"
-        )
-        .forEach(
-            section => {
+            window.location.href =
+                "https://discord.gg/yXUzU44Pu";
+
+        } catch (err) {
+
+            console.error(
+                "Błąd zamówienia:",
+                err
+            );
+
+            error.textContent =
+                "❌ Nie udało się wysłać zamówienia. Spróbuj ponownie.";
+
+        }
+
+    }
+
+    function filterCategory(category, button) {
+
+        document
+            .querySelectorAll(".category")
+            .forEach(btn => {
+
+                btn.classList.remove("active");
+
+            });
+
+        button.classList.add("active");
+
+        document
+            .querySelectorAll("[data-category]")
+            .forEach(section => {
 
                 if (
                     category === "all" ||
-                    section.dataset.category ===
-                        category
+                    section.dataset.category === category
                 ) {
 
                     section.style.display =
@@ -2080,16 +1678,10 @@ function filterCategory(
 
                 }
 
-            }
-        );
+            });
+    }
 
-}
-
-/* =========================================================
-   START
-========================================================= */
-
-updateCart();
+    updateCart();
 
 </script>
 
