@@ -1,18 +1,1465 @@
-<!doctype html>
-<html lang="pl"><head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Twój Sklep • Premium</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/style.css"></head><body>
-<header><a class="brand">✦ TWÓJ<span>SKLEP</span></a><nav><a href="#oferta">Oferta</a><a href="#dlaczego">Dlaczego my?</a><a href="#faq">FAQ</a></nav><button id="openCart">🛒 Koszyk <b id="count">0</b></button></header>
-<main>
-<section class="hero"><div><small>● OFICJALNY SKLEP</small><h1>Wybierz. Zamów.<strong>Ciesz się.</strong></h1><p>Premium produkty Minecraft, konfiguracje Discord i usługi wykonane z dbałością o szczegóły.</p><a class="btn" href="#oferta">Zobacz ofertę →</a></div><div class="banner"><b>TWÓJ BANER</b><span>Tu wstawimy Twój baner</span><i>💎 MC PREMIUM</i><em>⚙️ DISCORD</em></div></section>
-<section id="oferta"><small>● NASZA OFERTA</small><h2>Co oferujemy?</h2><div id="filters"></div><div id="products" class="products"></div></section>
-<section id="dlaczego"><small>● DLACZEGO MY?</small><h2>Prosto, szybko i profesjonalnie.</h2><div class="benefits"><article>⚡<h3>Szybka realizacja</h3><p>Po zamówieniu otrzymujesz informacje na Discordzie.</p></article><article>🛡️<h3>Bezpieczne zamówienie</h3><p>Dane trafiają bezpośrednio do naszego systemu.</p></article><article>💬<h3>Kontakt na Discordzie</h3><p>Łatwy kontakt w sprawie każdego zamówienia.</p></article></div></section>
-<section id="faq"><small>● FAQ</small><h2>Najczęstsze pytania</h2><details><summary>Jak złożyć zamówienie?</summary><p>Dodaj produkty do koszyka, uzupełnij dane i wyślij formularz.</p></details><details><summary>Gdzie trafia zamówienie?</summary><p>Na skonfigurowany kanał Discord przez webhook.</p></details></section>
-</main><footer>✦ TWÓJSKLEP <span>© 2026</span></footer>
+```html
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<aside id="drawer"><div class="drawerHead"><h2>Koszyk</h2><button id="closeCart">×</button></div><div id="cart"></div><div class="sum"><b>Razem</b><strong id="total">0,00 zł</strong><button class="btn" id="checkout">Złóż zamówienie →</button></div></aside>
-<div id="modal"><div class="modalCard"><button id="closeModal">×</button><small>● FINALIZACJA</small><h2>Złóż zamówienie</h2><form id="form"><input name="name" required placeholder="Imię / nazwa"><input name="contact" required placeholder="Discord / kontakt"><textarea name="message" placeholder="Wiadomość"></textarea><button class="btn">Wyślij zamówienie 🚀</button></form><p id="result"></p></div></div>
-<script src="/app.js"></script></body></html>
+    <title>Twój Sklep — Konfiguracje Discord i Minecraft</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(circle at 20% 10%, rgba(105, 45, 255, 0.15), transparent 30%),
+                radial-gradient(circle at 80% 20%, rgba(55, 20, 120, 0.12), transparent 30%),
+                #07070d;
+            color: #fff;
+            min-height: 100vh;
+        }
+
+        button {
+            font-family: inherit;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        nav {
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+
+            width: 100%;
+            height: 76px;
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 5%;
+
+            background: rgba(7, 7, 13, 0.92);
+            border-bottom: 1px solid rgba(150, 80, 255, 0.18);
+            backdrop-filter: blur(14px);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: 1px;
+        }
+
+        .logo span {
+            color: #8b4dff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 35px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #aaa;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: #9b5cff;
+        }
+
+        .cart-button {
+            border: 1px solid #3b285b;
+            background: #111019;
+            color: white;
+            padding: 12px 18px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: 700;
+        }
+
+        .cart-count {
+            display: inline-flex;
+            justify-content: center;
+            align-items: center;
+
+            min-width: 23px;
+            height: 23px;
+
+            margin-left: 7px;
+            padding: 0 6px;
+
+            border-radius: 50px;
+            background: #7c3cff;
+            font-size: 12px;
+        }
+
+        /* =========================
+           BANER
+        ========================= */
+
+        .banner-wrapper {
+            width: 100%;
+            padding: 25px 3% 10px;
+        }
+
+        .banner {
+            width: 100%;
+            max-width: 1600px;
+            margin: 0 auto;
+
+            min-height: 300px;
+
+            border-radius: 18px;
+            overflow: hidden;
+
+            border: 1px solid rgba(139, 77, 255, 0.45);
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(10, 5, 25, 0.25),
+                    rgba(10, 5, 25, 0.05)
+                ),
+                url("banner.png") center center / cover no-repeat;
+
+            box-shadow:
+                0 0 50px rgba(105, 40, 255, 0.18),
+                inset 0 0 60px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Jeśli banera nie ma, pokazuje się estetyczne tło */
+        .banner:has(img) {
+            background: none;
+        }
+
+        /* =========================
+           HERO
+        ========================= */
+
+        .hero {
+            text-align: center;
+            padding: 55px 20px 35px;
+        }
+
+        .hero small {
+            color: #985cff;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        .hero h1 {
+            margin-top: 15px;
+            font-size: clamp(36px, 6vw, 70px);
+            line-height: 1.05;
+            font-weight: 900;
+        }
+
+        .hero h1 span {
+            color: #8b4dff;
+        }
+
+        .hero p {
+            max-width: 700px;
+            margin: 20px auto 0;
+            color: #999;
+            font-size: 17px;
+            line-height: 1.7;
+        }
+
+        /* =========================
+           KATEGORIE
+        ========================= */
+
+        .categories {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+
+            margin: 15px auto 45px;
+            padding: 0 20px;
+        }
+
+        .category-btn {
+            border: 1px solid #34234d;
+            background: #0e0d15;
+            color: #aaa;
+
+            padding: 12px 24px;
+            border-radius: 12px;
+
+            cursor: pointer;
+            font-weight: 700;
+
+            transition: 0.2s;
+        }
+
+        .category-btn:hover,
+        .category-btn.active {
+            background: #6d35d8;
+            border-color: #8d51ff;
+            color: #fff;
+        }
+
+        /* =========================
+           SEKCJA
+        ========================= */
+
+        .section {
+            width: 90%;
+            max-width: 1250px;
+            margin: 0 auto 80px;
+        }
+
+        .section-heading {
+            margin-bottom: 25px;
+        }
+
+        .section-heading small {
+            color: #8f52ff;
+            text-transform: uppercase;
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .section-heading h2 {
+            font-size: 34px;
+            margin-top: 7px;
+        }
+
+        .section-heading p {
+            color: #888;
+            margin-top: 8px;
+        }
+
+        /* =========================
+           PRODUKTY
+        ========================= */
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 22px;
+        }
+
+        .product-card {
+            background: linear-gradient(145deg, #111019, #0b0a10);
+            border: 1px solid #282333;
+            border-radius: 18px;
+            padding: 22px;
+
+            transition: 0.25s;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: #7441c4;
+            box-shadow: 0 15px 40px rgba(100, 45, 180, 0.15);
+        }
+
+        .product-icon {
+            height: 150px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 13px;
+            margin-bottom: 22px;
+
+            background:
+                radial-gradient(
+                    circle,
+                    rgba(117, 61, 220, 0.20),
+                    rgba(8, 8, 13, 0.9) 65%
+                );
+
+            font-size: 65px;
+        }
+
+        .product-category {
+            color: #9256ff;
+            font-size: 13px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 12px;
+        }
+
+        .product-card h3 {
+            font-size: 23px;
+            margin-bottom: 13px;
+        }
+
+        .product-card p {
+            color: #92909a;
+            line-height: 1.6;
+            min-height: 52px;
+        }
+
+        .features {
+            list-style: none;
+            margin: 18px 0;
+            color: #b5b3bd;
+            line-height: 1.65;
+            flex: 1;
+        }
+
+        .features li {
+            margin-bottom: 7px;
+        }
+
+        .features li::before {
+            content: "•";
+            color: #9755ff;
+            font-weight: bold;
+            margin-right: 9px;
+        }
+
+        .product-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 12px;
+            margin-top: auto;
+        }
+
+        .price {
+            font-size: 24px;
+            font-weight: 900;
+            white-space: nowrap;
+        }
+
+        .add-button {
+            border: 1px solid #48316b;
+            background: #15111e;
+            color: white;
+
+            padding: 12px 16px;
+            border-radius: 10px;
+
+            cursor: pointer;
+            font-weight: 800;
+
+            transition: 0.2s;
+        }
+
+        .add-button:hover {
+            background: #783ee0;
+            border-color: #9d65ff;
+        }
+
+        /* =========================
+           INFORMACJE
+        ========================= */
+
+        .info-box {
+            margin-top: 35px;
+            padding: 25px;
+
+            background: #0e0d14;
+            border: 1px solid #282333;
+            border-radius: 15px;
+
+            color: #999;
+            line-height: 1.7;
+            text-align: center;
+        }
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        footer {
+            border-top: 1px solid #211c2b;
+            padding: 35px 20px;
+            text-align: center;
+            color: #666;
+        }
+
+        footer strong {
+            color: #9256ff;
+        }
+
+        /* =========================
+           MODAL
+        ========================= */
+
+        .modal {
+            position: fixed;
+            inset: 0;
+
+            background: rgba(0, 0, 0, 0.78);
+            backdrop-filter: blur(8px);
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            z-index: 5000;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-box {
+            width: 100%;
+            max-width: 520px;
+
+            background: #111019;
+            border: 1px solid #35274a;
+            border-radius: 18px;
+
+            padding: 28px;
+
+            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            margin-bottom: 25px;
+        }
+
+        .modal-header h2 {
+            font-size: 28px;
+        }
+
+        .close {
+            border: 0;
+            background: transparent;
+            color: #aaa;
+
+            font-size: 30px;
+            cursor: pointer;
+        }
+
+        .cart-items {
+            max-height: 280px;
+            overflow-y: auto;
+            margin-bottom: 20px;
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            gap: 15px;
+
+            padding: 15px 0;
+            border-bottom: 1px solid #28232f;
+        }
+
+        .cart-item-name {
+            font-weight: 700;
+        }
+
+        .cart-item-price {
+            color: #9b5cff;
+            font-weight: 800;
+        }
+
+        .remove-item {
+            border: 0;
+            background: transparent;
+            color: #ff5570;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .cart-total {
+            display: flex;
+            justify-content: space-between;
+
+            padding: 18px 0;
+
+            font-size: 21px;
+            font-weight: 900;
+        }
+
+        .checkout-button {
+            width: 100%;
+            border: 0;
+
+            background: linear-gradient(90deg, #7139d9, #974cff);
+            color: white;
+
+            padding: 15px;
+            border-radius: 11px;
+
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 900;
+        }
+
+        .checkout-button:hover {
+            filter: brightness(1.1);
+        }
+
+        /* =========================
+           FORMULARZ
+        ========================= */
+
+        .order-form {
+            display: none;
+        }
+
+        .order-form.show {
+            display: block;
+        }
+
+        .order-form input,
+        .order-form textarea {
+            width: 100%;
+
+            background: #08080d;
+            border: 1px solid #30283b;
+            border-radius: 10px;
+
+            color: white;
+
+            padding: 14px;
+            margin-bottom: 13px;
+
+            outline: none;
+        }
+
+        .order-form input:focus,
+        .order-form textarea:focus {
+            border-color: #8246e9;
+        }
+
+        .order-form textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+
+        .order-error {
+            display: none;
+
+            margin-top: 12px;
+            padding: 12px;
+
+            background: rgba(255, 50, 80, 0.1);
+            border: 1px solid rgba(255, 50, 80, 0.3);
+
+            color: #ff7589;
+            border-radius: 10px;
+        }
+
+        .order-success {
+            display: none;
+            text-align: center;
+            padding: 30px 10px;
+        }
+
+        .order-success .success-icon {
+            font-size: 50px;
+            margin-bottom: 15px;
+        }
+
+        .order-success h3 {
+            font-size: 25px;
+            margin-bottom: 10px;
+        }
+
+        .order-success p {
+            color: #999;
+            line-height: 1.6;
+        }
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .banner {
+                min-height: 220px;
+            }
+        }
+
+        @media (max-width: 600px) {
+            nav {
+                padding: 0 20px;
+            }
+
+            .logo {
+                font-size: 20px;
+            }
+
+            .banner-wrapper {
+                padding: 12px;
+            }
+
+            .banner {
+                min-height: 180px;
+                border-radius: 12px;
+            }
+
+            .hero {
+                padding-top: 35px;
+            }
+
+            .hero h1 {
+                font-size: 38px;
+            }
+
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .section {
+                width: 92%;
+            }
+
+            .product-bottom {
+                align-items: center;
+            }
+
+            .price {
+                font-size: 21px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- =========================
+         NAVIGACJA
+    ========================= -->
+
+    <nav>
+        <div class="logo">
+            TWÓJ<span>SKLEP</span>
+        </div>
+
+        <div class="nav-links">
+            <a href="#minecraft">Minecraft</a>
+            <a href="#discord">Discord</a>
+        </div>
+
+        <button class="cart-button" onclick="openCart()">
+            🛒 Koszyk
+            <span class="cart-count" id="cartCount">0</span>
+        </button>
+    </nav>
+
+
+    <!-- =========================
+         BANER
+    ========================= -->
+
+    <div class="banner-wrapper">
+        <div class="banner"></div>
+    </div>
+
+
+    <!-- =========================
+         HERO
+    ========================= -->
+
+    <section class="hero">
+        <small>Profesjonalne usługi</small>
+
+        <h1>
+            Twój sklep <span>Discord & Minecraft</span>
+        </h1>
+
+        <p>
+            Gotowe konta Minecraft oraz profesjonalne konfiguracje
+            serwerów Discord. Wybierz usługę i złóż zamówienie.
+        </p>
+    </section>
+
+
+    <!-- =========================
+         KATEGORIE
+    ========================= -->
+
+    <div class="categories">
+        <button class="category-btn active" onclick="showCategory('all', this)">
+            WSZYSTKO
+        </button>
+
+        <button class="category-btn" onclick="showCategory('minecraft', this)">
+            MINECRAFT
+        </button>
+
+        <button class="category-btn" onclick="showCategory('discord', this)">
+            DISCORD
+        </button>
+    </div>
+
+
+    <!-- =========================
+         MINECRAFT
+    ========================= -->
+
+    <section class="section category-section" id="minecraft" data-category="minecraft">
+
+        <div class="section-heading">
+            <small>Minecraft</small>
+            <h2>Konta Minecraft</h2>
+            <p>Wybierz odpowiedni poziom dostępu do konta.</p>
+        </div>
+
+        <div class="products">
+
+            <!-- KOSZT KONTA -->
+            <article class="product-card">
+
+                <div class="product-icon">
+                    💎
+                </div>
+
+                <div class="product-category">
+                    MINECRAFT
+                </div>
+
+                <h3>KOSZT KONTA</h3>
+
+                <p>
+                    Konto Minecraft bez dostępu do maila.
+                </p>
+
+                <ul class="features">
+                    <li>Konto bez dostępu do maila</li>
+                    <li>Gotowe do użycia</li>
+                    <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
+                </ul>
+
+                <div class="product-bottom">
+                    <div class="price">25 zł</div>
+
+                    <button
+                        class="add-button"
+                        onclick="addToCart('Minecraft — Koszt konta', 25)"
+                    >
+                        Dodaj do koszyka
+                    </button>
+                </div>
+
+            </article>
+
+
+            <!-- PEŁNY DOSTĘP -->
+            <article class="product-card">
+
+                <div class="product-icon">
+                    🟩
+                </div>
+
+                <div class="product-category">
+                    MINECRAFT
+                </div>
+
+                <h3>PEŁNY DOSTĘP</h3>
+
+                <p>
+                    Pełny dostęp do konta Minecraft wraz z mailem.
+                </p>
+
+                <ul class="features">
+                    <li>Pełny dostęp do konta</li>
+                    <li>Dostęp również do maila</li>
+                    <li>Możliwość pełnego zarządzania kontem</li>
+                    <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
+                </ul>
+
+                <div class="product-bottom">
+                    <div class="price">35 zł</div>
+
+                    <button
+                        class="add-button"
+                        onclick="addToCart('Minecraft — Pełny dostęp', 35)"
+                    >
+                        Dodaj do koszyka
+                    </button>
+                </div>
+
+            </article>
+
+        </div>
+
+        <div class="info-box">
+            🔐 Instrukcję aktywacji otrzymasz przed zakupem.
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         DISCORD
+    ========================= -->
+
+    <section class="section category-section" id="discord" data-category="discord">
+
+        <div class="section-heading">
+            <small>Discord</small>
+            <h2>Konfiguracje Discord</h2>
+            <p>Wybierz poziom konfiguracji odpowiedni dla Twojego serwera.</p>
+        </div>
+
+        <div class="products">
+
+            <!-- START -->
+            <article class="product-card">
+
+                <div class="product-icon">
+                    ⚙️
+                </div>
+
+                <div class="product-category">
+                    DISCORD
+                </div>
+
+                <h3>START</h3>
+
+                <p>
+                    Podstawowa konfiguracja serwera Discord.
+                </p>
+
+                <ul class="features">
+                    <li>Podstawowe boty</li>
+                    <li>Estetyczny wygląd</li>
+                    <li>Kanały i kategorie</li>
+                    <li>Podstawowe role</li>
+                    <li>Podstawowa konfiguracja</li>
+                </ul>
+
+                <div class="product-bottom">
+                    <div class="price">20 zł</div>
+
+                    <button
+                        class="add-button"
+                        onclick="addToCart('Discord — START', 20)"
+                    >
+                        Dodaj do koszyka
+                    </button>
+                </div>
+
+            </article>
+
+
+            <!-- PRO -->
+            <article class="product-card">
+
+                <div class="product-icon">
+                    🤖
+                </div>
+
+                <div class="product-category">
+                    DISCORD
+                </div>
+
+                <h3>PRO</h3>
+
+                <p>
+                    Rozbudowana konfiguracja dla bardziej wymagających serwerów.
+                </p>
+
+                <ul class="features">
+                    <li>Więcej botów</li>
+                    <li>Średnio zaawansowana konfiguracja</li>
+                    <li>Estetyczne kanały</li>
+                    <li>Role dopasowane do klienta</li>
+                    <li>Rozbudowana organizacja serwera</li>
+                </ul>
+
+                <div class="product-bottom">
+                    <div class="price">40 zł</div>
+
+                    <button
+                        class="add-button"
+                        onclick="addToCart('Discord — PRO', 40)"
+                    >
+                        Dodaj do koszyka
+                    </button>
+                </div>
+
+            </article>
+
+
+            <!-- FULL -->
+            <article class="product-card">
+
+                <div class="product-icon">
+                    🛡️
+                </div>
+
+                <div class="product-category">
+                    DISCORD
+                </div>
+
+                <h3>FULL</h3>
+
+                <p>
+                    Kompleksowa, profesjonalna konfiguracja całego serwera.
+                </p>
+
+                <ul class="features">
+                    <li>Pełna konfiguracja serwera</li>
+                    <li>Zaawansowane boty i systemy</li>
+                    <li>Profesjonalny wygląd</li>
+                    <li>Role oraz kanały dopasowane do klienta</li>
+                    <li>Rozbudowane systemy serwerowe</li>
+                    <li>Indywidualne podejście do zamówienia</li>
+                </ul>
+
+                <div class="product-bottom">
+                    <div class="price">60 zł</div>
+
+                    <button
+                        class="add-button"
+                        onclick="addToCart('Discord — FULL', 60)"
+                    >
+                        Dodaj do koszyka
+                    </button>
+                </div>
+
+            </article>
+
+        </div>
+
+    </section>
+
+
+    <!-- =========================
+         STOPKA
+    ========================= -->
+
+    <footer>
+        <strong>TWÓJ SKLEP</strong>
+        <br><br>
+        Profesjonalne konfiguracje Discord oraz usługi Minecraft.
+    </footer>
+
+
+    <!-- =========================
+         KOSZYK
+    ========================= -->
+
+    <div class="modal" id="cartModal">
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+                <h2>Koszyk</h2>
+
+                <button class="close" onclick="closeCart()">
+                    ×
+                </button>
+            </div>
+
+            <div id="cartView">
+
+                <div class="cart-items" id="cartItems">
+                </div>
+
+                <div class="cart-total">
+                    <span>Razem:</span>
+                    <span id="cartTotal">0 zł</span>
+                </div>
+
+                <button
+                    class="checkout-button"
+                    onclick="showOrderForm()"
+                >
+                    Przejdź do zamówienia 🚀
+                </button>
+
+            </div>
+
+
+            <!-- =========================
+                 FORMULARZ ZAMÓWIENIA
+            ========================= -->
+
+            <div class="order-form" id="orderForm">
+
+                <div class="modal-header">
+                    <h2>Złóż zamówienie</h2>
+
+                    <button class="close" onclick="closeCart()">
+                        ×
+                    </button>
+                </div>
+
+                <input
+                    type="text"
+                    id="customerName"
+                    placeholder="Nick Discord"
+                    required
+                >
+
+                <input
+                    type="text"
+                    id="customerEmail"
+                    placeholder="E-mail"
+                    required
+                >
+
+                <textarea
+                    id="customerMessage"
+                    placeholder="Dodatkowe informacje do zamówienia..."
+                ></textarea>
+
+                <button
+                    class="checkout-button"
+                    onclick="sendOrder()"
+                >
+                    Wyślij zamówienie 🚀
+                </button>
+
+                <div class="order-error" id="orderError"></div>
+
+            </div>
+
+
+            <!-- =========================
+                 SUKCES
+            ========================= -->
+
+            <div class="order-success" id="orderSuccess">
+
+                <div class="success-icon">
+                    ✅
+                </div>
+
+                <h3>Zamówienie wysłane!</h3>
+
+                <p>
+                    Twoje zamówienie zostało przesłane.
+                    Skontaktujemy się z Tobą w celu dalszej realizacji.
+                </p>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- =========================
+         JAVASCRIPT
+    ========================= -->
+
+    <script>
+
+        let cart = [];
+
+
+        /* =========================
+           KOSZYK
+        ========================= */
+
+        function addToCart(name, price) {
+
+            cart.push({
+                name: name,
+                price: price
+            });
+
+            updateCart();
+
+            openCart();
+        }
+
+
+        function removeFromCart(index) {
+
+            cart.splice(index, 1);
+
+            updateCart();
+        }
+
+
+        function updateCart() {
+
+            const items = document.getElementById("cartItems");
+            const count = document.getElementById("cartCount");
+            const total = document.getElementById("cartTotal");
+
+            count.textContent = cart.length;
+
+            items.innerHTML = "";
+
+            let sum = 0;
+
+            if (cart.length === 0) {
+
+                items.innerHTML = `
+                    <p style="color:#777;text-align:center;padding:25px 0;">
+                        Koszyk jest pusty.
+                    </p>
+                `;
+
+            } else {
+
+                cart.forEach((item, index) => {
+
+                    sum += item.price;
+
+                    const element = document.createElement("div");
+
+                    element.className = "cart-item";
+
+                    element.innerHTML = `
+                        <div>
+                            <div class="cart-item-name">
+                                ${escapeHtml(item.name)}
+                            </div>
+
+                            <div class="cart-item-price">
+                                ${item.price.toFixed(2).replace(".", ",")} zł
+                            </div>
+                        </div>
+
+                        <button
+                            class="remove-item"
+                            onclick="removeFromCart(${index})"
+                        >
+                            Usuń
+                        </button>
+                    `;
+
+                    items.appendChild(element);
+
+                });
+
+            }
+
+            total.textContent =
+                sum.toFixed(2).replace(".", ",") + " zł";
+        }
+
+
+        function openCart() {
+
+            document
+                .getElementById("cartModal")
+                .classList.add("show");
+
+            document
+                .getElementById("cartView")
+                .style.display = "block";
+
+            document
+                .getElementById("orderForm")
+                .classList.remove("show");
+
+            document
+                .getElementById("orderSuccess")
+                .style.display = "none";
+
+            updateCart();
+        }
+
+
+        function closeCart() {
+
+            document
+                .getElementById("cartModal")
+                .classList.remove("show");
+        }
+
+
+        /* =========================
+           FORMULARZ
+        ========================= */
+
+        function showOrderForm() {
+
+            if (cart.length === 0) {
+
+                alert("Najpierw dodaj produkt do koszyka.");
+
+                return;
+            }
+
+            document
+                .getElementById("cartView")
+                .style.display = "none";
+
+            document
+                .getElementById("orderForm")
+                .classList.add("show");
+        }
+
+
+        async function sendOrder() {
+
+            const name =
+                document
+                    .getElementById("customerName")
+                    .value
+                    .trim();
+
+            const email =
+                document
+                    .getElementById("customerEmail")
+                    .value
+                    .trim();
+
+            const message =
+                document
+                    .getElementById("customerMessage")
+                    .value
+                    .trim();
+
+            const errorBox =
+                document.getElementById("orderError");
+
+
+            errorBox.style.display = "none";
+
+
+            if (!name) {
+
+                showError("Wpisz swój nick Discord.");
+
+                return;
+            }
+
+
+            if (!email) {
+
+                showError("Wpisz swój adres e-mail.");
+
+                return;
+            }
+
+
+            if (cart.length === 0) {
+
+                showError("Koszyk jest pusty.");
+
+                return;
+            }
+
+
+            const total = cart.reduce(
+                (sum, item) => sum + item.price,
+                0
+            );
+
+
+            const order = {
+
+                customer: {
+                    discord: name,
+                    email: email
+                },
+
+                items: cart,
+
+                total: total,
+
+                message: message,
+
+                createdAt: new Date().toISOString()
+
+            };
+
+
+            try {
+
+                /*
+                 * Wysyłamy zamówienie do Twojego server.js.
+                 *
+                 * Endpoint:
+                 * POST /api/order
+                 */
+
+                const response = await fetch("/api/order", {
+
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify(order)
+
+                });
+
+
+                const text =
+                    await response.text();
+
+
+                let data;
+
+
+                try {
+
+                    data = JSON.parse(text);
+
+                } catch {
+
+                    throw new Error(
+                        "Serwer zwrócił nieprawidłową odpowiedź."
+                    );
+
+                }
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        data.message ||
+                        data.error ||
+                        "Nie udało się wysłać zamówienia."
+                    );
+
+                }
+
+
+                document
+                    .getElementById("orderForm")
+                    .classList.remove("show");
+
+                document
+                    .getElementById("orderSuccess")
+                    .style.display = "block";
+
+
+                cart = [];
+
+                updateCart();
+
+
+            } catch (error) {
+
+                showError(
+                    error.message ||
+                    "Wystąpił błąd podczas wysyłania zamówienia."
+                );
+
+            }
+
+        }
+
+
+        function showError(message) {
+
+            const errorBox =
+                document.getElementById("orderError");
+
+            errorBox.textContent = "❌ " + message;
+
+            errorBox.style.display = "block";
+        }
+
+
+        /* =========================
+           FILTROWANIE KATEGORII
+        ========================= */
+
+        function showCategory(category, button) {
+
+            document
+                .querySelectorAll(".category-btn")
+                .forEach(btn => {
+                    btn.classList.remove("active");
+                });
+
+            button.classList.add("active");
+
+
+            document
+                .querySelectorAll(".category-section")
+                .forEach(section => {
+
+                    if (
+                        category === "all" ||
+                        section.dataset.category === category
+                    ) {
+
+                        section.style.display = "block";
+
+                    } else {
+
+                        section.style.display = "none";
+
+                    }
+
+                });
+
+        }
+
+
+        /* =========================
+           ESCAPE HTML
+        ========================= */
+
+        function escapeHtml(text) {
+
+            const div =
+                document.createElement("div");
+
+            div.textContent = text;
+
+            return div.innerHTML;
+        }
+
+
+        /* =========================
+           ZAMYKANIE POZA MODALEM
+        ========================= */
+
+        document
+            .getElementById("cartModal")
+            .addEventListener("click", function(event) {
+
+                if (event.target === this) {
+                    closeCart();
+                }
+
+            });
+
+
+        /* =========================
+           START
+        ========================= */
+
+        updateCart();
+
+    </script>
+
+</body>
+</html>
+```
