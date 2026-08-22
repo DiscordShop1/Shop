@@ -142,7 +142,7 @@ app.post("/api/order", async (req, res) => {
     }
 
     /* =====================================================
-       KANAŁ ZAMÓWIENIA
+       KANAŁ ZAMÓWIEŃ
     ===================================================== */
 
     if (
@@ -270,7 +270,7 @@ discordClient.once("ready", () => {
 });
 
 /* =========================================================
-   AUTOMATYCZNA ODPOWIEDŹ W TICKETACH
+   AUTOMATYCZNE MENU W TICKETACH
 ========================================================= */
 
 const menuCooldown = new Set();
@@ -278,22 +278,16 @@ const menuCooldown = new Set();
 discordClient.on(
   "messageCreate",
   async message => {
-    try {
-      if (message.author.bot) return;
 
+    try {
+
+      if (message.author.bot) return;
       if (!message.guild) return;
 
       const text =
         message.content
           .toLowerCase()
           .trim();
-
-      /*
-        Słowa wywołujące menu.
-        Dzięki temu bot może reagować również
-        wtedy, gdy użytkownik napisze np.
-        "chcę zamówić".
-      */
 
       const orderWords = [
         "złożyłem zamówienie",
@@ -321,16 +315,17 @@ discordClient.on(
 
       if (!isOrderMessage) return;
 
-      /*
-        Zabezpieczenie przed wysłaniem
-        menu kilka razy pod rząd.
-      */
-
-      if (menuCooldown.has(message.channel.id)) {
+      if (
+        menuCooldown.has(
+          message.channel.id
+        )
+      ) {
         return;
       }
 
-      menuCooldown.add(message.channel.id);
+      menuCooldown.add(
+        message.channel.id
+      );
 
       setTimeout(() => {
         menuCooldown.delete(
@@ -343,11 +338,14 @@ discordClient.on(
       );
 
     } catch (error) {
+
       console.error(
         "❌ Błąd messageCreate:",
         error
       );
+
     }
+
   }
 );
 
@@ -356,6 +354,7 @@ discordClient.on(
 ========================================================= */
 
 async function sendMainMenu(channel) {
+
   const embed =
     new EmbedBuilder()
       .setColor(0x55ff91)
@@ -363,7 +362,7 @@ async function sendMainMenu(channel) {
         "👋 W jaki sposób możemy Ci pomóc?"
       )
       .setDescription(
-        "Zaznacz, co Cię sprowadza:\n\n" +
+        "Wybierz odpowiednią opcję:\n\n" +
         "🛒 **Zamówienie** — chcesz złożyć zamówienie.\n" +
         "🆘 **Pomoc** — masz pytanie lub problem."
       )
@@ -374,24 +373,32 @@ async function sendMainMenu(channel) {
 
   const menu =
     new StringSelectMenuBuilder()
-      .setCustomId("help_type")
+      .setCustomId(
+        "help_type"
+      )
       .setPlaceholder(
         "📋 Wybierz opcję..."
       )
       .addOptions([
         {
-          label: "Zamówienie",
+          label:
+            "Zamówienie",
           description:
             "Chcę złożyć zamówienie",
-          value: "order",
-          emoji: "🛒"
+          value:
+            "order",
+          emoji:
+            "🛒"
         },
         {
-          label: "Pomoc",
+          label:
+            "Pomoc",
           description:
             "Potrzebuję pomocy",
-          value: "help",
-          emoji: "🆘"
+          value:
+            "help",
+          emoji:
+            "🆘"
         }
       ]);
 
@@ -420,25 +427,30 @@ discordClient.on(
 
       if (
         interaction.isStringSelectMenu() &&
-        interaction.customId === "help_type"
+        interaction.customId ===
+          "help_type"
       ) {
 
         if (
           interaction.values[0] ===
           "order"
         ) {
+
           await showProducts(
             interaction
           );
+
         }
 
         if (
           interaction.values[0] ===
           "help"
         ) {
+
           await showHelpModal(
             interaction
           );
+
         }
 
         return;
@@ -504,7 +516,7 @@ discordClient.on(
           interaction.customId;
 
         /* ================================================
-           POTWIERDZENIE ZAMÓWIENIA Z TICKETU
+           POTWIERDZENIE
         ================================================ */
 
         if (
@@ -532,7 +544,7 @@ discordClient.on(
         }
 
         /* ================================================
-           ANULOWANIE ZAMÓWIENIA Z TICKETU
+           ANULOWANIE PRZEZ KLIENTA
         ================================================ */
 
         if (
@@ -551,61 +563,13 @@ discordClient.on(
         }
 
         /* ================================================
-           REALIZUJ — ZAMÓWIENIE Z TICKETU
+           REALIZUJ
         ================================================ */
 
         if (
           id.startsWith(
             "realize|"
-          )
-        ) {
-
-          await handleRealize(
-            interaction
-          );
-
-          return;
-        }
-
-        /* ================================================
-           ANULUJ — ZAMÓWIENIE
-        ================================================ */
-
-        if (
-          id.startsWith(
-            "cancel_admin|"
-          )
-        ) {
-
-          await handleAdminCancel(
-            interaction
-          );
-
-          return;
-        }
-
-        /* ================================================
-           ZATWIERDŹ — ZAMÓWIENIE
-        ================================================ */
-
-        if (
-          id.startsWith(
-            "approve|"
-          )
-        ) {
-
-          await handleApprove(
-            interaction
-          );
-
-          return;
-        }
-
-        /* ================================================
-           REALIZUJ — ZAMÓWIENIE ZE STRONY
-        ================================================ */
-
-        if (
+          ) ||
           id.startsWith(
             "realize_web|"
           )
@@ -619,10 +583,13 @@ discordClient.on(
         }
 
         /* ================================================
-           ANULUJ — ZAMÓWIENIE ZE STRONY
+           ANULUJ
         ================================================ */
 
         if (
+          id.startsWith(
+            "cancel_admin|"
+          ) ||
           id.startsWith(
             "cancel_web|"
           )
@@ -636,10 +603,13 @@ discordClient.on(
         }
 
         /* ================================================
-           ZATWIERDŹ — ZAMÓWIENIE ZE STRONY
+           ZATWIERDŹ
         ================================================ */
 
         if (
+          id.startsWith(
+            "approve|"
+          ) ||
           id.startsWith(
             "approve_web|"
           )
@@ -704,9 +674,11 @@ discordClient.on(
           interaction.channel &&
           interaction.channel.isTextBased()
         ) {
+
           await interaction.channel.send({
             embeds: [embed]
           });
+
         }
 
         return;
@@ -744,12 +716,16 @@ discordClient.on(
         }
 
       } catch (replyError) {
+
         console.error(
           "❌ Nie można wysłać odpowiedzi błędu:",
           replyError
         );
+
       }
+
     }
+
   }
 );
 
@@ -770,6 +746,7 @@ async function showProducts(
         "📦 Wybierz produkt..."
       )
       .addOptions([
+
         {
           label:
             "Minecraft — KOSZT KONTA",
@@ -777,8 +754,10 @@ async function showProducts(
             "25 zł • Konto bez dostępu do maila",
           value:
             "Minecraft — KOSZT KONTA|25",
-          emoji: "⛏️"
+          emoji:
+            "⛏️"
         },
+
         {
           label:
             "Minecraft — PEŁNY DOSTĘP",
@@ -786,8 +765,10 @@ async function showProducts(
             "35 zł • Konto + dostęp do maila",
           value:
             "Minecraft — PEŁNY DOSTĘP|35",
-          emoji: "💎"
+          emoji:
+            "💎"
         },
+
         {
           label:
             "Discord — START",
@@ -795,8 +776,10 @@ async function showProducts(
             "20 zł • Podstawowa konfiguracja",
           value:
             "Discord — START|20",
-          emoji: "⚙️"
+          emoji:
+            "⚙️"
         },
+
         {
           label:
             "Discord — PRO",
@@ -804,8 +787,10 @@ async function showProducts(
             "40 zł • Rozbudowana konfiguracja",
           value:
             "Discord — PRO|40",
-          emoji: "🤖"
+          emoji:
+            "🤖"
         },
+
         {
           label:
             "Discord — FULL",
@@ -813,33 +798,45 @@ async function showProducts(
             "60 zł • Pełna konfiguracja",
           value:
             "Discord — FULL|60",
-          emoji: "🛡️"
+          emoji:
+            "🛡️"
         },
+
         {
-          label: "Inne gry",
+          label:
+            "Inne gry",
           description:
             "Zapytaj o dostępne produkty",
           value:
             "Inne gry|0",
-          emoji: "🎮"
+          emoji:
+            "🎮"
         }
+
       ]);
 
   await interaction.update({
+
     embeds: [
+
       new EmbedBuilder()
         .setColor(0x55ff91)
         .setTitle(
-          "📦 Jakie zamówienie chcesz złożyć?"
+          "📦 Wybierz produkt"
         )
         .setDescription(
-          "Wybierz produkt z poniższej listy."
+          "Wybierz produkt, który chcesz zamówić."
         )
+
     ],
+
     components: [
+
       new ActionRowBuilder()
         .addComponents(menu)
+
     ]
+
   });
 }
 
@@ -868,7 +865,9 @@ async function showPaymentMenu(
   if (price === 0) {
 
     await interaction.update({
+
       embeds: [
+
         new EmbedBuilder()
           .setColor(0xa45cff)
           .setTitle(
@@ -876,10 +875,13 @@ async function showPaymentMenu(
           )
           .setDescription(
             "Napisz na tym tickecie, jaką grę chcesz zamówić.\n\n" +
-            "Obsługa odpowie Ci z dostępnością i ceną."
+            "📩 Obsługa odpowie Ci z dostępnością i ceną."
           )
+
       ],
+
       components: []
+
     });
 
     return;
@@ -898,14 +900,18 @@ async function showPaymentMenu(
         "💳 Wybierz metodę płatności..."
       )
       .addOptions([
+
         {
-          label: "BLIK",
+          label:
+            "BLIK",
           description:
             `${price} zł`,
           value:
             `${name}|${price}|BLIK`,
-          emoji: "💵"
+          emoji:
+            "💵"
         },
+
         {
           label:
             "PaySafeCard",
@@ -915,12 +921,16 @@ async function showPaymentMenu(
             ).toFixed(2)} zł (+10%)`,
           value:
             `${name}|${price}|PaySafeCard`,
-          emoji: "🎫"
+          emoji:
+            "🎫"
         }
+
       ]);
 
   await interaction.update({
+
     embeds: [
+
       new EmbedBuilder()
         .setColor(0x55ff91)
         .setTitle(
@@ -928,14 +938,21 @@ async function showPaymentMenu(
         )
         .setDescription(
           `📦 **Produkt:** ${name}\n` +
-          `💰 **Cena:** ${price} zł\n\n` +
-          "🎫 PaySafeCard — doliczane +10%."
+          `💰 **Cena:** ${price.toFixed(2)} zł\n\n` +
+          `💵 **BLIK** — ${price.toFixed(2)} zł\n` +
+          `🎫 **PaySafeCard** — ${(price * 1.10).toFixed(2)} zł (+10%)\n\n` +
+          "ℹ️ Dane do płatności poda Ci osobiście obsługa."
         )
+
     ],
+
     components: [
+
       new ActionRowBuilder()
         .addComponents(menu)
+
     ]
+
   });
 }
 
@@ -966,12 +983,14 @@ async function showSummary(
   const confirmButton =
     new ButtonBuilder()
       .setCustomId(
-        `confirm_order|${name}|${price}|${payment}|${finalPrice}`
+        `confirm_order|${name}|${price}|${payment}`
       )
       .setLabel(
-        "Potwierdź"
+        "Potwierdź zamówienie"
       )
-      .setEmoji("✅")
+      .setEmoji(
+        "✅"
+      )
       .setStyle(
         ButtonStyle.Success
       );
@@ -984,13 +1003,17 @@ async function showSummary(
       .setLabel(
         "Anuluj"
       )
-      .setEmoji("❌")
+      .setEmoji(
+        "❌"
+      )
       .setStyle(
         ButtonStyle.Danger
       );
 
   await interaction.update({
+
     embeds: [
+
       new EmbedBuilder()
         .setColor(0x55ff91)
         .setTitle(
@@ -998,18 +1021,24 @@ async function showSummary(
         )
         .setDescription(
           `📦 **Produkt:** ${name}\n` +
-          `💰 **Cena:** ${finalPrice.toFixed(2)} zł\n` +
+          `💰 **Kwota:** ${finalPrice.toFixed(2)} zł\n` +
           `💳 **Płatność:** ${payment}\n\n` +
-          "Czy wszystko się zgadza?"
+          "Czy wszystko się zgadza?\n\n" +
+          "ℹ️ Po potwierdzeniu obsługa poda Ci dane do płatności."
         )
+
     ],
+
     components: [
+
       new ActionRowBuilder()
         .addComponents(
           confirmButton,
           cancelButton
         )
+
     ]
+
   });
 }
 
@@ -1047,37 +1076,47 @@ async function confirmOrder(
         `🛒 NOWE ZAMÓWIENIE ${orderId}`
       )
       .addFields(
+
         {
           name:
             "👤 Klient",
           value:
             `<@${interaction.user.id}>`
         },
+
         {
           name:
             "📦 Produkt",
           value:
             name
         },
+
         {
           name:
             "💳 Płatność",
           value:
             payment
         },
+
         {
           name:
             "💰 Kwota",
           value:
             `${finalPrice.toFixed(2)} zł`
         },
+
         {
           name:
             "🆔 ID użytkownika",
           value:
             interaction.user.id
         }
+
       )
+      .setFooter({
+        text:
+          "KupGraj • Nowe zamówienie"
+      })
       .setTimestamp();
 
   /* =====================================================
@@ -1107,7 +1146,9 @@ async function confirmOrder(
               .setLabel(
                 "Realizuj"
               )
-              .setEmoji("🟢")
+              .setEmoji(
+                "🟢"
+              )
               .setStyle(
                 ButtonStyle.Success
               ),
@@ -1119,7 +1160,9 @@ async function confirmOrder(
               .setLabel(
                 "Anuluj"
               )
-              .setEmoji("🔴")
+              .setEmoji(
+                "🔴"
+              )
               .setStyle(
                 ButtonStyle.Danger
               ),
@@ -1131,41 +1174,69 @@ async function confirmOrder(
               .setLabel(
                 "Zatwierdź"
               )
-              .setEmoji("✅")
+              .setEmoji(
+                "✅"
+              )
               .setStyle(
                 ButtonStyle.Primary
               )
+
           );
 
       await ordersChannel.send({
-        embeds: [orderEmbed],
-        components: [row]
+
+        embeds: [
+          orderEmbed
+        ],
+
+        components: [
+          row
+        ]
+
       });
+
     }
+
   }
 
   /* =====================================================
-     ODPOWIEDŹ W TICKecie
+     WIADOMOŚĆ W TICKecie
   ===================================================== */
 
   await interaction.update({
+
     embeds: [
+
       new EmbedBuilder()
         .setColor(0x55ff91)
         .setTitle(
           "✅ Zamówienie przyjęte!"
         )
         .setDescription(
+
           `Twoje zamówienie **${orderId}** zostało przekazane do obsługi.\n\n` +
-          `📦 **${name}**\n` +
-          `💰 **${finalPrice.toFixed(2)} zł**\n` +
-          `💳 **${payment}**\n\n` +
+
+          `📦 **Produkt:** ${name}\n` +
+          `💰 **Kwota:** ${finalPrice.toFixed(2)} zł\n` +
+          `💳 **Płatność:** ${payment}\n\n` +
+
+          "👨‍💼 **Obsługa poda Ci dane do płatności osobiście.**\n\n" +
+
           "⏳ Poczekaj na wiadomość od obsługi."
+
         )
+        .setFooter({
+          text:
+            "KupGraj • Dziękujemy za zamówienie"
+        })
         .setTimestamp()
+
     ],
+
     components: []
+
   });
+
 }
 
 /* =========================================================
@@ -1175,11 +1246,6 @@ async function confirmOrder(
 async function handleRealize(
   interaction
 ) {
-
-  /*
-    Realizację może wykonać właściciel
-    lub osoba posiadająca Zarządzanie serwerem.
-  */
 
   if (!isStaff(interaction)) {
 
@@ -1206,15 +1272,24 @@ async function handleRealize(
         `🟡 REALIZACJA ZAMÓWIENIA ${orderId}`
       )
       .addFields({
+
         name:
           "👨‍💼 Realizuje",
+
         value:
           `<@${interaction.user.id}>`
+
       });
 
   await interaction.update({
-    embeds: [updatedEmbed],
-    components: interaction.message.components
+
+    embeds: [
+      updatedEmbed
+    ],
+
+    components:
+      interaction.message.components
+
   });
 
   console.log(
@@ -1255,15 +1330,23 @@ async function handleAdminCancel(
         `❌ ANULOWANE ZAMÓWIENIE ${orderId}`
       )
       .addFields({
+
         name:
           "👨‍💼 Anulował",
+
         value:
           `<@${interaction.user.id}>`
+
       });
 
   await interaction.update({
-    embeds: [updatedEmbed],
+
+    embeds: [
+      updatedEmbed
+    ],
+
     components: []
+
   });
 
   console.log(
@@ -1278,11 +1361,6 @@ async function handleAdminCancel(
 async function handleApprove(
   interaction
 ) {
-
-  /*
-    Zatwierdzić może tylko właściciel
-    serwera.
-  */
 
   if (!isServerOwner(interaction)) {
 
@@ -1309,21 +1387,23 @@ async function handleApprove(
         `✅ ZATWIERDZONE ZAMÓWIENIE ${orderId}`
       )
       .addFields({
+
         name:
           "👑 Zatwierdził",
+
         value:
           `<@${interaction.user.id}>`
+
       });
 
-  /*
-    Usuwamy przyciski po zatwierdzeniu,
-    żeby zamówienia nie można było
-    zatwierdzić drugi raz.
-  */
-
   await interaction.update({
-    embeds: [approvedEmbed],
+
+    embeds: [
+      approvedEmbed
+    ],
+
     components: []
+
   });
 
   console.log(
@@ -1351,31 +1431,41 @@ async function handleApprove(
     ) {
 
       await logChannel.send({
+
         embeds: [
+
           new EmbedBuilder()
             .setColor(0x55ff91)
             .setTitle(
               `📋 Zatwierdzono zamówienie ${orderId}`
             )
             .addFields(
+
               {
                 name:
                   "👑 Zatwierdził",
                 value:
                   `<@${interaction.user.id}>`
               },
+
               {
                 name:
                   "📨 Kanał",
                 value:
                   `<#${interaction.channelId}>`
               }
+
             )
             .setTimestamp()
+
         ]
+
       });
+
     }
+
   }
+
 }
 
 /* =========================================================
@@ -1410,11 +1500,17 @@ async function showHelpModal(
         TextInputStyle.Paragraph
       )
       .setRequired(true)
-      .setMaxLength(1000);
+      .setMaxLength(
+        1000
+      );
 
   modal.addComponents(
+
     new ActionRowBuilder()
-      .addComponents(problem)
+      .addComponents(
+        problem
+      )
+
   );
 
   await interaction.showModal(
