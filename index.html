@@ -62,9 +62,7 @@
             font-family: inherit;
         }
 
-        /* =========================
-           HEADER
-        ========================= */
+        /* HEADER */
 
         header {
             position: sticky;
@@ -160,9 +158,7 @@
             font-size: 12px;
         }
 
-        /* =========================
-           BANER
-        ========================= */
+        /* BANER */
 
         .banner-container {
             width: 100%;
@@ -189,9 +185,7 @@
                 0 30px 90px rgba(0,0,0,.5);
         }
 
-        /* =========================
-           HERO
-        ========================= */
+        /* HERO */
 
         .hero {
             text-align: center;
@@ -263,9 +257,7 @@
             transform: translateY(-3px);
         }
 
-        /* =========================
-           KATEGORIE
-        ========================= */
+        /* KATEGORIE */
 
         .categories {
             display: flex;
@@ -304,9 +296,7 @@
                 0 0 25px rgba(85,255,145,.20);
         }
 
-        /* =========================
-           SEKCJE
-        ========================= */
+        /* SEKCJE */
 
         .section {
             width: 90%;
@@ -331,9 +321,7 @@
             margin-bottom: 27px;
         }
 
-        /* =========================
-           PRODUKTY
-        ========================= */
+        /* PRODUKTY */
 
         .products {
             display: grid;
@@ -517,9 +505,7 @@
             box-shadow: 0 0 25px rgba(85,255,145,.2);
         }
 
-        /* =========================
-           DLACZEGO MY
-        ========================= */
+        /* DLACZEGO MY */
 
         .why-us {
             width: 90%;
@@ -563,9 +549,7 @@
             line-height: 1.6;
         }
 
-        /* =========================
-           INFO
-        ========================= */
+        /* INFO */
 
         .info {
             margin-top: 25px;
@@ -580,9 +564,7 @@
             line-height: 1.6;
         }
 
-        /* =========================
-           FOOTER
-        ========================= */
+        /* FOOTER */
 
         footer {
             text-align: center;
@@ -607,9 +589,7 @@
             color: #55ff91;
         }
 
-        /* =========================
-           KOSZYK
-        ========================= */
+        /* KOSZYK */
 
         #cartModal {
             display: none;
@@ -740,9 +720,7 @@
             box-shadow: 0 0 30px rgba(85,255,145,.2);
         }
 
-        /* =========================
-           FORMULARZ
-        ========================= */
+        /* FORMULARZ */
 
         #orderForm {
             display: none;
@@ -785,10 +763,12 @@
             font-weight: 800;
         }
 
+        /* SUKCES */
+
         #success {
             display: none;
             text-align: center;
-            padding: 50px 10px;
+            padding: 40px 10px;
         }
 
         #success .icon {
@@ -805,9 +785,69 @@
             line-height: 1.6;
         }
 
-        /* =========================
-           MOBILE
-        ========================= */
+        .success-info {
+            margin-top: 25px;
+            padding: 20px;
+
+            background: rgba(12,15,14,.8);
+            border: 1px solid rgba(85,255,145,.18);
+            border-radius: 14px;
+
+            text-align: left;
+        }
+
+        .success-info strong {
+            display: block;
+
+            color: #55ff91;
+
+            margin-bottom: 15px;
+
+            font-size: 16px;
+        }
+
+        .success-step {
+            color: #b8b8b8;
+
+            line-height: 1.6;
+
+            padding: 9px 0;
+
+            border-bottom: 1px solid rgba(255,255,255,.05);
+        }
+
+        .success-step:last-child {
+            border-bottom: 0;
+        }
+
+        .discord-success-button {
+            display: block;
+
+            margin-top: 20px;
+
+            padding: 14px 20px;
+
+            color: #07100a;
+            background: #55ff91;
+
+            border: 1px solid #55ff91;
+            border-radius: 11px;
+
+            text-decoration: none;
+
+            font-weight: 950;
+
+            transition: .25s;
+        }
+
+        .discord-success-button:hover {
+            transform: translateY(-3px);
+
+            box-shadow:
+                0 0 30px rgba(85,255,145,.25);
+        }
+
+        /* MOBILE */
 
         @media (max-width: 1000px) {
 
@@ -907,7 +947,7 @@
             href="https://discord.gg/yXUzU44Pu"
             target="_blank"
         >
-            💬 Discord
+            💜 Discord
         </a>
 
         <button
@@ -925,7 +965,6 @@
 
 </header>
 
-
 <!-- BANER -->
 
 <div class="banner-container">
@@ -936,7 +975,6 @@
     >
 
 </div>
-
 
 <!-- HERO -->
 
@@ -969,13 +1007,12 @@
             target="_blank"
             class="hero-button secondary"
         >
-            💬 Dołącz na Discord
+            💜 Dołącz na Discord
         </a>
 
     </div>
 
 </section>
-
 
 <!-- KATEGORIE -->
 
@@ -1003,7 +1040,6 @@
     </button>
 
 </div>
-
 
 <!-- MINECRAFT -->
 
@@ -1066,7 +1102,6 @@
 
         </article>
 
-
         <article class="product">
 
             <div class="product-image minecraft">
@@ -1114,7 +1149,6 @@
     </div>
 
 </section>
-
 
 <!-- DISCORD -->
 
@@ -1179,7 +1213,6 @@
 
         </article>
 
-
         <article class="product">
 
             <div class="product-image discord">
@@ -1220,7 +1253,6 @@
             </div>
 
         </article>
-
 
         <article class="product">
 
@@ -1268,7 +1300,6 @@
 
 </section>
 
-
 <!-- DLACZEGO MY -->
 
 <section
@@ -1288,7 +1319,6 @@
 
     </div>
 
-
     <div class="why-grid">
 
         <div class="why-card">
@@ -1304,7 +1334,6 @@
 
         </div>
 
-
         <div class="why-card">
 
             <div class="why-icon">⚡</div>
@@ -1317,7 +1346,6 @@
             </p>
 
         </div>
-
 
         <div class="why-card">
 
@@ -1332,10 +1360,9 @@
 
         </div>
 
-
         <div class="why-card">
 
-            <div class="why-icon">💬</div>
+            <div class="why-icon">💜</div>
 
             <h3>Wsparcie Discord</h3>
 
@@ -1350,7 +1377,6 @@
 
 </section>
 
-
 <!-- FOOTER -->
 
 <footer>
@@ -1363,7 +1389,7 @@
         href="https://discord.gg/yXUzU44Pu"
         target="_blank"
     >
-        💬 Discord
+        💜 Discord
     </a>
 
     <br><br>
@@ -1371,7 +1397,6 @@
     © 2026 Tanie,pl — Wszystkie prawa zastrzeżone.
 
 </footer>
-
 
 <!-- KOSZYK -->
 
@@ -1391,7 +1416,6 @@
             </button>
 
         </div>
-
 
         <div id="cartView">
 
@@ -1418,14 +1442,13 @@
 
         </div>
 
-
         <!-- FORMULARZ -->
 
         <div id="orderForm">
 
             <div class="cart-header">
 
-                <h2>📦 Zamówienie</h2>
+                <h2>📋 Zamówienie</h2>
 
                 <button
                     class="close"
@@ -1464,7 +1487,6 @@
 
         </div>
 
-
         <!-- SUKCES -->
 
         <div id="success">
@@ -1474,20 +1496,46 @@
             </div>
 
             <h3>
-                Zamówienie wysłane!
+                Zamówienie zostało wysłane!
             </h3>
 
             <p>
-                Zamówienie zostało przesłane.
-                Sprawdź kanał zamówień na Discordzie.
+                🎉 Dziękujemy za złożenie zamówienia!
             </p>
+
+            <div class="success-info">
+
+                <strong>
+                    Aby rozpocząć realizację zamówienia:
+                </strong>
+
+                <div class="success-step">
+                    1️⃣ Zaakceptuj zaproszenie na naszego Discorda.
+                </div>
+
+                <div class="success-step">
+                    2️⃣ Wejdź na kanał 📨・zamów.
+                </div>
+
+                <div class="success-step">
+                    3️⃣ Napisz tam, że złożyłeś zamówienie przez stronę.
+                </div>
+
+            </div>
+
+            <a
+                href="https://discord.gg/yXUzU44Pu"
+                target="_blank"
+                class="discord-success-button"
+            >
+                🟢 DOŁĄCZ DO DISCORDA
+            </a>
 
         </div>
 
     </div>
 
 </div>
-
 
 <script>
 
@@ -1810,4 +1858,4 @@
 </script>
 
 </body>
-</html>
+                    </html>
