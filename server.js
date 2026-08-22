@@ -14,8 +14,8 @@ const {
   TextInputBuilder,
   TextInputStyle,
   PermissionsBitField,
-  PermissionFlagsBits,
-  ChannelType
+  ChannelType,
+  OverwriteType
 } = require("discord.js");
 
 const app = express();
@@ -36,36 +36,21 @@ const DISCORD_WEBHOOK_URL =
 
 /*
 =========================================================
-KATEGORIA, W KTÓREJ BOT TWORZY KANAŁY ZAMÓWIEŃ
-=========================================================
-*/
-
-const ORDER_TICKET_CATEGORY_ID =
-  process.env.ORDER_TICKET_CATEGORY_ID ||
-  "1540700638541914162";
-
-/*
-=========================================================
-EXPRESS / STRONA
+ EXPRESS / STRONA
 =========================================================
 */
 
 app.use(express.json());
-app.use(express.urlencoded({
-  extended: true
-}));
-
+app.use(express.urlencoded({ extended: true }));
 app.use(express.static(__dirname));
 
 app.get("/", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "index.html")
-  );
+  res.sendFile(path.join(__dirname, "index.html"));
 });
 
 /*
 =========================================================
-DISCORD BOT
+ DISCORD CLIENT
 =========================================================
 */
 
@@ -73,8 +58,10 @@ const discordClient = new Client({
   intents: [
     GatewayIntentBits.Guilds,
     GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.DirectMessages
   ],
+
   partials: [
     Partials.Channel
   ]
@@ -82,21 +69,12 @@ const discordClient = new Client({
 
 /*
 =========================================================
-POMOCNICZE
+ POMOCNICZE
 =========================================================
 */
 
-async function getChannel(channelId) {
-  if (!channelId) {
-    return null;
-  }
-
-  return await discordClient.channels
-    .fetch(channelId)
-    .catch(() => null);
-}
-
 function isServerOwner(interaction) {
+
   if (!interaction.guild) {
     return false;
   }
@@ -108,6 +86,7 @@ function isServerOwner(interaction) {
 }
 
 function isStaff(interaction) {
+
   if (!interaction.guild) {
     return false;
   }
@@ -121,311 +100,446 @@ function isStaff(interaction) {
   );
 }
 
-/*
-=========================================================
-TWORZENIE PRYWATNEGO KANAŁU ZAMÓWIENIA
-=========================================================
-*/
+async function getChannel(channelId) {
 
-async function createOrderTicket({
-  guild,
-  user,
-  orderId,
-  productName,
-  payment,
-  finalPrice
-}) {
-
-  const category =
-    await guild.channels
-      .fetch(ORDER_TICKET_CATEGORY_ID)
-      .catch(() => null);
-
-  if (!category) {
-    throw new Error(
-      "Nie znaleziono kategorii zamówień: " +
-      ORDER_TICKET_CATEGORY_ID
-    );
+  if (!channelId) {
+    return null;
   }
 
-  const channel =
-    await guild.channels.create({
-      name:
-        `zamowienie-${user.username}`
-          .toLowerCase()
-          .replace(/[^a-z0-9ąćęłńóśźż-]/gi, "-")
-          .slice(0, 70),
-
-      type:
-        ChannelType.GuildText,
-
-      parent:
-        category.id,
-
-      topic:
-        `ORDER_ID=${orderId};USER_ID=${user.id}`,
-
-      permissionOverwrites: [
-
-        /*
-        ================================
-        @everyone — BRAK DOSTĘPU
-        ================================
-        */
-
-        {
-          id:
-            guild.roles.everyone.id,
-
-          deny: [
-            PermissionFlagsBits.ViewChannel
-          ]
-        },
-
-        /*
-        ================================
-        KUPUJĄCY — DOSTĘP
-        ================================
-        */
-
-        {
-          id:
-            user.id,
-
-          allow: [
-            PermissionFlagsBits.ViewChannel,
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.ReadMessageHistory,
-            PermissionFlagsBits.AttachFiles,
-            PermissionFlagsBits.EmbedLinks
-          ]
-        },
-
-        /*
-        ================================
-        BOT — PEŁNE UPRAWNIENIA
-        ================================
-        */
-
-        {
-          id:
-            discordClient.user.id,
-
-          allow: [
-            PermissionFlagsBits.ViewChannel,
-            PermissionFlagsBits.SendMessages,
-            PermissionFlagsBits.ReadMessageHistory,
-            PermissionFlagsBits.ManageChannels,
-            PermissionFlagsBits.ManageMessages,
-            PermissionFlagsBits.EmbedLinks
-          ]
-        }
-
-      ]
-    });
-
-  /*
-  ========================================================
-  WIADOMOŚĆ POWITALNA / TABELA ZAMÓWIENIA
-  ========================================================
-  */
-
-  const orderEmbed =
-    new EmbedBuilder()
-      .setColor(0x55ff91)
-      .setTitle(
-        `🛒 Zamówienie ${orderId}`
-      )
-      .setDescription(
-        `Witaj <@${user.id}>! 👋\n\n` +
-        `Twoje zamówienie zostało utworzone.\n` +
-        `Obsługa zajmie się nim w tym kanale.`
-      )
-      .addFields(
-
-        {
-          name: "👤 Klient",
-          value:
-            `<@${user.id}>`
-        },
-
-        {
-          name: "📦 Produkt",
-          value:
-            productName
-        },
-
-        {
-          name: "💳 Płatność",
-          value:
-            payment
-        },
-
-        {
-          name: "💰 Kwota",
-          value:
-            `${finalPrice.toFixed(2)} zł`
-        },
-
-        {
-          name: "🆔 ID zamówienia",
-          value:
-            orderId
-        },
-
-        {
-          name: "📌 Status",
-          value:
-            "🟡 Oczekuje na obsługę"
-        }
-
-      )
-      .setFooter({
-        text:
-          "KupGraj • Obsługa zamówień"
-      })
-      .setTimestamp();
-
-  /*
-  ========================================================
-  PRZYCISKI
-  ========================================================
-  */
-
-  const buttons =
-    new ActionRowBuilder()
-      .addComponents(
-
-        new ButtonBuilder()
-          .setCustomId(
-            `realize|${orderId}`
-          )
-          .setLabel(
-            "Realizuj"
-          )
-          .setEmoji(
-            "🟢"
-          )
-          .setStyle(
-            ButtonStyle.Success
-          ),
-
-        new ButtonBuilder()
-          .setCustomId(
-            `cancel_admin|${orderId}`
-          )
-          .setLabel(
-            "Anuluj"
-          )
-          .setEmoji(
-            "🔴"
-          )
-          .setStyle(
-            ButtonStyle.Danger
-          ),
-
-        new ButtonBuilder()
-          .setCustomId(
-            `approve|${orderId}`
-          )
-          .setLabel(
-            "Zatwierdź"
-          )
-          .setEmoji(
-            "✅"
-          )
-          .setStyle(
-            ButtonStyle.Primary
-          ),
-
-        new ButtonBuilder()
-          .setCustomId(
-            `close_ticket|${orderId}`
-          )
-          .setLabel(
-            "Zamknij kanał"
-          )
-          .setEmoji(
-            "🔒"
-          )
-          .setStyle(
-            ButtonStyle.Secondary
-          )
-
-      );
-
-  await channel.send({
-
-    content:
-      `<@${user.id}>`,
-
-    embeds: [
-      orderEmbed
-    ],
-
-    components: [
-      buttons
-    ]
-
-  });
-
-  /*
-  ========================================================
-  DODATKOWA WIADOMOŚĆ Z DANYMI
-  ========================================================
-  */
-
-  await channel.send({
-
-    embeds: [
-
-      new EmbedBuilder()
-        .setColor(0xa45cff)
-        .setTitle(
-          "📋 Szczegóły zamówienia"
-        )
-        .setDescription(
-          "Poniżej znajduje się pełne podsumowanie zamówienia."
-        )
-        .addFields(
-
-          {
-            name: "📦 Produkt",
-            value:
-              productName
-          },
-
-          {
-            name: "💳 Metoda płatności",
-            value:
-              payment
-          },
-
-          {
-            name: "💰 Do zapłaty",
-            value:
-              `${finalPrice.toFixed(2)} zł`
-          },
-
-          {
-            name: "⏳ Status",
-            value:
-              "Oczekiwanie na obsługę"
-          }
-
-        )
-        .setTimestamp()
-
-    ]
-
-  });
-
-  return channel;
+  return await discordClient.channels
+    .fetch(channelId)
+    .catch(() => null);
 }
 
 /*
 =========================================================
-ZAMÓWIENIA ZE STRONY
+ TWORZENIE PRYWATZNEGO KANAŁU ZAMÓWIENIA
+=========================================================
+*/
+
+async function createPrivateOrderChannel({
+  guild,
+  user,
+  orderId,
+  product,
+  payment,
+  price
+}) {
+
+  try {
+
+    /*
+    -----------------------------------------------------
+    SPRAWDZAMY CZY KANAŁ JUŻ ISTNIEJE
+    -----------------------------------------------------
+    */
+
+    const existingChannels =
+      guild.channels.cache.filter(channel =>
+        channel.name ===
+        `zamowienie-${user.username
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "")
+          .slice(0, 12)}-${orderId
+            .toLowerCase()
+            .replace(/[^a-z0-9]/g, "")
+            .slice(-6)}`
+      );
+
+    if (existingChannels.size > 0) {
+
+      return existingChannels.first();
+
+    }
+
+    /*
+    -----------------------------------------------------
+    NAZWA KANAŁU
+    -----------------------------------------------------
+    */
+
+    const safeUsername =
+      user.username
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "")
+        .slice(0, 12) ||
+      "klient";
+
+    const safeOrderId =
+      orderId
+        .toLowerCase()
+        .replace(/[^a-z0-9]/g, "")
+        .slice(-6);
+
+    const channelName =
+      `zamowienie-${safeUsername}-${safeOrderId}`;
+
+    /*
+    -----------------------------------------------------
+    UPRAWNIENIA
+    -----------------------------------------------------
+    */
+
+    const permissionOverwrites = [
+
+      /*
+      @everyone NIE widzi kanału
+      */
+
+      {
+        id: guild.roles.everyone.id,
+
+        type: OverwriteType.Role,
+
+        deny: [
+          PermissionsBitField.Flags.ViewChannel
+        ]
+      },
+
+      /*
+      KUPUJĄCY WIDZI SWÓJ KANAŁ
+      */
+
+      {
+        id: user.id,
+
+        type: OverwriteType.Member,
+
+        allow: [
+          PermissionsBitField.Flags.ViewChannel,
+          PermissionsBitField.Flags.SendMessages,
+          PermissionsBitField.Flags.ReadMessageHistory,
+          PermissionsBitField.Flags.AttachFiles,
+          PermissionsBitField.Flags.EmbedLinks
+        ]
+      }
+
+    ];
+
+    /*
+    -----------------------------------------------------
+    WŁAŚCICIEL SERWERA
+    -----------------------------------------------------
+    */
+
+    permissionOverwrites.push({
+
+      id: guild.ownerId,
+
+      type: OverwriteType.Member,
+
+      allow: [
+        PermissionsBitField.Flags.ViewChannel,
+        PermissionsBitField.Flags.SendMessages,
+        PermissionsBitField.Flags.ReadMessageHistory,
+        PermissionsBitField.Flags.ManageChannels,
+        PermissionsBitField.Flags.ManageMessages
+      ]
+
+    });
+
+    /*
+    -----------------------------------------------------
+    TWORZENIE KANAŁU
+    -----------------------------------------------------
+    */
+
+    const channel =
+      await guild.channels.create({
+
+        name: channelName,
+
+        type: ChannelType.GuildText,
+
+        topic:
+          `Zamówienie ${orderId} • ${user.tag}`,
+
+        permissionOverwrites,
+
+        reason:
+          `Automatyczny kanał zamówienia ${orderId}`
+
+      });
+
+    /*
+    -----------------------------------------------------
+    PANEL ZAMÓWIENIA
+    -----------------------------------------------------
+    */
+
+    const orderEmbed =
+      new EmbedBuilder()
+
+        .setColor(0x55ff91)
+
+        .setTitle(
+          `🛒 ZAMÓWIENIE ${orderId}`
+        )
+
+        .setDescription(
+          "🎉 **Twoje zamówienie zostało utworzone!**\n\n" +
+
+          `👤 **Klient:** <@${user.id}>\n` +
+
+          `📦 **Produkt:** ${product}\n` +
+
+          `💳 **Płatność:** ${payment}\n` +
+
+          `💰 **Kwota:** ${price.toFixed(2)} zł\n\n` +
+
+          "📝 **Następny krok:**\n" +
+
+          "Bot wysłał Ci na wiadomość prywatną przycisk do uzupełnienia ankiety.\n\n" +
+
+          "Po uzupełnieniu ankiety odpowiedzi zostaną automatycznie przesłane tutaj.\n\n" +
+
+          "⏳ Poczekaj na obsługę."
+
+        )
+
+        .setFooter({
+
+          text:
+            "KupGraj • Obsługa zamówienia"
+
+        })
+
+        .setTimestamp();
+
+    /*
+    -----------------------------------------------------
+    PRZYCISKI
+    -----------------------------------------------------
+    */
+
+    const row =
+      new ActionRowBuilder()
+        .addComponents(
+
+          new ButtonBuilder()
+
+            .setCustomId(
+              `order_realize|${orderId}`
+            )
+
+            .setLabel(
+              "Realizuj"
+            )
+
+            .setEmoji(
+              "🟢"
+            )
+
+            .setStyle(
+              ButtonStyle.Success
+            ),
+
+          new ButtonBuilder()
+
+            .setCustomId(
+              `order_approve|${orderId}`
+            )
+
+            .setLabel(
+              "Zatwierdź"
+            )
+
+            .setEmoji(
+              "✅"
+            )
+
+            .setStyle(
+              ButtonStyle.Primary
+            ),
+
+          new ButtonBuilder()
+
+            .setCustomId(
+              `order_cancel|${orderId}`
+            )
+
+            .setLabel(
+              "Anuluj"
+            )
+
+            .setEmoji(
+              "🔴"
+            )
+
+            .setStyle(
+              ButtonStyle.Danger
+            ),
+
+          new ButtonBuilder()
+
+            .setCustomId(
+              `order_close|${orderId}`
+            )
+
+            .setLabel(
+              "Zamknij kanał"
+            )
+
+            .setEmoji(
+              "🔒"
+            )
+
+            .setStyle(
+              ButtonStyle.Secondary
+            )
+
+        );
+
+    await channel.send({
+
+      content:
+        `<@${user.id}>`,
+
+      embeds: [
+        orderEmbed
+      ],
+
+      components: [
+        row
+      ]
+
+    });
+
+    /*
+    -----------------------------------------------------
+    WYSŁANIE DM Z ANKIETĄ
+    -----------------------------------------------------
+    */
+
+    await sendQuestionnaireDM({
+
+      user,
+      orderId,
+      product,
+      payment,
+      price
+
+    });
+
+    return channel;
+
+  } catch (error) {
+
+    console.error(
+      "❌ Błąd tworzenia prywatnego kanału:",
+      error
+    );
+
+    return null;
+  }
+}
+
+/*
+=========================================================
+ ANKIETA W DM
+=========================================================
+*/
+
+async function sendQuestionnaireDM({
+  user,
+  orderId,
+  product,
+  payment,
+  price
+}) {
+
+  try {
+
+    const embed =
+      new EmbedBuilder()
+
+        .setColor(0x55ff91)
+
+        .setTitle(
+          "📝 Ankieta do zamówienia"
+        )
+
+        .setDescription(
+
+          `Cześć **${user.username}**! 👋\n\n` +
+
+          `Twoje zamówienie **${orderId}** zostało utworzone.\n\n` +
+
+          `📦 **Produkt:** ${product}\n` +
+
+          `💳 **Płatność:** ${payment}\n` +
+
+          `💰 **Kwota:** ${price.toFixed(2)} zł\n\n` +
+
+          "Kliknij przycisk poniżej i uzupełnij krótką ankietę.\n\n" +
+
+          "🔒 Twoje odpowiedzi zostaną przekazane wyłącznie do obsługi zamówienia."
+
+        )
+
+        .setFooter({
+
+          text:
+            "KupGraj • Ankieta zamówienia"
+
+        });
+
+    const row =
+      new ActionRowBuilder()
+        .addComponents(
+
+          new ButtonBuilder()
+
+            .setCustomId(
+              `questionnaire|${orderId}`
+            )
+
+            .setLabel(
+              "Uzupełnij ankietę"
+            )
+
+            .setEmoji(
+              "📝"
+            )
+
+            .setStyle(
+              ButtonStyle.Success
+            )
+
+        );
+
+    await user.send({
+
+      embeds: [
+        embed
+      ],
+
+      components: [
+        row
+      ]
+
+    });
+
+    console.log(
+      `📨 Wysłano ankietę DM do ${user.tag}`
+    );
+
+    return true;
+
+  } catch (error) {
+
+    console.error(
+      `❌ Nie udało się wysłać DM do ${user.tag}:`,
+      error.message
+    );
+
+    return false;
+  }
+}
+
+/*
+=========================================================
+ ZAMÓWIENIE ZE STRONY
 =========================================================
 */
 
@@ -448,30 +562,40 @@ app.post(
       ) {
 
         return res.status(400).json({
+
           error:
             "Nieprawidłowe zamówienie."
+
         });
 
       }
 
       const orderId =
-        "ORD-" + Date.now();
+        "ORD-" +
+        Date.now();
 
       const products =
         cart
           .map(item => {
 
             const quantity =
-              Number(item.quantity) || 1;
+              Number(
+                item.quantity
+              ) || 1;
 
             const price =
-              Number(item.price) || 0;
+              Number(
+                item.price
+              ) || 0;
 
             return (
+
               `• ${item.name} × ${quantity} — ` +
+
               `${(
                 price * quantity
               ).toFixed(2)} zł`
+
             );
 
           })
@@ -481,17 +605,23 @@ app.post(
         Number(total) || 0;
 
       const message =
+
         `🛒 **NOWE ZAMÓWIENIE ${orderId}**\n\n` +
+
         `👤 **Klient:** ${customer.name}\n` +
+
         `📞 **Kontakt:** ${customer.contact}\n` +
+
         `💬 **Wiadomość:** ${customer.message || "Brak"}\n\n` +
+
         `📦 **Produkty:**\n${products}\n\n` +
+
         `💰 **Suma:** ${totalPrice.toFixed(2)} zł`;
 
       /*
-      ======================================================
+      -----------------------------------------------------
       WEBHOOK
-      ======================================================
+      -----------------------------------------------------
       */
 
       if (DISCORD_WEBHOOK_URL) {
@@ -501,7 +631,9 @@ app.post(
           await fetch(
             DISCORD_WEBHOOK_URL,
             {
-              method: "POST",
+
+              method:
+                "POST",
 
               headers: {
                 "Content-Type":
@@ -510,17 +642,20 @@ app.post(
 
               body:
                 JSON.stringify({
+
                   content:
                     message
+
                 })
+
             }
           );
 
-        } catch (webhookError) {
+        } catch (error) {
 
           console.error(
             "❌ Błąd webhooka:",
-            webhookError
+            error
           );
 
         }
@@ -528,9 +663,9 @@ app.post(
       }
 
       /*
-      ======================================================
-      KANAŁ LOGÓW ZAMÓWIEŃ
-      ======================================================
+      -----------------------------------------------------
+      KANAŁ INFORMACYJNY
+      -----------------------------------------------------
       */
 
       if (
@@ -548,71 +683,80 @@ app.post(
           channel.isTextBased()
         ) {
 
-          const orderEmbed =
-            new EmbedBuilder()
-              .setColor(0x55ff91)
-              .setTitle(
-                `🛒 Nowe zamówienie ${orderId}`
-              )
-              .addFields(
-
-                {
-                  name:
-                    "👤 Klient",
-
-                  value:
-                    String(
-                      customer.name ||
-                      "Brak"
-                    ).slice(
-                      0,
-                      1024
-                    )
-                },
-
-                {
-                  name:
-                    "📞 Kontakt",
-
-                  value:
-                    String(
-                      customer.contact ||
-                      "Brak"
-                    ).slice(
-                      0,
-                      1024
-                    )
-                },
-
-                {
-                  name:
-                    "📦 Produkty",
-
-                  value:
-                    String(
-                      products ||
-                      "Brak"
-                    ).slice(
-                      0,
-                      1024
-                    )
-                },
-
-                {
-                  name:
-                    "💰 Suma",
-
-                  value:
-                    `${totalPrice.toFixed(2)} zł`
-                }
-
-              )
-              .setTimestamp();
-
           await channel.send({
 
             embeds: [
-              orderEmbed
+
+              new EmbedBuilder()
+
+                .setColor(
+                  0x55ff91
+                )
+
+                .setTitle(
+                  `🛒 Nowe zamówienie ${orderId}`
+                )
+
+                .setDescription(
+                  "Zamówienie zostało złożone ze strony sklepu."
+                )
+
+                .addFields(
+
+                  {
+                    name:
+                      "👤 Klient",
+
+                    value:
+                      String(
+                        customer.name ||
+                        "Brak"
+                      ).slice(
+                        0,
+                        1024
+                      )
+                  },
+
+                  {
+                    name:
+                      "📞 Kontakt",
+
+                    value:
+                      String(
+                        customer.contact ||
+                        "Brak"
+                      ).slice(
+                        0,
+                        1024
+                      )
+                  },
+
+                  {
+                    name:
+                      "📦 Produkty",
+
+                    value:
+                      String(
+                        products ||
+                        "Brak"
+                      ).slice(
+                        0,
+                        1024
+                      )
+                  },
+
+                  {
+                    name:
+                      "💰 Suma",
+
+                    value:
+                      `${totalPrice.toFixed(2)} zł`
+                  }
+
+                )
+
+                .setTimestamp()
+
             ]
 
           });
@@ -622,7 +766,7 @@ app.post(
       }
 
       console.log(
-        "📦 Otrzymano zamówienie:",
+        "📦 Otrzymano zamówienie ze strony:",
         req.body
       );
 
@@ -638,7 +782,7 @@ app.post(
     } catch (error) {
 
       console.error(
-        "❌ Błąd zamówienia:",
+        "❌ Błąd zamówienia ze strony:",
         error
       );
 
@@ -656,7 +800,7 @@ app.post(
 
 /*
 =========================================================
-BOT READY
+ BOT READY
 =========================================================
 */
 
@@ -669,15 +813,9 @@ discordClient.once(
     );
 
     console.log(
-      `📨 Kanał logów zamówień: ${
+      `📨 Kanał informacyjny zamówień: ${
         ORDERS_CHANNEL_ID ||
         "BRAK"
-      }`
-    );
-
-    console.log(
-      `📁 Kategoria ticketów zamówień: ${
-        ORDER_TICKET_CATEGORY_ID
       }`
     );
 
@@ -686,7 +824,7 @@ discordClient.once(
 
 /*
 =========================================================
-AUTOMATYCZNE MENU W TICKETACH
+ AUTOMATYCZNE MENU W TICKETACH
 =========================================================
 */
 
@@ -701,11 +839,15 @@ discordClient.on(
 
       if (
         message.author.bot
-      ) return;
+      ) {
+        return;
+      }
 
       if (
         !message.guild
-      ) return;
+      ) {
+        return;
+      }
 
       const text =
         message.content
@@ -715,26 +857,35 @@ discordClient.on(
       const orderWords = [
 
         "złożyłem zamówienie",
+
         "zlozylem zamowienie",
 
         "złożyłam zamówienie",
+
         "zlozylam zamowienie",
 
         "zamówiłem",
+
         "zamowilem",
 
         "zamówiłam",
+
         "zamowilam",
 
         "chcę zamówić",
+
         "chce zamowic",
+
         "chce zamówić",
+
         "chcę zamowic",
 
         "chcę złożyć zamówienie",
+
         "chce zlozyc zamowienie",
 
         "zamówienie",
+
         "zamowienie"
 
       ];
@@ -747,13 +898,17 @@ discordClient.on(
 
       if (
         !isOrderMessage
-      ) return;
+      ) {
+        return;
+      }
 
       if (
         menuCooldown.has(
           message.channel.id
         )
-      ) return;
+      ) {
+        return;
+      }
 
       menuCooldown.add(
         message.channel.id
@@ -788,7 +943,7 @@ discordClient.on(
 
 /*
 =========================================================
-MENU GŁÓWNE
+ MENU GŁÓWNE
 =========================================================
 */
 
@@ -798,31 +953,47 @@ async function sendMainMenu(
 
   const embed =
     new EmbedBuilder()
-      .setColor(0x55ff91)
+
+      .setColor(
+        0x55ff91
+      )
+
       .setTitle(
         "👋 W jaki sposób możemy Ci pomóc?"
       )
+
       .setDescription(
+
         "Wybierz odpowiednią opcję:\n\n" +
+
         "🛒 **Zamówienie** — chcesz złożyć zamówienie.\n" +
+
         "🆘 **Pomoc** — masz pytanie lub problem."
+
       )
+
       .setFooter({
+
         text:
           "KupGraj • Obsługa klienta"
+
       });
 
   const menu =
     new StringSelectMenuBuilder()
+
       .setCustomId(
         "help_type"
       )
+
       .setPlaceholder(
         "📋 Wybierz opcję..."
       )
+
       .addOptions([
 
         {
+
           label:
             "Zamówienie",
 
@@ -834,9 +1005,11 @@ async function sendMainMenu(
 
           emoji:
             "🛒"
+
         },
 
         {
+
           label:
             "Pomoc",
 
@@ -848,6 +1021,7 @@ async function sendMainMenu(
 
           emoji:
             "🆘"
+
         }
 
       ]);
@@ -873,7 +1047,7 @@ async function sendMainMenu(
 
 /*
 =========================================================
-INTERAKCJE
+ INTERAKCJE
 =========================================================
 */
 
@@ -884,9 +1058,9 @@ discordClient.on(
     try {
 
       /*
-      ====================================================
+      =====================================================
       MENU GŁÓWNE
-      ====================================================
+      =====================================================
       */
 
       if (
@@ -921,9 +1095,9 @@ discordClient.on(
       }
 
       /*
-      ====================================================
-      WYBÓR PRODUKTU
-      ====================================================
+      =====================================================
+      PRODUKT
+      =====================================================
       */
 
       if (
@@ -944,9 +1118,9 @@ discordClient.on(
       }
 
       /*
-      ====================================================
-      WYBÓR PŁATNOŚCI
-      ====================================================
+      =====================================================
+      PŁATNOŚĆ
+      =====================================================
       */
 
       if (
@@ -975,9 +1149,9 @@ discordClient.on(
       }
 
       /*
-      ====================================================
+      =====================================================
       PRZYCISKI
-      ====================================================
+      =====================================================
       */
 
       if (
@@ -988,9 +1162,104 @@ discordClient.on(
           interaction.customId;
 
         /*
-        ================================================
-        POTWIERDZENIE
-        ================================================
+        ---------------------------------------------------
+        ANKIETA
+        ---------------------------------------------------
+        */
+
+        if (
+          id.startsWith(
+            "questionnaire|"
+          )
+        ) {
+
+          await showQuestionnaireModal(
+            interaction
+          );
+
+          return;
+        }
+
+        /*
+        ---------------------------------------------------
+        REALIZUJ
+        ---------------------------------------------------
+        */
+
+        if (
+          id.startsWith(
+            "order_realize|"
+          )
+        ) {
+
+          await handleRealize(
+            interaction
+          );
+
+          return;
+        }
+
+        /*
+        ---------------------------------------------------
+        ZATWIERDŹ
+        ---------------------------------------------------
+        */
+
+        if (
+          id.startsWith(
+            "order_approve|"
+          )
+        ) {
+
+          await handleApprove(
+            interaction
+          );
+
+          return;
+        }
+
+        /*
+        ---------------------------------------------------
+        ANULUJ
+        ---------------------------------------------------
+        */
+
+        if (
+          id.startsWith(
+            "order_cancel|"
+          )
+        ) {
+
+          await handleAdminCancel(
+            interaction
+          );
+
+          return;
+        }
+
+        /*
+        ---------------------------------------------------
+        ZAMKNIJ KANAŁ
+        ---------------------------------------------------
+        */
+
+        if (
+          id.startsWith(
+            "order_close|"
+          )
+        ) {
+
+          await handleCloseChannel(
+            interaction
+          );
+
+          return;
+        }
+
+        /*
+        ---------------------------------------------------
+        STARE POTWIERDZENIE
+        ---------------------------------------------------
         */
 
         if (
@@ -1018,9 +1287,9 @@ discordClient.on(
         }
 
         /*
-        ================================================
-        ANULOWANIE PRZEZ KLIENTA
-        ================================================
+        ---------------------------------------------------
+        ANULOWANIE KLIENTA
+        ---------------------------------------------------
         */
 
         if (
@@ -1042,88 +1311,32 @@ discordClient.on(
           return;
         }
 
-        /*
-        ================================================
-        REALIZUJ
-        ================================================
-        */
-
-        if (
-          id.startsWith(
-            "realize|"
-          )
-        ) {
-
-          await handleRealize(
-            interaction
-          );
-
-          return;
-        }
-
-        /*
-        ================================================
-        ANULUJ
-        ================================================
-        */
-
-        if (
-          id.startsWith(
-            "cancel_admin|"
-          )
-        ) {
-
-          await handleAdminCancel(
-            interaction
-          );
-
-          return;
-        }
-
-        /*
-        ================================================
-        ZATWIERDŹ
-        ================================================
-        */
-
-        if (
-          id.startsWith(
-            "approve|"
-          )
-        ) {
-
-          await handleApprove(
-            interaction
-          );
-
-          return;
-        }
-
-        /*
-        ================================================
-        ZAMKNIJ KANAŁ
-        ================================================
-        */
-
-        if (
-          id.startsWith(
-            "close_ticket|"
-          )
-        ) {
-
-          await handleCloseTicket(
-            interaction
-          );
-
-          return;
-        }
-
       }
 
       /*
-      ====================================================
-      FORMULARZ POMOCY
-      ====================================================
+      =====================================================
+      MODAL ANKIETY
+      =====================================================
+      */
+
+      if (
+        interaction.isModalSubmit() &&
+        interaction.customId.startsWith(
+          "questionnaire_modal|"
+        )
+      ) {
+
+        await handleQuestionnaireSubmit(
+          interaction
+        );
+
+        return;
+      }
+
+      /*
+      =====================================================
+      MODAL POMOCY
+      =====================================================
       */
 
       if (
@@ -1140,10 +1353,15 @@ discordClient.on(
 
         const embed =
           new EmbedBuilder()
-            .setColor(0xa45cff)
+
+            .setColor(
+              0xa45cff
+            )
+
             .setTitle(
               "🆘 Prośba o pomoc"
             )
+
             .addFields(
 
               {
@@ -1166,6 +1384,7 @@ discordClient.on(
               }
 
             )
+
             .setTimestamp();
 
         await interaction.reply({
@@ -1220,23 +1439,12 @@ discordClient.on(
 
           });
 
-        } else if (
-          interaction.deferred
-        ) {
-
-          await interaction.editReply({
-
-            content:
-              "❌ Wystąpił błąd. Spróbuj ponownie."
-
-          });
-
         }
 
       } catch (replyError) {
 
         console.error(
-          "❌ Nie można wysłać odpowiedzi błędu:",
+          "❌ Nie można odpowiedzieć:",
           replyError
         );
 
@@ -1249,7 +1457,7 @@ discordClient.on(
 
 /*
 =========================================================
-PRODUKTY
+ PRODUKTY
 =========================================================
 */
 
@@ -1259,15 +1467,19 @@ async function showProducts(
 
   const menu =
     new StringSelectMenuBuilder()
+
       .setCustomId(
         "product_select"
       )
+
       .setPlaceholder(
         "📦 Wybierz produkt..."
       )
+
       .addOptions([
 
         {
+
           label:
             "Minecraft — KOSZT KONTA",
 
@@ -1279,9 +1491,11 @@ async function showProducts(
 
           emoji:
             "⛏️"
+
         },
 
         {
+
           label:
             "Minecraft — PEŁNY DOSTĘP",
 
@@ -1293,9 +1507,11 @@ async function showProducts(
 
           emoji:
             "💎"
+
         },
 
         {
+
           label:
             "Discord — START",
 
@@ -1307,9 +1523,11 @@ async function showProducts(
 
           emoji:
             "⚙️"
+
         },
 
         {
+
           label:
             "Discord — PRO",
 
@@ -1321,9 +1539,11 @@ async function showProducts(
 
           emoji:
             "🤖"
+
         },
 
         {
+
           label:
             "Discord — FULL",
 
@@ -1335,9 +1555,11 @@ async function showProducts(
 
           emoji:
             "🛡️"
+
         },
 
         {
+
           label:
             "Inne gry",
 
@@ -1349,6 +1571,7 @@ async function showProducts(
 
           emoji:
             "🎮"
+
         }
 
       ]);
@@ -1358,10 +1581,15 @@ async function showProducts(
     embeds: [
 
       new EmbedBuilder()
-        .setColor(0x55ff91)
+
+        .setColor(
+          0x55ff91
+        )
+
         .setTitle(
           "📦 Wybierz produkt"
         )
+
         .setDescription(
           "Wybierz produkt, który chcesz zamówić."
         )
@@ -1383,7 +1611,7 @@ async function showProducts(
 
 /*
 =========================================================
-PŁATNOŚĆ
+ PŁATNOŚĆ
 =========================================================
 */
 
@@ -1402,9 +1630,9 @@ async function showPaymentMenu(
     Number(parts[1]);
 
   /*
-  ========================================================
+  -------------------------------------------------------
   INNE GRY
-  ========================================================
+  -------------------------------------------------------
   */
 
   if (
@@ -1416,13 +1644,21 @@ async function showPaymentMenu(
       embeds: [
 
         new EmbedBuilder()
-          .setColor(0xa45cff)
+
+          .setColor(
+            0xa45cff
+          )
+
           .setTitle(
             "🎮 Inne gry"
           )
+
           .setDescription(
+
             "Napisz na tym tickecie, jaką grę chcesz zamówić.\n\n" +
+
             "📩 Obsługa odpowie Ci z dostępnością i ceną."
+
           )
 
       ],
@@ -1435,22 +1671,26 @@ async function showPaymentMenu(
   }
 
   /*
-  ========================================================
+  -------------------------------------------------------
   MENU PŁATNOŚCI
-  ========================================================
+  -------------------------------------------------------
   */
 
   const menu =
     new StringSelectMenuBuilder()
+
       .setCustomId(
         "payment_select"
       )
+
       .setPlaceholder(
         "💳 Wybierz metodę płatności..."
       )
+
       .addOptions([
 
         {
+
           label:
             "BLIK",
 
@@ -1462,9 +1702,11 @@ async function showPaymentMenu(
 
           emoji:
             "💵"
+
         },
 
         {
+
           label:
             "PaySafeCard",
 
@@ -1478,6 +1720,7 @@ async function showPaymentMenu(
 
           emoji:
             "🎫"
+
         }
 
       ]);
@@ -1487,13 +1730,19 @@ async function showPaymentMenu(
     embeds: [
 
       new EmbedBuilder()
-        .setColor(0x55ff91)
+
+        .setColor(
+          0x55ff91
+        )
+
         .setTitle(
           "💳 Wybierz metodę płatności"
         )
+
         .setDescription(
 
           `📦 **Produkt:** ${name}\n` +
+
           `💰 **Cena:** ${price.toFixed(2)} zł\n\n` +
 
           `💵 **BLIK** — ${price.toFixed(2)} zł\n` +
@@ -1521,7 +1770,7 @@ async function showPaymentMenu(
 
 /*
 =========================================================
-PODSUMOWANIE
+ PODSUMOWANIE
 =========================================================
 */
 
@@ -1547,30 +1796,38 @@ async function showSummary(
 
   const confirmButton =
     new ButtonBuilder()
+
       .setCustomId(
         `confirm_order|${name}|${price}|${payment}`
       )
+
       .setLabel(
         "Potwierdź zamówienie"
       )
+
       .setEmoji(
         "✅"
       )
+
       .setStyle(
         ButtonStyle.Success
       );
 
   const cancelButton =
     new ButtonBuilder()
+
       .setCustomId(
         "cancel_order"
       )
+
       .setLabel(
         "Anuluj"
       )
+
       .setEmoji(
         "❌"
       )
+
       .setStyle(
         ButtonStyle.Danger
       );
@@ -1580,14 +1837,21 @@ async function showSummary(
     embeds: [
 
       new EmbedBuilder()
-        .setColor(0x55ff91)
+
+        .setColor(
+          0x55ff91
+        )
+
         .setTitle(
           "🧾 Podsumowanie zamówienia"
         )
+
         .setDescription(
 
           `📦 **Produkt:** ${name}\n` +
+
           `💰 **Kwota:** ${finalPrice.toFixed(2)} zł\n` +
+
           `💳 **Płatność:** ${payment}\n\n` +
 
           "Czy wszystko się zgadza?\n\n" +
@@ -1602,8 +1866,10 @@ async function showSummary(
 
       new ActionRowBuilder()
         .addComponents(
+
           confirmButton,
           cancelButton
+
         )
 
     ]
@@ -1614,7 +1880,7 @@ async function showSummary(
 
 /*
 =========================================================
-POTWIERDZENIE ZAMÓWIENIA
+ POTWIERDZENIE
 =========================================================
 */
 
@@ -1623,6 +1889,14 @@ async function confirmOrder(
   product,
   payment
 ) {
+
+  if (
+    !interaction.guild
+  ) {
+
+    return;
+
+  }
 
   const parts =
     product.split("|");
@@ -1639,65 +1913,56 @@ async function confirmOrder(
       : price;
 
   const orderId =
-    "DC-" + Date.now();
+    "DC-" +
+    Date.now();
 
   /*
-  ========================================================
-  ODPOWIEDŹ DLA KUPUJĄCEGO
-  ========================================================
+  -------------------------------------------------------
+  TWORZYMY PRYWATNY KANAŁ
+  -------------------------------------------------------
   */
 
-  await interaction.deferUpdate();
+  const orderChannel =
+    await createPrivateOrderChannel({
+
+      guild:
+        interaction.guild,
+
+      user:
+        interaction.user,
+
+      orderId,
+
+      product:
+        name,
+
+      payment,
+
+      price:
+        finalPrice
+
+    });
 
   /*
-  ========================================================
-  TWORZENIE PRYWATNEGO KANAŁU
-  ========================================================
+  -------------------------------------------------------
+  JEŚLI NIE UDAŁO SIĘ UTWORZYĆ KANAŁU
+  -------------------------------------------------------
   */
 
-  let orderChannel = null;
+  if (
+    !orderChannel
+  ) {
 
-  try {
-
-    orderChannel =
-      await createOrderTicket({
-
-        guild:
-          interaction.guild,
-
-        user:
-          interaction.user,
-
-        orderId:
-          orderId,
-
-        productName:
-          name,
-
-        payment:
-          payment,
-
-        finalPrice:
-          finalPrice
-
-      });
-
-  } catch (error) {
-
-    console.error(
-      "❌ Nie udało się utworzyć kanału zamówienia:",
-      error
-    );
-
-    await interaction.editReply({
+    await interaction.reply({
 
       content:
+
         "❌ Nie udało się utworzyć prywatnego kanału zamówienia.\n\n" +
-        "Sprawdź, czy bot ma **Manage Channels / Zarządzanie kanałami**.",
 
-      embeds: [],
+        "Sprawdź, czy bot ma uprawnienia **Manage Channels**.",
 
-      components: []
+      ephemeral:
+        true
 
     });
 
@@ -1705,40 +1970,40 @@ async function confirmOrder(
   }
 
   /*
-  ========================================================
-  WIADOMOŚĆ W STARYM TICKecie
-  ========================================================
+  -------------------------------------------------------
+  ODPOWIEDŹ W STARYM TICKecie
+  -------------------------------------------------------
   */
 
-  await interaction.editReply({
-
-    content:
-      `✅ Zamówienie zostało utworzone!\n\n` +
-      `🔒 Twój prywatny kanał zamówienia: ${orderChannel}`,
+  await interaction.update({
 
     embeds: [
 
       new EmbedBuilder()
-        .setColor(0x55ff91)
-        .setTitle(
-          "✅ Zamówienie przyjęte!"
+
+        .setColor(
+          0x55ff91
         )
+
+        .setTitle(
+          "✅ Zamówienie utworzone!"
+        )
+
         .setDescription(
 
-          `Twoje zamówienie **${orderId}** zostało przekazane do obsługi.\n\n` +
+          `Twoje zamówienie **${orderId}** zostało utworzone.\n\n` +
 
           `📦 **Produkt:** ${name}\n` +
+
           `💰 **Kwota:** ${finalPrice.toFixed(2)} zł\n` +
+
           `💳 **Płatność:** ${payment}\n\n` +
 
-          `🔒 **Kanał zamówienia:** ${orderChannel}`
+          `🔒 Twój prywatny kanał: ${orderChannel}\n\n` +
+
+          "📝 Sprawdź wiadomości prywatne — bot wysłał Ci ankietę do uzupełnienia."
 
         )
-        .setFooter({
-          text:
-            "KupGraj • Dziękujemy za zamówienie"
-        })
-        .setTimestamp()
 
     ],
 
@@ -1746,21 +2011,317 @@ async function confirmOrder(
 
   });
 
-  /*
-  ========================================================
-  LOG
-  ========================================================
-  */
+}
 
-  console.log(
-    `🛒 Utworzono kanał ${orderChannel.name} dla ${interaction.user.tag}`
+/*
+=========================================================
+ ANKIETA — MODAL
+=========================================================
+*/
+
+async function showQuestionnaireModal(
+  interaction
+) {
+
+  const orderId =
+    interaction.customId
+      .split("|")[1];
+
+  const modal =
+    new ModalBuilder()
+
+      .setCustomId(
+        `questionnaire_modal|${orderId}`
+      )
+
+      .setTitle(
+        "📝 Ankieta zamówienia"
+      );
+
+  const name =
+    new TextInputBuilder()
+
+      .setCustomId(
+        "customer_name"
+      )
+
+      .setLabel(
+        "Jak mamy się do Ciebie zwracać?"
+      )
+
+      .setPlaceholder(
+        "Np. Kamil"
+      )
+
+      .setStyle(
+        TextInputStyle.Short
+      )
+
+      .setRequired(
+        true
+      )
+
+      .setMaxLength(
+        100
+      );
+
+  const contact =
+    new TextInputBuilder()
+
+      .setCustomId(
+        "customer_contact"
+      )
+
+      .setLabel(
+        "Kontakt"
+      )
+
+      .setPlaceholder(
+        "Np. Discord / e-mail"
+      )
+
+      .setStyle(
+        TextInputStyle.Short
+      )
+
+      .setRequired(
+        true
+      )
+
+      .setMaxLength(
+        200
+      );
+
+  const details =
+    new TextInputBuilder()
+
+      .setCustomId(
+        "customer_details"
+      )
+
+      .setLabel(
+        "Dodatkowe informacje"
+      )
+
+      .setPlaceholder(
+        "Napisz tutaj wszystko, co obsługa powinna wiedzieć..."
+      )
+
+      .setStyle(
+        TextInputStyle.Paragraph
+      )
+
+      .setRequired(
+        false
+      )
+
+      .setMaxLength(
+        1000
+      );
+
+  modal.addComponents(
+
+    new ActionRowBuilder()
+      .addComponents(
+        name
+      ),
+
+    new ActionRowBuilder()
+      .addComponents(
+        contact
+      ),
+
+    new ActionRowBuilder()
+      .addComponents(
+        details
+      )
+
+  );
+
+  await interaction.showModal(
+    modal
   );
 
 }
 
 /*
 =========================================================
-REALIZUJ
+ ODEBRANIE ANKIETY
+=========================================================
+*/
+
+async function handleQuestionnaireSubmit(
+  interaction
+) {
+
+  const orderId =
+    interaction.customId
+      .split("|")[1];
+
+  const customerName =
+    interaction.fields
+      .getTextInputValue(
+        "customer_name"
+      );
+
+  const contact =
+    interaction.fields
+      .getTextInputValue(
+        "customer_contact"
+      );
+
+  const details =
+    interaction.fields
+      .getTextInputValue(
+        "customer_details"
+      ) ||
+      "Brak dodatkowych informacji.";
+
+  /*
+  -------------------------------------------------------
+  SZUKAMY KANAŁU PO TOPIC
+  -------------------------------------------------------
+  */
+
+  const guilds =
+    discordClient.guilds.cache;
+
+  let orderChannel =
+    null;
+
+  for (
+    const guild of guilds.values()
+  ) {
+
+    const found =
+      guild.channels.cache.find(
+        channel =>
+          channel.type ===
+            ChannelType.GuildText &&
+          channel.topic &&
+          channel.topic.includes(
+            `Zamówienie ${orderId}`
+          )
+      );
+
+    if (found) {
+
+      orderChannel =
+        found;
+
+      break;
+
+    }
+
+  }
+
+  /*
+  -------------------------------------------------------
+  DM POTWIERDZENIE
+  -------------------------------------------------------
+  */
+
+  await interaction.reply({
+
+    content:
+
+      "✅ Ankieta została wysłana do obsługi.",
+
+    ephemeral:
+      true
+
+  });
+
+  /*
+  -------------------------------------------------------
+  JEŚLI ZNALEZIONO KANAŁ
+  -------------------------------------------------------
+  */
+
+  if (
+    orderChannel
+  ) {
+
+    const embed =
+      new EmbedBuilder()
+
+        .setColor(
+          0xa45cff
+        )
+
+        .setTitle(
+          `📝 ANKIETA — ${orderId}`
+        )
+
+        .addFields(
+
+          {
+            name:
+              "👤 Klient",
+
+            value:
+              `<@${interaction.user.id}>`
+          },
+
+          {
+            name:
+              "📛 Nazwa",
+
+            value:
+              customerName.slice(
+                0,
+                1024
+              )
+          },
+
+          {
+            name:
+              "📞 Kontakt",
+
+            value:
+              contact.slice(
+                0,
+                1024
+              )
+          },
+
+          {
+            name:
+              "💬 Dodatkowe informacje",
+
+            value:
+              details.slice(
+                0,
+                1024
+              )
+          }
+
+        )
+
+        .setFooter({
+
+          text:
+            "KupGraj • Dane z ankiety"
+
+        })
+
+        .setTimestamp();
+
+    await orderChannel.send({
+
+      embeds: [
+        embed
+      ]
+
+    });
+
+  }
+
+}
+
+/*
+=========================================================
+ REALIZUJ
 =========================================================
 */
 
@@ -1788,18 +2349,26 @@ async function handleRealize(
   const orderId =
     interaction.customId
       .split("|")[1] ||
-    "brak";
+      "brak";
 
-  const embed =
-    interaction.message.embeds[0];
+  const originalEmbed =
+    interaction.message
+      .embeds[0];
 
   const updatedEmbed =
     EmbedBuilder
-      .from(embed)
-      .setColor(0xffc107)
-      .setTitle(
-        `🟡 REALIZACJA ZAMÓWIENIA ${orderId}`
+      .from(
+        originalEmbed
       )
+
+      .setColor(
+        0xffc107
+      )
+
+      .setTitle(
+        `🟡 REALIZACJA — ${orderId}`
+      )
+
       .addFields({
 
         name:
@@ -1817,7 +2386,8 @@ async function handleRealize(
     ],
 
     components:
-      interaction.message.components
+      interaction.message
+        .components
 
   });
 
@@ -1825,7 +2395,7 @@ async function handleRealize(
 
 /*
 =========================================================
-ANULUJ
+ ANULUJ
 =========================================================
 */
 
@@ -1840,7 +2410,7 @@ async function handleAdminCancel(
     await interaction.reply({
 
       content:
-        "❌ Nie masz uprawnień do anulowania zamówień.",
+        "❌ Nie masz uprawnień do anulowania zamówienia.",
 
       ephemeral:
         true
@@ -1853,18 +2423,26 @@ async function handleAdminCancel(
   const orderId =
     interaction.customId
       .split("|")[1] ||
-    "brak";
+      "brak";
 
-  const embed =
-    interaction.message.embeds[0];
+  const originalEmbed =
+    interaction.message
+      .embeds[0];
 
   const updatedEmbed =
     EmbedBuilder
-      .from(embed)
-      .setColor(0xff4444)
-      .setTitle(
-        `❌ ANULOWANE ZAMÓWIENIE ${orderId}`
+      .from(
+        originalEmbed
       )
+
+      .setColor(
+        0xff4444
+      )
+
+      .setTitle(
+        `❌ ANULOWANE — ${orderId}`
+      )
+
       .addFields({
 
         name:
@@ -1889,7 +2467,7 @@ async function handleAdminCancel(
 
 /*
 =========================================================
-ZATWIERDŹ
+ ZATWIERDŹ
 =========================================================
 */
 
@@ -1917,18 +2495,26 @@ async function handleApprove(
   const orderId =
     interaction.customId
       .split("|")[1] ||
-    "brak";
+      "brak";
 
   const originalEmbed =
-    interaction.message.embeds[0];
+    interaction.message
+      .embeds[0];
 
   const approvedEmbed =
     EmbedBuilder
-      .from(originalEmbed)
-      .setColor(0x55ff91)
-      .setTitle(
-        `✅ ZATWIERDZONE ZAMÓWIENIE ${orderId}`
+      .from(
+        originalEmbed
       )
+
+      .setColor(
+        0x55ff91
+      )
+
+      .setTitle(
+        `✅ ZATWIERDZONE — ${orderId}`
+      )
+
       .addFields({
 
         name:
@@ -1950,15 +2536,13 @@ async function handleApprove(
   });
 
   /*
-  ========================================================
-  LOG ZATWIERDZENIA
-  ========================================================
+  -------------------------------------------------------
+  LOG
+  -------------------------------------------------------
   */
 
   if (
-    ORDERS_LOG_CHANNEL_ID &&
-    ORDERS_LOG_CHANNEL_ID !==
-      interaction.channelId
+    ORDERS_LOG_CHANNEL_ID
   ) {
 
     const logChannel =
@@ -1976,10 +2560,15 @@ async function handleApprove(
         embeds: [
 
           new EmbedBuilder()
-            .setColor(0x55ff91)
-            .setTitle(
-              `📋 Zatwierdzono zamówienie ${orderId}`
+
+            .setColor(
+              0x55ff91
             )
+
+            .setTitle(
+              `📋 Zatwierdzono ${orderId}`
+            )
+
             .addFields(
 
               {
@@ -1999,6 +2588,7 @@ async function handleApprove(
               }
 
             )
+
             .setTimestamp()
 
         ]
@@ -2013,51 +2603,29 @@ async function handleApprove(
 
 /*
 =========================================================
-ZAMKNIĘCIE KANAŁU
+ ZAMKNIĘCIE KANAŁU
 =========================================================
 */
 
-async function handleCloseTicket(
+async function handleCloseChannel(
   interaction
 ) {
 
-  const channel =
-    interaction.channel;
-
-  if (
-    !channel
-  ) {
-
-    return;
-
-  }
-
   /*
-  ========================================================
-  SPRAWDZAMY WŁAŚCICIELA Z TOPIC
-  ========================================================
+  -------------------------------------------------------
+  STAFF MOŻE ZAMKNĄĆ
+  -------------------------------------------------------
   */
-
-  const topic =
-    channel.topic || "";
-
-  const userMatch =
-    topic.match(
-      /USER_ID=(\d+)/
-    );
-
-  const ticketOwnerId =
-    userMatch
-      ? userMatch[1]
-      : null;
 
   const canClose =
     isStaff(interaction) ||
-    (
-      ticketOwnerId &&
-      ticketOwnerId ===
-        interaction.user.id
-    );
+    interaction.channel
+      ?.permissionsFor(
+        interaction.user
+      )
+      ?.has(
+        PermissionsBitField.Flags.ManageChannels
+      );
 
   if (
     !canClose
@@ -2066,7 +2634,7 @@ async function handleCloseTicket(
     await interaction.reply({
 
       content:
-        "❌ Nie możesz zamknąć tego kanału.",
+        "❌ Nie masz uprawnień do zamknięcia tego kanału.",
 
       ephemeral:
         true
@@ -2074,38 +2642,45 @@ async function handleCloseTicket(
     });
 
     return;
-
   }
 
   await interaction.reply({
 
     content:
-      "🔒 Kanał zostanie zamknięty za 3 sekundy..."
+      "🔒 Kanał zostanie zamknięty za 5 sekund.",
+
+    ephemeral:
+      true
 
   });
 
   setTimeout(
     async () => {
 
-      await channel.delete(
-        "Zamknięcie kanału zamówienia"
-      ).catch(
-        error =>
-          console.error(
-            "❌ Nie udało się usunąć kanału:",
-            error
-          )
-      );
+      try {
+
+        await interaction.channel.delete(
+          "Zamknięcie zamówienia"
+        );
+
+      } catch (error) {
+
+        console.error(
+          "❌ Nie udało się usunąć kanału:",
+          error
+        );
+
+      }
 
     },
-    3000
+    5000
   );
 
 }
 
 /*
 =========================================================
-POMOC — MODAL
+ MODAL POMOCY
 =========================================================
 */
 
@@ -2115,30 +2690,38 @@ async function showHelpModal(
 
   const modal =
     new ModalBuilder()
+
       .setCustomId(
         "help_modal"
       )
+
       .setTitle(
         "🆘 Pomoc"
       );
 
   const problem =
     new TextInputBuilder()
+
       .setCustomId(
         "problem"
       )
+
       .setLabel(
         "W czym możemy Ci pomóc?"
       )
+
       .setPlaceholder(
         "Opisz dokładnie swój problem..."
       )
+
       .setStyle(
         TextInputStyle.Paragraph
       )
+
       .setRequired(
         true
       )
+
       .setMaxLength(
         1000
       );
@@ -2160,7 +2743,7 @@ async function showHelpModal(
 
 /*
 =========================================================
-LOGOWANIE BOTA
+ LOGOWANIE BOTA
 =========================================================
 */
 
@@ -2172,6 +2755,7 @@ if (
     .login(
       DISCORD_TOKEN
     )
+
     .catch(
       error => {
 
@@ -2186,14 +2770,14 @@ if (
 } else {
 
   console.warn(
-    "⚠️ Brak DISCORD_TOKEN — bot Discord nie został uruchomiony."
+    "⚠️ Brak DISCORD_TOKEN — bot nie został uruchomiony."
   );
 
 }
 
 /*
 =========================================================
-START SERWERA
+ START SERWERA
 =========================================================
 */
 
