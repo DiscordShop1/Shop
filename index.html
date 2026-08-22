@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kupujemy — Sklep gamingowy</title>
+  <meta name="description" content="Kupujemy — nowoczesny sklep gamingowy. Minecraft Premium, konfiguracje Discord i więcej.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="cursor-glow"></div>
+  <div class="bg-orb orb-one"></div>
+  <div class="bg-orb orb-two"></div>
+
+  <header class="nav">
+    <a class="brand" href="#top">
+      <span class="brand-mark">K</span>
+      <span>Kupujemy</span>
+    </a>
+    <nav class="nav-links">
+      <a href="#sklep">Sklep</a>
+      <a href="#kategorie">Kategorie</a>
+      <a href="#opinie">Opinie</a>
+      <a href="#faq">FAQ</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="discord-btn" href="https://discord.gg/yXUzU44Pu" target="_blank" rel="noopener">Discord</a>
+      <button class="cart-btn" id="openCart">🛒 <span id="cartCount">0</span></button>
+    </div>
+  </header>
+
+  <main id="top">
+    <section class="hero reveal">
+      <div class="hero-copy">
+        <span class="eyebrow">⚡ NOWA ERA ZAKUPÓW GAMINGOWYCH</span>
+        <h1>Twój świat gier.<br><span>Twój wybór.</span></h1>
+        <p>Kupuj szybko, wygodnie i bez zbędnego czekania. Wybierz produkt i złóż zamówienie bezpośrednio przez Kupujemy.</p>
+        <div class="hero-actions">
+          <a class="primary-btn" href="#sklep">🛍️ Przeglądaj sklep</a>
+          <a class="secondary-btn" href="https://discord.gg/yXUzU44Pu" target="_blank" rel="noopener">💬 Dołącz na Discord</a>
+        </div>
+        <div class="trust-row">
+          <span>✓ Szybka realizacja</span>
+          <span>✓ Wygodne zamówienia</span>
+          <span>✓ Obsługa Discord</span>
+        </div>
+      </div>
+      <div class="hero-art">
+        <img src="assets/banner.png" alt="Kupujemy — banner gamingowy">
+      </div>
+    </section>
+
+    <section class="section" id="kategorie">
+      <div class="section-heading reveal">
+        <div>
+          <span class="eyebrow">KATEGORIE</span>
+          <h2>Wybierz swój kierunek</h2>
+        </div>
+        <p>Każda kategoria ma własny charakter. Kliknij i zobacz dostępne produkty.</p>
+      </div>
+      <div class="category-grid">
+        <button class="category-card minecraft reveal" data-filter="minecraft">
+          <div class="category-icon">⛏️</div>
+          <div>
+            <span>01 / GAMING</span>
+            <h3>Minecraft Premium</h3>
+            <p>Konta gotowe do użycia.</p>
+          </div>
+          <b>→</b>
+        </button>
+        <button class="category-card discord reveal" data-filter="discord">
+          <div class="category-icon">💬</div>
+          <div>
+            <span>02 / SERVICES</span>
+            <h3>Konfiguracje Discord</h3>
+            <p>Serwer dopasowany do Twoich potrzeb.</p>
+          </div>
+          <b>→</b>
+        </button>
+        <button class="category-card games reveal" data-filter="other">
+          <div class="category-icon">🎮</div>
+          <div>
+            <span>03 / SOON</span>
+            <h3>Inne gry</h3>
+            <p>Opcja nieaktywna.</p>
+          </div>
+          <b>→</b>
+        </button>
+      </div>
+    </section>
+
+    <section class="section store" id="sklep">
+      <div class="section-heading reveal">
+        <div>
+          <span class="eyebrow">SKLEP</span>
+          <h2>Najważniejsze produkty</h2>
+        </div>
+        <div class="filters">
+          <button class="filter active" data-filter="all">Wszystko</button>
+          <button class="filter" data-filter="minecraft">Minecraft</button>
+          <button class="filter" data-filter="discord">Discord</button>
+        </div>
+      </div>
+
+      <div class="product-grid" id="productGrid">
+        <article class="product-card reveal" data-category="minecraft" data-id="mc-basic" data-name="Minecraft Premium — Koszt konta" data-price="25">
+          <div class="product-top"><span class="pill green">Minecraft</span><span class="product-number">01</span></div>
+          <div class="product-icon mc">⛏️</div>
+          <h3>Koszt konta</h3>
+          <p>Konto bez dostępu do maila, gotowe do użycia.</p>
+          <ul><li>Gotowe do użycia</li><li>Instrukcja aktywacji przed zakupem</li></ul>
+          <div class="product-bottom"><strong>25 zł</strong><button class="buy-btn">Dodaj do koszyka</button></div>
+        </article>
+
+        <article class="product-card featured reveal" data-category="minecraft" data-id="mc-full" data-name="Minecraft Premium — Pełny dostęp" data-price="35">
+          <div class="featured-label">NAJPOPULARNIEJSZE</div>
+          <div class="product-top"><span class="pill green">Minecraft</span><span class="product-number">02</span></div>
+          <div class="product-icon mc">💎</div>
+          <h3>Pełny dostęp</h3>
+          <p>Pełny dostęp do konta oraz maila i możliwość zarządzania.</p>
+          <ul><li>Pełny dostęp do konta</li><li>Dostęp do maila</li><li>Instrukcja aktywacji przed zakupem</li></ul>
+          <div class="product-bottom"><strong>35 zł</strong><button class="buy-btn">Dodaj do koszyka</button></div>
+        </article>
+
+        <article class="product-card reveal" data-category="discord" data-id="dc-start" data-name="Konfiguracja Discord — START" data-price="20">
+          <div class="product-top"><span class="pill blue">Discord</span><span class="product-number">03</span></div>
+          <div class="product-icon dc">🛠️</div>
+          <h3>START</h3>
+          <p>Podstawowa, estetyczna konfiguracja serwera.</p>
+          <ul><li>Podstawowe boty</li><li>Kanały i kategorie</li><li>Podstawowe role</li></ul>
+          <div class="product-bottom"><strong>20 zł</strong><button class="buy-btn">Dodaj do koszyka</button></div>
+        </article>
+
+        <article class="product-card reveal" data-category="discord" data-id="dc-pro" data-name="Konfiguracja Discord — PRO" data-price="40">
+          <div class="product-top"><span class="pill blue">Discord</span><span class="product-number">04</span></div>
+          <div class="product-icon dc">⚙️</div>
+          <h3>PRO</h3>
+          <p>Rozbudowana organizacja i konfiguracja serwera.</p>
+          <ul><li>Więcej botów</li><li>Estetyczne kanały</li><li>Role dopasowane do klienta</li></ul>
+          <div class="product-bottom"><strong>40 zł</strong><button class="buy-btn">Dodaj do koszyka</button></div>
+        </article>
+
+        <article class="product-card featured reveal" data-category="discord" data-id="dc-full" data-name="Konfiguracja Discord — FULL" data-price="60">
+          <div class="featured-label">FULL SETUP</div>
+          <div class="product-top"><span class="pill blue">Discord</span><span class="product-number">05</span></div>
+          <div class="product-icon dc">👑</div>
+          <h3>FULL</h3>
+          <p>Pełna konfiguracja z zaawansowanymi botami i systemami.</p>
+          <ul><li>Pełna konfiguracja serwera</li><li>Zaawansowane boty i systemy</li><li>Rozbudowana organizacja</li></ul>
+          <div class="product-bottom"><strong>60 zł</strong><button class="buy-btn">Dodaj do koszyka</button></div>
+        </article>
+
+        <article class="product-card disabled reveal" data-category="other">
+          <div class="product-top"><span class="pill purple">Inne gry</span><span class="product-number">06</span></div>
+          <div class="product-icon other">🎮</div>
+          <h3>Inne gry</h3>
+          <p>Ta kategoria jest jeszcze przygotowywana.</p>
+          <div class="inactive">OPCJA NIEAKTYWNA</div>
+          <div class="product-bottom"><strong>—</strong><button class="buy-btn" disabled>Niedostępne</button></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="stats-section reveal">
+      <div><strong>24/7</strong><span>kontakt przez Discord</span></div>
+      <div><strong>5+</strong><span>gotowych ofert</span></div>
+      <div><strong>100%</strong><span>online</span></div>
+      <div><strong>⚡</strong><span>szybka realizacja</span></div>
+    </section>
+
+    <section class="section info-grid" id="opinie">
+      <div class="info-card reveal">
+        <span class="eyebrow">DLACZEGO KUPUJEMY?</span>
+        <h2>Prosto. Szybko. Nowocześnie.</h2>
+        <p>Zamówienie składasz na stronie, a nasz bot przekazuje je bezpośrednio do obsługi na Discordzie.</p>
+      </div>
+      <div class="info-card small reveal">
+        <div class="big-icon">🛡️</div><h3>Bezpieczny proces</h3><p>Nie przechowujemy danych płatniczych na stronie.</p>
+      </div>
+      <div class="info-card small reveal">
+        <div class="big-icon">⚡</div><h3>Szybka obsługa</h3><p>Twoje zamówienie trafia prosto do kanału zamówień.</p>
+      </div>
+    </section>
+
+    <section class="section faq" id="faq">
+      <div class="section-heading reveal"><div><span class="eyebrow">FAQ</span><h2>Najczęstsze pytania</h2></div></div>
+      <details class="reveal"><summary>Jak złożyć zamówienie?</summary><p>Dodaj produkt do koszyka, wybierz metodę płatności i uzupełnij formularz. Zamówienie zostanie przekazane na Discord.</p></details>
+      <details class="reveal"><summary>Jak działa Paysafecard?</summary><p>Dla Paysafecard do ceny zamówienia doliczane jest 10%.</p></details>
+      <details class="reveal"><summary>Gdzie otrzymam informacje o realizacji?</summary><p>Obsługa skontaktuje się z Tobą przez Discord.</p></details>
+    </section>
+  </main>
+
+  <div class="cart-overlay" id="cartOverlay">
+    <aside class="cart-panel">
+      <div class="panel-head"><h2>🛒 Twój koszyk</h2><button id="closeCart">×</button></div>
+      <div id="cartItems" class="cart-items"><div class="empty-cart">Koszyk jest pusty.</div></div>
+      <div class="cart-total"><span>Razem</span><strong id="cartTotal">0 zł</strong></div>
+      <button class="checkout-btn" id="checkoutBtn">Przejdź do zamówienia</button>
+    </aside>
+  </div>
+
+  <div class="modal-overlay" id="orderOverlay">
+    <div class="order-modal">
+      <button class="modal-close" id="closeOrder">×</button>
+      <span class="eyebrow">FINALIZACJA</span>
+      <h2>Złóż zamówienie</h2>
+      <p class="modal-sub">Uzupełnij dane, a zamówienie trafi do obsługi Kupujemy.</p>
+      <form id="orderForm">
+        <label>Nick Discord<input name="discord" required placeholder="np. Kamil"></label>
+        <label>Metoda płatności
+          <select name="payment" required>
+            <option value="BLIK">BLIK</option>
+            <option value="Paysafecard">Paysafecard (+10%)</option>
+          </select>
+        </label>
+        <label>Dodatkowe informacje<textarea name="extra" rows="3" placeholder="Opcjonalnie"></textarea></label>
+        <div class="order-summary" id="orderSummary"></div>
+        <button class="checkout-btn" type="submit">🚀 Wyślij zamówienie</button>
+        <p class="form-note">Nie podawaj haseł ani kodów płatniczych w formularzu.</p>
+        <div id="formStatus"></div>
+      </form>
+    </div>
+  </div>
+
+  <footer><span>© 2026 Kupujemy</span><a href="https://discord.gg/yXUzU44Pu" target="_blank" rel="noopener">Discord →</a></footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
