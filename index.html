@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Twój Sklep — Konfiguracje Discord i Minecraft</title>
+    <title>Twój Sklep</title>
 
     <style>
         * {
@@ -21,10 +21,10 @@
         body {
             font-family: Arial, Helvetica, sans-serif;
             background:
-                radial-gradient(circle at 20% 10%, rgba(105, 45, 255, 0.15), transparent 30%),
-                radial-gradient(circle at 80% 20%, rgba(55, 20, 120, 0.12), transparent 30%),
+                radial-gradient(circle at 20% 0%, #6d35d822, transparent 30%),
+                radial-gradient(circle at 80% 20%, #4b1c8520, transparent 30%),
                 #07070d;
-            color: #fff;
+            color: white;
             min-height: 100vh;
         }
 
@@ -33,16 +33,16 @@
         }
 
         /* =========================
-           NAVBAR
+           MENU
         ========================= */
 
-        nav {
+        header {
             position: sticky;
             top: 0;
             z-index: 1000;
 
-            width: 100%;
             height: 76px;
+            width: 100%;
 
             display: flex;
             align-items: center;
@@ -50,61 +50,52 @@
 
             padding: 0 5%;
 
-            background: rgba(7, 7, 13, 0.92);
-            border-bottom: 1px solid rgba(150, 80, 255, 0.18);
-            backdrop-filter: blur(14px);
+            background: rgba(7, 7, 13, 0.94);
+            border-bottom: 1px solid #282033;
+            backdrop-filter: blur(15px);
         }
 
         .logo {
-            font-size: 24px;
+            font-size: 23px;
             font-weight: 900;
             letter-spacing: 1px;
         }
 
         .logo span {
-            color: #8b4dff;
+            color: #9855ff;
         }
 
-        .nav-links {
+        nav {
             display: flex;
-            gap: 35px;
-            align-items: center;
+            gap: 30px;
         }
 
-        .nav-links a {
+        nav a {
             color: #aaa;
             text-decoration: none;
-            font-weight: 600;
+            font-weight: 700;
             transition: 0.2s;
         }
 
-        .nav-links a:hover {
-            color: #9b5cff;
+        nav a:hover {
+            color: #9855ff;
         }
 
         .cart-button {
-            border: 1px solid #3b285b;
-            background: #111019;
+            background: #15121d;
+            border: 1px solid #3b2a52;
             color: white;
-            padding: 12px 18px;
-            border-radius: 12px;
+            border-radius: 11px;
+            padding: 11px 17px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 800;
         }
 
         .cart-count {
-            display: inline-flex;
-            justify-content: center;
-            align-items: center;
-
-            min-width: 23px;
-            height: 23px;
-
-            margin-left: 7px;
-            padding: 0 6px;
-
-            border-radius: 50px;
-            background: #7c3cff;
+            background: #7d3cff;
+            padding: 3px 8px;
+            border-radius: 20px;
+            margin-left: 5px;
             font-size: 12px;
         }
 
@@ -112,39 +103,32 @@
            BANER
         ========================= */
 
-        .banner-wrapper {
+        .banner-container {
             width: 100%;
-            padding: 25px 3% 10px;
+            padding: 25px 3% 0;
         }
 
-        .banner {
+        .banner-container img {
+            display: block;
+
             width: 100%;
-            max-width: 1600px;
+            max-width: 1800px;
+
+            height: auto;
+            max-height: 600px;
+
             margin: 0 auto;
 
-            min-height: 300px;
+            object-fit: cover;
+            object-position: center;
 
             border-radius: 18px;
-            overflow: hidden;
 
-            border: 1px solid rgba(139, 77, 255, 0.45);
-
-            background:
-                linear-gradient(
-                    90deg,
-                    rgba(10, 5, 25, 0.25),
-                    rgba(10, 5, 25, 0.05)
-                ),
-                url("banner.png") center center / cover no-repeat;
+            border: 1px solid #59318b;
 
             box-shadow:
-                0 0 50px rgba(105, 40, 255, 0.18),
-                inset 0 0 60px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Jeśli banera nie ma, pokazuje się estetyczne tło */
-        .banner:has(img) {
-            background: none;
+                0 0 60px rgba(105, 45, 210, 0.2),
+                0 25px 80px rgba(0, 0, 0, 0.45);
         }
 
         /* =========================
@@ -153,30 +137,30 @@
 
         .hero {
             text-align: center;
-            padding: 55px 20px 35px;
+            padding: 65px 20px 45px;
         }
 
         .hero small {
-            color: #985cff;
-            font-weight: 800;
-            text-transform: uppercase;
+            color: #9b5cff;
+            font-weight: 900;
             letter-spacing: 3px;
+            text-transform: uppercase;
         }
 
         .hero h1 {
-            margin-top: 15px;
-            font-size: clamp(36px, 6vw, 70px);
+            margin-top: 16px;
+            font-size: clamp(38px, 6vw, 70px);
             line-height: 1.05;
             font-weight: 900;
         }
 
         .hero h1 span {
-            color: #8b4dff;
+            color: #9655ff;
         }
 
         .hero p {
             max-width: 700px;
-            margin: 20px auto 0;
+            margin: 22px auto 0;
             color: #999;
             font-size: 17px;
             line-height: 1.7;
@@ -189,63 +173,56 @@
         .categories {
             display: flex;
             justify-content: center;
-            gap: 10px;
             flex-wrap: wrap;
+            gap: 10px;
 
-            margin: 15px auto 45px;
             padding: 0 20px;
+            margin-bottom: 50px;
         }
 
-        .category-btn {
-            border: 1px solid #34234d;
-            background: #0e0d15;
+        .category {
+            background: #0e0d14;
             color: #aaa;
-
+            border: 1px solid #342646;
             padding: 12px 24px;
-            border-radius: 12px;
-
+            border-radius: 11px;
             cursor: pointer;
-            font-weight: 700;
-
-            transition: 0.2s;
+            font-weight: 800;
         }
 
-        .category-btn:hover,
-        .category-btn.active {
-            background: #6d35d8;
-            border-color: #8d51ff;
-            color: #fff;
+        .category:hover,
+        .category.active {
+            background: #7139d9;
+            border-color: #9256ff;
+            color: white;
         }
 
         /* =========================
-           SEKCJA
+           SEKCJE
         ========================= */
 
         .section {
             width: 90%;
             max-width: 1250px;
-            margin: 0 auto 80px;
+            margin: 0 auto 85px;
         }
 
-        .section-heading {
-            margin-bottom: 25px;
-        }
-
-        .section-heading small {
-            color: #8f52ff;
+        .section-title small {
+            color: #9655ff;
             text-transform: uppercase;
-            font-weight: 800;
             letter-spacing: 2px;
+            font-weight: 900;
         }
 
-        .section-heading h2 {
-            font-size: 34px;
-            margin-top: 7px;
+        .section-title h2 {
+            font-size: 35px;
+            margin-top: 8px;
         }
 
-        .section-heading p {
+        .section-title p {
             color: #888;
             margin-top: 8px;
+            margin-bottom: 25px;
         }
 
         /* =========================
@@ -255,212 +232,205 @@
         .products {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 22px;
+            gap: 20px;
         }
 
-        .product-card {
-            background: linear-gradient(145deg, #111019, #0b0a10);
-            border: 1px solid #282333;
+        .product {
+            background: linear-gradient(145deg, #12111a, #0b0a10);
+            border: 1px solid #292331;
             border-radius: 18px;
-            padding: 22px;
-
-            transition: 0.25s;
+            padding: 21px;
 
             display: flex;
             flex-direction: column;
+
+            transition: 0.25s;
         }
 
-        .product-card:hover {
+        .product:hover {
             transform: translateY(-5px);
-            border-color: #7441c4;
-            box-shadow: 0 15px 40px rgba(100, 45, 180, 0.15);
+            border-color: #7544c0;
+            box-shadow: 0 20px 50px #0008;
         }
 
         .product-icon {
-            height: 150px;
+            height: 145px;
 
             display: flex;
-            align-items: center;
             justify-content: center;
+            align-items: center;
 
             border-radius: 13px;
-            margin-bottom: 22px;
 
             background:
                 radial-gradient(
                     circle,
-                    rgba(117, 61, 220, 0.20),
-                    rgba(8, 8, 13, 0.9) 65%
-                );
+                    #7c3aed28,
+                    transparent 65%
+                ),
+                #09090e;
 
-            font-size: 65px;
+            font-size: 62px;
+            margin-bottom: 20px;
         }
 
         .product-category {
-            color: #9256ff;
-            font-size: 13px;
-            font-weight: 800;
-            text-transform: uppercase;
+            color: #9855ff;
+            font-size: 12px;
+            font-weight: 900;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .product h3 {
+            font-size: 22px;
             margin-bottom: 12px;
         }
 
-        .product-card h3 {
-            font-size: 23px;
-            margin-bottom: 13px;
-        }
-
-        .product-card p {
-            color: #92909a;
+        .product-description {
+            color: #999;
             line-height: 1.6;
-            min-height: 52px;
         }
 
         .features {
             list-style: none;
-            margin: 18px 0;
-            color: #b5b3bd;
+            color: #b3b0bb;
             line-height: 1.65;
+            margin: 18px 0;
             flex: 1;
         }
 
         .features li {
-            margin-bottom: 7px;
+            margin-bottom: 5px;
         }
 
         .features li::before {
             content: "•";
-            color: #9755ff;
-            font-weight: bold;
-            margin-right: 9px;
+            color: #9855ff;
+            margin-right: 8px;
+            font-weight: 900;
         }
 
         .product-bottom {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            justify-content: space-between;
             gap: 12px;
             margin-top: auto;
         }
 
         .price {
-            font-size: 24px;
+            font-size: 23px;
             font-weight: 900;
-            white-space: nowrap;
         }
 
-        .add-button {
-            border: 1px solid #48316b;
-            background: #15111e;
+        .add {
+            background: #16121f;
+            border: 1px solid #4a3267;
             color: white;
 
-            padding: 12px 16px;
+            padding: 12px 15px;
             border-radius: 10px;
 
             cursor: pointer;
             font-weight: 800;
-
-            transition: 0.2s;
         }
 
-        .add-button:hover {
-            background: #783ee0;
-            border-color: #9d65ff;
+        .add:hover {
+            background: #773bdd;
+            border-color: #9855ff;
         }
 
         /* =========================
-           INFORMACJE
+           INFORMACJA
         ========================= */
 
-        .info-box {
-            margin-top: 35px;
-            padding: 25px;
+        .info {
+            margin-top: 25px;
+            padding: 20px;
 
             background: #0e0d14;
-            border: 1px solid #282333;
-            border-radius: 15px;
+            border: 1px solid #292331;
+            border-radius: 14px;
 
             color: #999;
-            line-height: 1.7;
             text-align: center;
+            line-height: 1.6;
         }
 
         /* =========================
-           FOOTER
+           STOPKA
         ========================= */
 
         footer {
-            border-top: 1px solid #211c2b;
-            padding: 35px 20px;
             text-align: center;
+            border-top: 1px solid #24202c;
+            padding: 35px 20px;
             color: #666;
         }
 
-        footer strong {
-            color: #9256ff;
+        footer span {
+            color: #9655ff;
+            font-weight: 900;
         }
 
         /* =========================
-           MODAL
+           KOSZYK
         ========================= */
 
-        .modal {
+        #cartModal {
+            display: none;
+
             position: fixed;
             inset: 0;
 
-            background: rgba(0, 0, 0, 0.78);
+            z-index: 5000;
+
+            background: rgba(0, 0, 0, 0.8);
             backdrop-filter: blur(8px);
 
-            display: none;
             align-items: center;
             justify-content: center;
 
             padding: 20px;
-
-            z-index: 5000;
         }
 
-        .modal.show {
+        #cartModal.open {
             display: flex;
         }
 
-        .modal-box {
+        .cart-box {
             width: 100%;
             max-width: 520px;
 
             background: #111019;
-            border: 1px solid #35274a;
+            border: 1px solid #3b2a4e;
             border-radius: 18px;
 
-            padding: 28px;
+            padding: 27px;
 
-            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.6);
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .modal-header {
+        .cart-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
 
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
 
-        .modal-header h2 {
+        .cart-header h2 {
             font-size: 28px;
         }
 
         .close {
-            border: 0;
             background: transparent;
+            border: 0;
             color: #aaa;
-
             font-size: 30px;
             cursor: pointer;
-        }
-
-        .cart-items {
-            max-height: 280px;
-            overflow-y: auto;
-            margin-bottom: 20px;
         }
 
         .cart-item {
@@ -468,72 +438,73 @@
             align-items: center;
             justify-content: space-between;
 
-            gap: 15px;
-
             padding: 15px 0;
+
             border-bottom: 1px solid #28232f;
         }
 
         .cart-item-name {
-            font-weight: 700;
-        }
-
-        .cart-item-price {
-            color: #9b5cff;
             font-weight: 800;
         }
 
-        .remove-item {
-            border: 0;
+        .cart-item-price {
+            color: #9956ff;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .remove {
             background: transparent;
-            color: #ff5570;
+            border: 0;
+            color: #ff647d;
             cursor: pointer;
-            font-weight: bold;
+            font-weight: 800;
         }
 
         .cart-total {
             display: flex;
             justify-content: space-between;
 
-            padding: 18px 0;
+            margin: 20px 0;
 
             font-size: 21px;
             font-weight: 900;
         }
 
-        .checkout-button {
+        .checkout {
             width: 100%;
-            border: 0;
 
-            background: linear-gradient(90deg, #7139d9, #974cff);
+            background: linear-gradient(
+                90deg,
+                #7139d9,
+                #9851ff
+            );
+
+            border: 0;
             color: white;
 
             padding: 15px;
             border-radius: 11px;
 
             cursor: pointer;
-            font-size: 16px;
             font-weight: 900;
-        }
-
-        .checkout-button:hover {
-            filter: brightness(1.1);
+            font-size: 16px;
         }
 
         /* =========================
            FORMULARZ
         ========================= */
 
-        .order-form {
+        #orderForm {
             display: none;
         }
 
-        .order-form.show {
+        #orderForm.show {
             display: block;
         }
 
-        .order-form input,
-        .order-form textarea {
+        #orderForm input,
+        #orderForm textarea {
             width: 100%;
 
             background: #08080d;
@@ -543,97 +514,104 @@
             color: white;
 
             padding: 14px;
-            margin-bottom: 13px;
+            margin-bottom: 12px;
 
+            font-family: inherit;
             outline: none;
         }
 
-        .order-form input:focus,
-        .order-form textarea:focus {
-            border-color: #8246e9;
-        }
-
-        .order-form textarea {
+        #orderForm textarea {
             min-height: 110px;
             resize: vertical;
         }
 
-        .order-error {
-            display: none;
-
-            margin-top: 12px;
-            padding: 12px;
-
-            background: rgba(255, 50, 80, 0.1);
-            border: 1px solid rgba(255, 50, 80, 0.3);
-
-            color: #ff7589;
-            border-radius: 10px;
+        #orderForm input:focus,
+        #orderForm textarea:focus {
+            border-color: #8548e7;
         }
 
-        .order-success {
+        #error {
+            color: #ff7588;
+            margin-top: 12px;
+            font-weight: 700;
+        }
+
+        #success {
             display: none;
             text-align: center;
             padding: 30px 10px;
         }
 
-        .order-success .success-icon {
-            font-size: 50px;
-            margin-bottom: 15px;
+        #success .icon {
+            font-size: 55px;
         }
 
-        .order-success h3 {
+        #success h3 {
             font-size: 25px;
-            margin-bottom: 10px;
+            margin: 12px 0;
         }
 
-        .order-success p {
+        #success p {
             color: #999;
             line-height: 1.6;
         }
 
         /* =========================
-           RESPONSIVE
+           TELEFON
         ========================= */
 
         @media (max-width: 900px) {
-            .products {
-                grid-template-columns: repeat(2, 1fr);
-            }
 
-            .nav-links {
-                display: none;
-            }
-
-            .banner {
-                min-height: 220px;
-            }
-        }
-
-        @media (max-width: 600px) {
             nav {
                 padding: 0 20px;
             }
 
+            nav nav {
+                display: none;
+            }
+
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .banner-container {
+                padding: 15px 15px 0;
+            }
+
+            .banner-container img {
+                border-radius: 13px;
+            }
+        }
+
+        @media (max-width: 600px) {
+
+            nav {
+                height: 68px;
+            }
+
+            nav > nav {
+                display: none;
+            }
+
             .logo {
-                font-size: 20px;
+                font-size: 19px;
             }
 
-            .banner-wrapper {
-                padding: 12px;
+            .banner-container {
+                padding: 10px 10px 0;
             }
 
-            .banner {
-                min-height: 180px;
-                border-radius: 12px;
+            .banner-container img {
+                max-height: 300px;
+                border-radius: 10px;
             }
 
             .hero {
-                padding-top: 35px;
+                padding: 45px 15px 35px;
             }
 
             .hero h1 {
-                font-size: 38px;
+                font-size: 39px;
             }
 
             .products {
@@ -645,11 +623,12 @@
             }
 
             .product-bottom {
-                align-items: center;
+                flex-direction: column;
+                align-items: stretch;
             }
 
-            .price {
-                font-size: 21px;
+            .add {
+                width: 100%;
             }
         }
     </style>
@@ -658,32 +637,41 @@
 <body>
 
     <!-- =========================
-         NAVIGACJA
+         MENU
     ========================= -->
 
-    <nav>
+    <header>
+
         <div class="logo">
             TWÓJ<span>SKLEP</span>
         </div>
 
-        <div class="nav-links">
+        <nav>
             <a href="#minecraft">Minecraft</a>
             <a href="#discord">Discord</a>
-        </div>
+        </nav>
 
         <button class="cart-button" onclick="openCart()">
             🛒 Koszyk
             <span class="cart-count" id="cartCount">0</span>
         </button>
-    </nav>
+
+    </header>
 
 
     <!-- =========================
          BANER
+         PLIK MUSI NAZYWAĆ SIĘ:
+         banner.png
     ========================= -->
 
-    <div class="banner-wrapper">
-        <div class="banner"></div>
+    <div class="banner-container">
+
+        <img
+            src="banner.png"
+            alt="Baner sklepu"
+        >
+
     </div>
 
 
@@ -692,16 +680,20 @@
     ========================= -->
 
     <section class="hero">
-        <small>Profesjonalne usługi</small>
+
+        <small>● OFICJALNY SKLEP</small>
 
         <h1>
-            Twój sklep <span>Discord & Minecraft</span>
+            Wybierz.
+            Zamów.
+            <span>Ciesz się.</span>
         </h1>
 
         <p>
-            Gotowe konta Minecraft oraz profesjonalne konfiguracje
-            serwerów Discord. Wybierz usługę i złóż zamówienie.
+            Konta Minecraft oraz profesjonalne konfiguracje
+            serwerów Discord wykonane z dbałością o szczegóły.
         </p>
+
     </section>
 
 
@@ -710,17 +702,28 @@
     ========================= -->
 
     <div class="categories">
-        <button class="category-btn active" onclick="showCategory('all', this)">
+
+        <button
+            class="category active"
+            onclick="filterCategory('all', this)"
+        >
             WSZYSTKO
         </button>
 
-        <button class="category-btn" onclick="showCategory('minecraft', this)">
+        <button
+            class="category"
+            onclick="filterCategory('minecraft', this)"
+        >
             MINECRAFT
         </button>
 
-        <button class="category-btn" onclick="showCategory('discord', this)">
+        <button
+            class="category"
+            onclick="filterCategory('discord', this)"
+        >
             DISCORD
         </button>
+
     </div>
 
 
@@ -728,18 +731,85 @@
          MINECRAFT
     ========================= -->
 
-    <section class="section category-section" id="minecraft" data-category="minecraft">
+    <section
+        class="section"
+        id="minecraft"
+        data-category="minecraft"
+    >
 
-        <div class="section-heading">
-            <small>Minecraft</small>
+        <div class="section-title">
+
+            <small>● MINECRAFT</small>
+
             <h2>Konta Minecraft</h2>
-            <p>Wybierz odpowiedni poziom dostępu do konta.</p>
+
+            <p>
+                Wybierz odpowiedni poziom dostępu do konta.
+            </p>
+
         </div>
+
 
         <div class="products">
 
             <!-- KOSZT KONTA -->
-            <article class="product-card">
+
+            <article class="product">
+
+                <div class="product-icon">
+                    ⛏️
+                </div>
+
+                <div class="product-category">
+                    MINECRAFT
+                </div>
+
+                <h3>KOSZT KONTA</h3>
+
+                <p class="product-description">
+                    Konto Minecraft bez dostępu do maila.
+                </p>
+
+                <ul class="features">
+
+                    <li>
+                        Konto bez dostępu do maila
+                    </li>
+
+                    <li>
+                        Gotowe do użycia
+                    </li>
+
+                    <li>
+                        Instrukcję aktywacji otrzymasz przed zakupem
+                    </li>
+
+                </ul>
+
+                <div class="product-bottom">
+
+                    <div class="price">
+                        25 zł
+                    </div>
+
+                    <button
+                        class="add"
+                        onclick="addToCart(
+                            'Minecraft — KOSZT KONTA',
+                            25
+                        )"
+                    >
+                        Dodaj do koszyka
+                    </button>
+
+                </div>
+
+            </article>
+
+
+            <!-- PEŁNY DOSTĘP -->
+
+            <article class="product">
 
                 <div class="product-icon">
                     💎
@@ -749,72 +819,56 @@
                     MINECRAFT
                 </div>
 
-                <h3>KOSZT KONTA</h3>
-
-                <p>
-                    Konto Minecraft bez dostępu do maila.
-                </p>
-
-                <ul class="features">
-                    <li>Konto bez dostępu do maila</li>
-                    <li>Gotowe do użycia</li>
-                    <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
-                </ul>
-
-                <div class="product-bottom">
-                    <div class="price">25 zł</div>
-
-                    <button
-                        class="add-button"
-                        onclick="addToCart('Minecraft — Koszt konta', 25)"
-                    >
-                        Dodaj do koszyka
-                    </button>
-                </div>
-
-            </article>
-
-
-            <!-- PEŁNY DOSTĘP -->
-            <article class="product-card">
-
-                <div class="product-icon">
-                    🟩
-                </div>
-
-                <div class="product-category">
-                    MINECRAFT
-                </div>
-
                 <h3>PEŁNY DOSTĘP</h3>
 
-                <p>
-                    Pełny dostęp do konta Minecraft wraz z mailem.
+                <p class="product-description">
+                    Pełny dostęp do konta Minecraft oraz maila.
                 </p>
 
                 <ul class="features">
-                    <li>Pełny dostęp do konta</li>
-                    <li>Dostęp również do maila</li>
-                    <li>Możliwość pełnego zarządzania kontem</li>
-                    <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
+
+                    <li>
+                        Pełny dostęp do konta
+                    </li>
+
+                    <li>
+                        Dostęp również do maila
+                    </li>
+
+                    <li>
+                        Możliwość pełnego zarządzania kontem
+                    </li>
+
+                    <li>
+                        Instrukcję aktywacji otrzymasz przed zakupem
+                    </li>
+
                 </ul>
 
                 <div class="product-bottom">
-                    <div class="price">35 zł</div>
+
+                    <div class="price">
+                        35 zł
+                    </div>
 
                     <button
-                        class="add-button"
-                        onclick="addToCart('Minecraft — Pełny dostęp', 35)"
+                        class="add"
+                        onclick="addToCart(
+                            'Minecraft — PEŁNY DOSTĘP',
+                            35
+                        )"
                     >
                         Dodaj do koszyka
                     </button>
+
                 </div>
 
             </article>
 
         </div>
 
-        <div class="info-box">
+
+        <div class="info">
             🔐 Instrukcję aktywacji otrzymasz przed zakupem.
         </div>
 
@@ -825,18 +879,30 @@
          DISCORD
     ========================= -->
 
-    <section class="section category-section" id="discord" data-category="discord">
+    <section
+        class="section"
+        id="discord"
+        data-category="discord"
+    >
 
-        <div class="section-heading">
-            <small>Discord</small>
+        <div class="section-title">
+
+            <small>● DISCORD</small>
+
             <h2>Konfiguracje Discord</h2>
-            <p>Wybierz poziom konfiguracji odpowiedni dla Twojego serwera.</p>
+
+            <p>
+                Wybierz konfigurację dopasowaną do Twojego serwera.
+            </p>
+
         </div>
+
 
         <div class="products">
 
             <!-- START -->
-            <article class="product-card">
+
+            <article class="product">
 
                 <div class="product-icon">
                     ⚙️
@@ -848,34 +914,44 @@
 
                 <h3>START</h3>
 
-                <p>
+                <p class="product-description">
                     Podstawowa konfiguracja serwera Discord.
                 </p>
 
                 <ul class="features">
+
                     <li>Podstawowe boty</li>
                     <li>Estetyczny wygląd</li>
                     <li>Kanały i kategorie</li>
                     <li>Podstawowe role</li>
                     <li>Podstawowa konfiguracja</li>
+
                 </ul>
 
                 <div class="product-bottom">
-                    <div class="price">20 zł</div>
+
+                    <div class="price">
+                        20 zł
+                    </div>
 
                     <button
-                        class="add-button"
-                        onclick="addToCart('Discord — START', 20)"
+                        class="add"
+                        onclick="addToCart(
+                            'Discord — START',
+                            20
+                        )"
                     >
                         Dodaj do koszyka
                     </button>
+
                 </div>
 
             </article>
 
 
             <!-- PRO -->
-            <article class="product-card">
+
+            <article class="product">
 
                 <div class="product-icon">
                     🤖
@@ -887,34 +963,44 @@
 
                 <h3>PRO</h3>
 
-                <p>
+                <p class="product-description">
                     Rozbudowana konfiguracja dla bardziej wymagających serwerów.
                 </p>
 
                 <ul class="features">
+
                     <li>Więcej botów</li>
                     <li>Średnio zaawansowana konfiguracja</li>
                     <li>Estetyczne kanały</li>
                     <li>Role dopasowane do klienta</li>
                     <li>Rozbudowana organizacja serwera</li>
+
                 </ul>
 
                 <div class="product-bottom">
-                    <div class="price">40 zł</div>
+
+                    <div class="price">
+                        40 zł
+                    </div>
 
                     <button
-                        class="add-button"
-                        onclick="addToCart('Discord — PRO', 40)"
+                        class="add"
+                        onclick="addToCart(
+                            'Discord — PRO',
+                            40
+                        )"
                     >
                         Dodaj do koszyka
                     </button>
+
                 </div>
 
             </article>
 
 
             <!-- FULL -->
-            <article class="product-card">
+
+            <article class="product">
 
                 <div class="product-icon">
                     🛡️
@@ -926,28 +1012,37 @@
 
                 <h3>FULL</h3>
 
-                <p>
+                <p class="product-description">
                     Kompleksowa, profesjonalna konfiguracja całego serwera.
                 </p>
 
                 <ul class="features">
+
                     <li>Pełna konfiguracja serwera</li>
                     <li>Zaawansowane boty i systemy</li>
                     <li>Profesjonalny wygląd</li>
                     <li>Role oraz kanały dopasowane do klienta</li>
                     <li>Rozbudowane systemy serwerowe</li>
                     <li>Indywidualne podejście do zamówienia</li>
+
                 </ul>
 
                 <div class="product-bottom">
-                    <div class="price">60 zł</div>
+
+                    <div class="price">
+                        60 zł
+                    </div>
 
                     <button
-                        class="add-button"
-                        onclick="addToCart('Discord — FULL', 60)"
+                        class="add"
+                        onclick="addToCart(
+                            'Discord — FULL',
+                            60
+                        )"
                     >
                         Dodaj do koszyka
                     </button>
+
                 </div>
 
             </article>
@@ -962,9 +1057,13 @@
     ========================= -->
 
     <footer>
-        <strong>TWÓJ SKLEP</strong>
+
+        <span>TWÓJSKLEP</span>
+
         <br><br>
-        Profesjonalne konfiguracje Discord oraz usługi Minecraft.
+
+        © 2026 — Wszystkie prawa zastrzeżone.
+
     </footer>
 
 
@@ -972,98 +1071,118 @@
          KOSZYK
     ========================= -->
 
-    <div class="modal" id="cartModal">
+    <div id="cartModal">
 
-        <div class="modal-box">
+        <div class="cart-box">
 
-            <div class="modal-header">
+            <div class="cart-header">
+
                 <h2>Koszyk</h2>
 
-                <button class="close" onclick="closeCart()">
+                <button
+                    class="close"
+                    onclick="closeCart()"
+                >
                     ×
                 </button>
+
             </div>
+
 
             <div id="cartView">
 
-                <div class="cart-items" id="cartItems">
-                </div>
+                <div id="cartItems"></div>
 
                 <div class="cart-total">
-                    <span>Razem:</span>
-                    <span id="cartTotal">0 zł</span>
+
+                    <span>
+                        Razem
+                    </span>
+
+                    <span id="cartTotal">
+                        0 zł
+                    </span>
+
                 </div>
 
                 <button
-                    class="checkout-button"
+                    class="checkout"
                     onclick="showOrderForm()"
                 >
-                    Przejdź do zamówienia 🚀
+                    Złóż zamówienie →
                 </button>
 
             </div>
 
 
-            <!-- =========================
-                 FORMULARZ ZAMÓWIENIA
-            ========================= -->
+            <!-- FORMULARZ -->
 
-            <div class="order-form" id="orderForm">
+            <div id="orderForm">
 
-                <div class="modal-header">
-                    <h2>Złóż zamówienie</h2>
+                <div class="cart-header">
 
-                    <button class="close" onclick="closeCart()">
+                    <h2>
+                        Zamówienie
+                    </h2>
+
+                    <button
+                        class="close"
+                        onclick="closeCart()"
+                    >
                         ×
                     </button>
+
                 </div>
 
-                <input
-                    type="text"
-                    id="customerName"
-                    placeholder="Nick Discord"
-                    required
-                >
 
                 <input
+                    id="customerName"
                     type="text"
-                    id="customerEmail"
-                    placeholder="E-mail"
-                    required
+                    placeholder="Nick Discord"
                 >
+
+
+                <input
+                    id="customerContact"
+                    type="text"
+                    placeholder="Discord / e-mail"
+                >
+
 
                 <textarea
                     id="customerMessage"
-                    placeholder="Dodatkowe informacje do zamówienia..."
+                    placeholder="Wiadomość / dodatkowe informacje"
                 ></textarea>
 
+
                 <button
-                    class="checkout-button"
+                    class="checkout"
                     onclick="sendOrder()"
                 >
                     Wyślij zamówienie 🚀
                 </button>
 
-                <div class="order-error" id="orderError"></div>
+
+                <div id="error"></div>
 
             </div>
 
 
-            <!-- =========================
-                 SUKCES
-            ========================= -->
+            <!-- SUKCES -->
 
-            <div class="order-success" id="orderSuccess">
+            <div id="success">
 
-                <div class="success-icon">
+                <div class="icon">
                     ✅
                 </div>
 
-                <h3>Zamówienie wysłane!</h3>
+                <h3>
+                    Zamówienie wysłane!
+                </h3>
 
                 <p>
-                    Twoje zamówienie zostało przesłane.
-                    Skontaktujemy się z Tobą w celu dalszej realizacji.
+                    Zamówienie zostało przesłane.
+                    Sprawdź kanał zamówień na Discordzie.
                 </p>
 
             </div>
@@ -1082,9 +1201,7 @@
         let cart = [];
 
 
-        /* =========================
-           KOSZYK
-        ========================= */
+        /* DODAWANIE DO KOSZYKA */
 
         function addToCart(name, price) {
 
@@ -1099,30 +1216,38 @@
         }
 
 
-        function removeFromCart(index) {
-
-            cart.splice(index, 1);
-
-            updateCart();
-        }
-
+        /* AKTUALIZACJA KOSZYKA */
 
         function updateCart() {
 
-            const items = document.getElementById("cartItems");
-            const count = document.getElementById("cartCount");
-            const total = document.getElementById("cartTotal");
+            const items =
+                document.getElementById("cartItems");
 
-            count.textContent = cart.length;
+            const count =
+                document.getElementById("cartCount");
+
+            const total =
+                document.getElementById("cartTotal");
+
+
+            count.textContent =
+                cart.length;
+
 
             items.innerHTML = "";
 
+
             let sum = 0;
+
 
             if (cart.length === 0) {
 
                 items.innerHTML = `
-                    <p style="color:#777;text-align:center;padding:25px 0;">
+                    <p style="
+                        text-align:center;
+                        color:#777;
+                        padding:30px 0;
+                    ">
                         Koszyk jest pusty.
                     </p>
                 `;
@@ -1133,92 +1258,127 @@
 
                     sum += item.price;
 
-                    const element = document.createElement("div");
 
-                    element.className = "cart-item";
+                    const row =
+                        document.createElement("div");
 
-                    element.innerHTML = `
+
+                    row.className =
+                        "cart-item";
+
+
+                    row.innerHTML = `
+
                         <div>
+
                             <div class="cart-item-name">
-                                ${escapeHtml(item.name)}
+                                ${item.name}
                             </div>
 
                             <div class="cart-item-price">
-                                ${item.price.toFixed(2).replace(".", ",")} zł
+                                ${item.price} zł
                             </div>
+
                         </div>
 
+
                         <button
-                            class="remove-item"
-                            onclick="removeFromCart(${index})"
+                            class="remove"
+                            onclick="removeItem(${index})"
                         >
                             Usuń
                         </button>
+
                     `;
 
-                    items.appendChild(element);
+
+                    items.appendChild(row);
 
                 });
 
             }
 
+
             total.textContent =
-                sum.toFixed(2).replace(".", ",") + " zł";
+                sum + " zł";
         }
 
 
-        function openCart() {
+        /* USUWANIE */
 
-            document
-                .getElementById("cartModal")
-                .classList.add("show");
+        function removeItem(index) {
 
-            document
-                .getElementById("cartView")
-                .style.display = "block";
-
-            document
-                .getElementById("orderForm")
-                .classList.remove("show");
-
-            document
-                .getElementById("orderSuccess")
-                .style.display = "none";
+            cart.splice(index, 1);
 
             updateCart();
         }
 
 
+        /* OTWARCIE KOSZYKA */
+
+        function openCart() {
+
+            document
+                .getElementById("cartModal")
+                .classList.add("open");
+
+
+            document
+                .getElementById("cartView")
+                .style.display = "block";
+
+
+            document
+                .getElementById("orderForm")
+                .classList.remove("show");
+
+
+            document
+                .getElementById("success")
+                .style.display = "none";
+
+
+            updateCart();
+        }
+
+
+        /* ZAMKNIĘCIE */
+
         function closeCart() {
 
             document
                 .getElementById("cartModal")
-                .classList.remove("show");
+                .classList.remove("open");
         }
 
 
-        /* =========================
-           FORMULARZ
-        ========================= */
+        /* PRZEJŚCIE DO FORMULARZA */
 
         function showOrderForm() {
 
             if (cart.length === 0) {
 
-                alert("Najpierw dodaj produkt do koszyka.");
+                alert(
+                    "Najpierw dodaj produkt do koszyka."
+                );
 
                 return;
             }
+
 
             document
                 .getElementById("cartView")
                 .style.display = "none";
 
+
             document
                 .getElementById("orderForm")
                 .classList.add("show");
+
         }
 
+
+        /* WYSYŁANIE ZAMÓWIENIA */
 
         async function sendOrder() {
 
@@ -1228,11 +1388,13 @@
                     .value
                     .trim();
 
-            const email =
+
+            const contact =
                 document
-                    .getElementById("customerEmail")
+                    .getElementById("customerContact")
                     .value
                     .trim();
+
 
             const message =
                 document
@@ -1240,24 +1402,27 @@
                     .value
                     .trim();
 
-            const errorBox =
-                document.getElementById("orderError");
+
+            const error =
+                document.getElementById("error");
 
 
-            errorBox.style.display = "none";
+            error.textContent = "";
 
 
             if (!name) {
 
-                showError("Wpisz swój nick Discord.");
+                error.textContent =
+                    "❌ Wpisz nick Discord.";
 
                 return;
             }
 
 
-            if (!email) {
+            if (!contact) {
 
-                showError("Wpisz swój adres e-mail.");
+                error.textContent =
+                    "❌ Wpisz kontakt.";
 
                 return;
             }
@@ -1265,82 +1430,62 @@
 
             if (cart.length === 0) {
 
-                showError("Koszyk jest pusty.");
+                error.textContent =
+                    "❌ Koszyk jest pusty.";
 
                 return;
             }
 
 
-            const total = cart.reduce(
-                (sum, item) => sum + item.price,
-                0
-            );
-
-
-            const order = {
-
-                customer: {
-                    discord: name,
-                    email: email
-                },
-
-                items: cart,
-
-                total: total,
-
-                message: message,
-
-                createdAt: new Date().toISOString()
-
-            };
+            const total =
+                cart.reduce(
+                    (sum, item) =>
+                        sum + item.price,
+                    0
+                );
 
 
             try {
 
-                /*
-                 * Wysyłamy zamówienie do Twojego server.js.
-                 *
-                 * Endpoint:
-                 * POST /api/order
-                 */
+                const response =
+                    await fetch(
+                        "/api/order",
+                        {
+                            method: "POST",
 
-                const response = await fetch("/api/order", {
+                            headers: {
+                                "Content-Type":
+                                    "application/json"
+                            },
 
-                    method: "POST",
+                            body: JSON.stringify({
 
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
+                                customer: {
+                                    name: name,
+                                    contact: contact,
+                                    message: message
+                                },
 
-                    body: JSON.stringify(order)
+                                cart: cart.map(item => ({
+                                    name: item.name,
+                                    price: item.price,
+                                    quantity: 1
+                                })),
 
-                });
+                                total: total
 
-
-                const text =
-                    await response.text();
-
-
-                let data;
-
-
-                try {
-
-                    data = JSON.parse(text);
-
-                } catch {
-
-                    throw new Error(
-                        "Serwer zwrócił nieprawidłową odpowiedź."
+                            })
+                        }
                     );
 
-                }
+
+                const data =
+                    await response.json();
 
 
                 if (!response.ok) {
 
                     throw new Error(
-                        data.message ||
                         data.error ||
                         "Nie udało się wysłać zamówienia."
                     );
@@ -1352,8 +1497,9 @@
                     .getElementById("orderForm")
                     .classList.remove("show");
 
+
                 document
-                    .getElementById("orderSuccess")
+                    .getElementById("success")
                     .style.display = "block";
 
 
@@ -1362,46 +1508,36 @@
                 updateCart();
 
 
-            } catch (error) {
+            } catch (err) {
 
-                showError(
-                    error.message ||
-                    "Wystąpił błąd podczas wysyłania zamówienia."
-                );
+                error.textContent =
+                    "❌ " +
+                    (
+                        err.message ||
+                        "Wystąpił błąd."
+                    );
 
             }
 
         }
 
 
-        function showError(message) {
+        /* FILTROWANIE */
 
-            const errorBox =
-                document.getElementById("orderError");
-
-            errorBox.textContent = "❌ " + message;
-
-            errorBox.style.display = "block";
-        }
-
-
-        /* =========================
-           FILTROWANIE KATEGORII
-        ========================= */
-
-        function showCategory(category, button) {
+        function filterCategory(category, button) {
 
             document
-                .querySelectorAll(".category-btn")
+                .querySelectorAll(".category")
                 .forEach(btn => {
                     btn.classList.remove("active");
                 });
+
 
             button.classList.add("active");
 
 
             document
-                .querySelectorAll(".category-section")
+                .querySelectorAll("[data-category]")
                 .forEach(section => {
 
                     if (
@@ -1409,11 +1545,13 @@
                         section.dataset.category === category
                     ) {
 
-                        section.style.display = "block";
+                        section.style.display =
+                            "block";
 
                     } else {
 
-                        section.style.display = "none";
+                        section.style.display =
+                            "none";
 
                     }
 
@@ -1422,39 +1560,7 @@
         }
 
 
-        /* =========================
-           ESCAPE HTML
-        ========================= */
-
-        function escapeHtml(text) {
-
-            const div =
-                document.createElement("div");
-
-            div.textContent = text;
-
-            return div.innerHTML;
-        }
-
-
-        /* =========================
-           ZAMYKANIE POZA MODALEM
-        ========================= */
-
-        document
-            .getElementById("cartModal")
-            .addEventListener("click", function(event) {
-
-                if (event.target === this) {
-                    closeCart();
-                }
-
-            });
-
-
-        /* =========================
-           START
-        ========================= */
+        /* START */
 
         updateCart();
 
