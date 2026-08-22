@@ -1,953 +1,893 @@
 <!DOCTYPE html>
 <html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Tanie,pl — Sklep</title>
-
-    <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: Arial, Helvetica, sans-serif;
-            color: #fff;
-            min-height: 100vh;
-            overflow-x: hidden;
-
-            background:
-                radial-gradient(
-                    circle at 0% 20%,
-                    rgba(135, 45, 255, 0.28),
-                    transparent 32%
-                ),
-                radial-gradient(
-                    circle at 100% 30%,
-                    rgba(40, 255, 125, 0.18),
-                    transparent 32%
-                ),
-                radial-gradient(
-                    circle at 50% 100%,
-                    rgba(100, 30, 180, 0.12),
-                    transparent 35%
-                ),
-                #07090b;
-        }
-
-        body::before {
-            content: "";
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: -1;
-
-            background:
-                linear-gradient(
-                    110deg,
-                    rgba(133, 48, 255, 0.06),
-                    transparent 40%,
-                    rgba(40, 255, 130, 0.05)
-                );
-        }
-
-        button {
-            font-family: inherit;
-        }
-
-        /* HEADER */
-
-        header {
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-
-            min-height: 76px;
-
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-
-            padding: 12px 5%;
-
-            background: rgba(6, 8, 10, 0.88);
-            border-bottom: 1px solid rgba(255,255,255,0.08);
-
-            backdrop-filter: blur(18px);
-        }
-
-        .logo {
-            font-size: 25px;
-            font-weight: 950;
-            letter-spacing: -1px;
-        }
-
-        .logo span {
-            color: #55ff91;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 28px;
-        }
-
-        nav a {
-            color: #aaa;
-            text-decoration: none;
-            font-weight: 800;
-            transition: .25s;
-        }
-
-        nav a:hover {
-            color: #63ff9b;
-        }
-
-        .header-right {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .discord-button,
-        .cart-button {
-            border-radius: 11px;
-            padding: 11px 16px;
-            cursor: pointer;
-            font-weight: 900;
-            transition: .25s;
-        }
-
-        .discord-button {
-            color: #fff;
-            text-decoration: none;
-            background: rgba(113, 65, 190, .18);
-            border: 1px solid rgba(140, 90, 255, .45);
-        }
-
-        .discord-button:hover {
-            transform: translateY(-2px);
-            border-color: #8e61ff;
-            box-shadow: 0 0 25px rgba(132, 82, 255, .25);
-        }
-
-        .cart-button {
-            color: #07100a;
-            background: #55ff91;
-            border: 1px solid #55ff91;
-        }
-
-        .cart-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(60,255,130,.25);
-        }
-
-        .cart-count {
-            background: #07100a;
-            color: #55ff91;
-            padding: 3px 7px;
-            border-radius: 20px;
-            margin-left: 4px;
-            font-size: 12px;
-        }
-
-        /* BANER */
-
-        .banner-container {
-            width: 100%;
-            padding: 24px 3% 0;
-        }
-
-        .banner-container img {
-            display: block;
-            width: 100%;
-            max-width: 1800px;
-            max-height: 580px;
-
-            margin: 0 auto;
-
-            object-fit: cover;
-            object-position: center;
-
-            border-radius: 20px;
-
-            border: 1px solid rgba(104,255,150,.25);
-
-            box-shadow:
-                0 0 70px rgba(80,255,140,.10),
-                0 30px 90px rgba(0,0,0,.5);
-        }
-
-        /* HERO */
-
-        .hero {
-            text-align: center;
-            padding: 75px 20px 50px;
-        }
-
-        .hero small {
-            color: #55ff91;
-            font-weight: 900;
-            letter-spacing: 3px;
-        }
-
-        .hero h1 {
-            margin-top: 15px;
-            font-size: clamp(42px, 7vw, 78px);
-            line-height: 1;
-            font-weight: 950;
-        }
-
-        .hero h1 span {
-            background: linear-gradient(
-                90deg,
-                #a45cff,
-                #55ff91
-            );
-
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .hero p {
-            max-width: 720px;
-            margin: 25px auto 0;
-
-            color: #999;
-            font-size: 17px;
-            line-height: 1.7;
-        }
-
-        .hero-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 12px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-
-        .hero-button {
-            padding: 14px 22px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 900;
-            transition: .25s;
-        }
-
-        .hero-button.primary {
-            color: #061008;
-            background: #55ff91;
-        }
-
-        .hero-button.secondary {
-            color: #fff;
-            background: rgba(255,255,255,.04);
-            border: 1px solid rgba(255,255,255,.1);
-        }
-
-        .hero-button:hover {
-            transform: translateY(-3px);
-        }
-
-        /* KATEGORIE */
-
-        .categories {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-
-            padding: 0 20px;
-            margin-bottom: 60px;
-        }
-
-        .category {
-            position: relative;
-
-            color: #aaa;
-            background: rgba(12,14,16,.75);
-
-            border: 1px solid rgba(255,255,255,.10);
-            border-radius: 12px;
-
-            padding: 13px 24px;
-
-            cursor: pointer;
-            font-weight: 900;
-
-            transition: .25s;
-        }
-
-        .category:hover,
-        .category.active {
-            color: #07100a;
-            background: #55ff91;
-            border-color: #55ff91;
-
-            box-shadow:
-                0 0 25px rgba(85,255,145,.20);
-        }
-
-        /* SEKCJE */
-
-        .section {
-            width: 90%;
-            max-width: 1250px;
-            margin: 0 auto 95px;
-        }
-
-        .section-title small {
-            color: #55ff91;
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        .section-title h2 {
-            margin-top: 8px;
-            font-size: 38px;
-        }
-
-        .section-title p {
-            color: #888;
-            margin-top: 9px;
-            margin-bottom: 27px;
-        }
-
-        /* PRODUKTY */
-
-        .products {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
-        }
-
-        .product {
-            position: relative;
-            overflow: hidden;
-
-            background:
-                linear-gradient(
-                    145deg,
-                    rgba(22,23,28,.92),
-                    rgba(9,11,13,.96)
-                );
-
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 19px;
-
-            padding: 21px;
-
-            display: flex;
-            flex-direction: column;
-
-            transition: .3s;
-        }
-
-        .product::before {
-            content: "";
-            position: absolute;
-            width: 150px;
-            height: 150px;
-            top: -70px;
-            right: -60px;
-
-            background: #55ff91;
-            opacity: .06;
-
-            border-radius: 50%;
-            filter: blur(25px);
-        }
-
-        .product:hover {
-            transform: translateY(-7px);
-
-            border-color: rgba(85,255,145,.48);
-
-            box-shadow:
-                0 25px 70px rgba(0,0,0,.45),
-                0 0 30px rgba(85,255,145,.07);
-        }
-
-        .product-image {
-            position: relative;
-
-            height: 175px;
-
-            display: flex;
-            align-items: center;
-            justify-content: center;
-
-            margin-bottom: 20px;
-
-            overflow: hidden;
-
-            border-radius: 14px;
-
-            background:
-                radial-gradient(
-                    circle at center,
-                    rgba(85,255,145,.15),
-                    transparent 60%
-                ),
-                #080a0c;
-
-            border: 1px solid rgba(255,255,255,.06);
-        }
-
-        .product-image.minecraft {
-            background:
-                radial-gradient(
-                    circle,
-                    rgba(88,255,150,.20),
-                    transparent 55%
-                ),
-                linear-gradient(
-                    145deg,
-                    #111b15,
-                    #090d0b
-                );
-        }
-
-        .product-image.discord {
-            background:
-                radial-gradient(
-                    circle,
-                    rgba(140,85,255,.25),
-                    transparent 55%
-                ),
-                linear-gradient(
-                    145deg,
-                    #171321,
-                    #09090d
-                );
-        }
-
-        .big-icon {
-            font-size: 72px;
-            filter: drop-shadow(0 10px 25px rgba(0,0,0,.5));
-        }
-
-        .product-category {
-            color: #55ff91;
-            font-size: 12px;
-            font-weight: 900;
-            letter-spacing: 1.5px;
-            margin-bottom: 8px;
-        }
-
-        .product h3 {
-            font-size: 23px;
-            margin-bottom: 11px;
-        }
-
-        .product-description {
-            color: #999;
-            line-height: 1.6;
-        }
-
-        .features {
-            list-style: none;
-            color: #b6b6b6;
-            line-height: 1.65;
-            margin: 18px 0;
-            flex: 1;
-        }
-
-        .features li {
-            margin-bottom: 5px;
-        }
-
-        .features li::before {
-            content: "✓";
-            color: #55ff91;
-            margin-right: 8px;
-            font-weight: 900;
-        }
-
-        .product-bottom {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 12px;
-            margin-top: auto;
-        }
-
-        .price {
-            font-size: 25px;
-            font-weight: 950;
-        }
-
-        .add {
-            color: #07100a;
-            background: #55ff91;
-
-            border: 1px solid #55ff91;
-            border-radius: 10px;
-
-            padding: 12px 15px;
-
-            cursor: pointer;
-            font-weight: 950;
-
-            transition: .25s;
-        }
-
-        .add:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 0 25px rgba(85,255,145,.2);
-        }
-
-        /* DLACZEGO MY */
-
-        .why-us {
-            width: 90%;
-            max-width: 1250px;
-            margin: 0 auto 100px;
-        }
-
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(4,1fr);
-            gap: 15px;
-            margin-top: 25px;
-        }
-
-        .why-card {
-            padding: 25px;
-
-            background: rgba(13,15,17,.75);
-            border: 1px solid rgba(255,255,255,.08);
-            border-radius: 17px;
-
-            transition: .25s;
-        }
-
-        .why-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(85,255,145,.35);
-        }
-
-        .why-icon {
-            font-size: 34px;
-            margin-bottom: 16px;
-        }
-
-        .why-card h3 {
-            margin-bottom: 8px;
-        }
-
-        .why-card p {
-            color: #888;
-            line-height: 1.6;
-        }
-
-        /* INFO */
-
-        .info {
-            margin-top: 25px;
-            padding: 20px;
-
-            background: rgba(12,15,14,.8);
-            border: 1px solid rgba(85,255,145,.12);
-            border-radius: 14px;
-
-            color: #999;
-            text-align: center;
-            line-height: 1.6;
-        }
-
-        /* FOOTER */
-
-        footer {
-            text-align: center;
-
-            border-top: 1px solid rgba(255,255,255,.07);
-
-            padding: 40px 20px;
-
-            color: #666;
-        }
-
-        footer strong {
-            color: #55ff91;
-        }
-
-        footer a {
-            color: #888;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            color: #55ff91;
-        }
-
-        /* KOSZYK */
-
-        #cartModal {
-            display: none;
-
-            position: fixed;
-            inset: 0;
-
-            z-index: 5000;
-
-            background: rgba(0,0,0,.78);
-            backdrop-filter: blur(10px);
-
-            justify-content: flex-end;
-        }
-
-        #cartModal.open {
-            display: flex;
-        }
-
-        .cart-box {
-            width: min(500px, 100%);
-
-            height: 100%;
-
-            background:
-                radial-gradient(
-                    circle at top right,
-                    rgba(85,255,145,.08),
-                    transparent 35%
-                ),
-                #0d0f11;
-
-            border-left: 1px solid rgba(85,255,145,.18);
-
-            padding: 30px;
-
-            overflow-y: auto;
-
-            animation: cartIn .3s ease;
-        }
-
-        @keyframes cartIn {
-            from {
-                transform: translateX(100%);
-            }
-
-            to {
-                transform: translateX(0);
-            }
-        }
-
-        .cart-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            margin-bottom: 25px;
-        }
-
-        .cart-header h2 {
-            font-size: 29px;
-        }
-
-        .close {
-            background: transparent;
-            border: 0;
-            color: #aaa;
-            font-size: 32px;
-            cursor: pointer;
-        }
-
-        .cart-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-
-            padding: 16px 0;
-
-            border-bottom: 1px solid rgba(255,255,255,.07);
-        }
-
-        .cart-item-name {
-            font-weight: 900;
-        }
-
-        .cart-item-price {
-            color: #55ff91;
-            margin-top: 5px;
-            font-weight: 900;
-        }
-
-        .remove {
-            background: transparent;
-            border: 0;
-            color: #ff6578;
-            cursor: pointer;
-            font-weight: 900;
-        }
-
-        .cart-total {
-            display: flex;
-            justify-content: space-between;
-
-            margin: 25px 0;
-
-            font-size: 22px;
-            font-weight: 950;
-        }
-
-        .checkout {
-            width: 100%;
-
-            color: #07100a;
-            background: #55ff91;
-
-            border: 0;
-            border-radius: 11px;
-
-            padding: 15px;
-
-            cursor: pointer;
-            font-size: 16px;
-            font-weight: 950;
-
-            transition: .25s;
-        }
-
-        .checkout:hover {
-            box-shadow: 0 0 30px rgba(85,255,145,.2);
-        }
-
-        /* FORMULARZ */
-
-        #orderForm {
-            display: none;
-        }
-
-        #orderForm.show {
-            display: block;
-        }
-
-        #orderForm input,
-        #orderForm textarea {
-            width: 100%;
-
-            background: #080a0c;
-
-            border: 1px solid rgba(255,255,255,.1);
-            border-radius: 10px;
-
-            color: #fff;
-
-            padding: 14px;
-            margin-bottom: 12px;
-
-            outline: none;
-        }
-
-        #orderForm input:focus,
-        #orderForm textarea:focus {
-            border-color: #55ff91;
-        }
-
-        #orderForm textarea {
-            min-height: 120px;
-            resize: vertical;
-        }
-
-        #error {
-            color: #ff6d80;
-            margin-top: 12px;
-            font-weight: 800;
-        }
-
-        /* SUKCES */
-
-        #success {
-            display: none;
-            text-align: center;
-            padding: 40px 10px;
-        }
-
-        #success .icon {
-            font-size: 60px;
-        }
-
-        #success h3 {
-            font-size: 27px;
-            margin: 15px 0;
-        }
-
-        #success p {
-            color: #999;
-            line-height: 1.6;
-        }
-
-        .success-info {
-            margin-top: 25px;
-            padding: 20px;
-
-            background: rgba(12,15,14,.8);
-            border: 1px solid rgba(85,255,145,.18);
-            border-radius: 14px;
-
-            text-align: left;
-        }
-
-        .success-info strong {
-            display: block;
-
-            color: #55ff91;
-
-            margin-bottom: 15px;
-
-            font-size: 16px;
-        }
-
-        .success-step {
-            color: #b8b8b8;
-
-            line-height: 1.6;
-
-            padding: 9px 0;
-
-            border-bottom: 1px solid rgba(255,255,255,.05);
-        }
-
-        .success-step:last-child {
-            border-bottom: 0;
-        }
-
-        .discord-success-button {
-            display: block;
-
-            margin-top: 20px;
-
-            padding: 14px 20px;
-
-            color: #07100a;
-            background: #55ff91;
-
-            border: 1px solid #55ff91;
-            border-radius: 11px;
-
-            text-decoration: none;
-
-            font-weight: 950;
-
-            transition: .25s;
-        }
-
-        .discord-success-button:hover {
-            transform: translateY(-3px);
-
-            box-shadow:
-                0 0 30px rgba(85,255,145,.25);
-        }
-
-        /* MOBILE */
-
-        @media (max-width: 1000px) {
-
-            nav {
-                display: none;
-            }
-
-            .products {
-                grid-template-columns: repeat(2,1fr);
-            }
-
-            .why-grid {
-                grid-template-columns: repeat(2,1fr);
-            }
-        }
-
-        @media (max-width: 650px) {
-
-            header {
-                padding: 10px 15px;
-            }
-
-            .logo {
-                font-size: 20px;
-            }
-
-            .discord-button {
-                display: none;
-            }
-
-            .cart-button {
-                padding: 10px 12px;
-            }
-
-            .banner-container {
-                padding: 12px 10px 0;
-            }
-
-            .banner-container img {
-                border-radius: 12px;
-            }
-
-            .hero {
-                padding: 55px 15px 40px;
-            }
-
-            .hero h1 {
-                font-size: 43px;
-            }
-
-            .products {
-                grid-template-columns: 1fr;
-            }
-
-            .why-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .section {
-                width: 92%;
-            }
-
-            .product-bottom {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .add {
-                width: 100%;
-            }
-
-            .cart-box {
-                width: 100%;
-            }
-        }
-    </style>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>KupGraj — Sklep</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    background:
+        radial-gradient(
+            circle at left,
+            rgba(120, 60, 255, 0.18),
+            transparent 35%
+        ),
+        radial-gradient(
+            circle at right,
+            rgba(0, 255, 130, 0.10),
+            transparent 35%
+        ),
+        #080b10;
+    color: #ffffff;
+    min-height: 100vh;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 18px 7%;
+
+    background: rgba(8, 11, 16, 0.88);
+    backdrop-filter: blur(15px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.logo {
+    font-size: 28px;
+    font-weight: 900;
+
+    background:
+        linear-gradient(
+            90deg,
+            #a45cff,
+            #55ff91
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+nav {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+nav a {
+    color: #bdbdbd;
+    transition: 0.2s;
+}
+
+nav a:hover {
+    color: #55ff91;
+}
+
+.cart-button {
+    border: 1px solid rgba(85,255,145,0.5);
+    background: rgba(85,255,145,0.08);
+    color: #55ff91;
+
+    padding: 10px 16px;
+    border-radius: 10px;
+
+    cursor: pointer;
+    font-weight: 700;
+
+    transition: 0.2s;
+}
+
+.cart-button:hover {
+    background: rgba(85,255,145,0.18);
+    transform: translateY(-2px);
+}
+
+/* =========================================================
+   HERO
+========================================================= */
+
+.hero {
+    min-height: 560px;
+
+    display: flex;
+    align-items: center;
+
+    padding: 80px 7%;
+
+    background:
+        linear-gradient(
+            110deg,
+            rgba(90,40,180,0.35),
+            rgba(0,255,120,0.08)
+        );
+}
+
+.hero-content {
+    max-width: 760px;
+}
+
+.hero small {
+    color: #55ff91;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.hero h1 {
+    font-size: clamp(45px, 7vw, 82px);
+    line-height: 0.98;
+    margin: 20px 0;
+}
+
+.hero h1 span {
+    background:
+        linear-gradient(
+            90deg,
+            #a45cff,
+            #55ff91
+        );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero p {
+    max-width: 650px;
+    color: #bcbcbc;
+    font-size: 18px;
+    line-height: 1.7;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    margin-top: 30px;
+}
+
+.hero-button {
+    display: inline-block;
+    padding: 14px 22px;
+    border-radius: 12px;
+    font-weight: 800;
+    transition: 0.2s;
+}
+
+.hero-button.primary {
+    background: #55ff91;
+    color: #07110b;
+}
+
+.hero-button.secondary {
+    border: 1px solid #55ff91;
+    color: #55ff91;
+}
+
+.hero-button:hover {
+    transform: translateY(-3px);
+}
+
+/* =========================================================
+   CATEGORIES
+========================================================= */
+
+.categories {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 12px;
+
+    padding: 35px 7%;
+}
+
+.category {
+    border: 1px solid rgba(255,255,255,0.08);
+
+    background: #11151c;
+    color: #aaa;
+
+    padding: 12px 20px;
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    transition: 0.2s;
+}
+
+.category:hover,
+.category.active {
+    border-color: #55ff91;
+    color: #55ff91;
+
+    box-shadow:
+        0 0 20px rgba(85,255,145,0.08);
+}
+
+/* =========================================================
+   SECTIONS
+========================================================= */
+
+.section {
+    padding: 70px 7%;
+}
+
+.section-title {
+    text-align: center;
+    max-width: 700px;
+    margin: 0 auto 45px;
+}
+
+.section-title small {
+    color: #55ff91;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.section-title h2 {
+    font-size: 42px;
+    margin: 12px 0;
+}
+
+.section-title p {
+    color: #999;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   PRODUCTS
+========================================================= */
+
+.products {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(270px, 1fr)
+        );
+
+    gap: 22px;
+}
+
+.product {
+    background:
+        linear-gradient(
+            145deg,
+            rgba(255,255,255,0.045),
+            rgba(255,255,255,0.015)
+        );
+
+    border: 1px solid rgba(255,255,255,0.07);
+
+    border-radius: 18px;
+
+    padding: 22px;
+
+    transition: 0.25s;
+
+    overflow: hidden;
+}
+
+.product:hover {
+    transform: translateY(-7px);
+
+    border-color: rgba(85,255,145,0.55);
+
+    box-shadow:
+        0 15px 45px rgba(0,0,0,0.25);
+}
+
+.product-image {
+    height: 170px;
+
+    border-radius: 14px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-bottom: 22px;
+}
+
+.product-image.minecraft {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(75,130,255,0.35),
+            rgba(80,255,150,0.08)
+        );
+}
+
+.product-image.discord {
+    background:
+        linear-gradient(
+            135deg,
+            rgba(150,70,255,0.35),
+            rgba(85,255,145,0.08)
+        );
+}
+
+.big-icon {
+    font-size: 72px;
+}
+
+.product-category {
+    color: #55ff91;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.product h3 {
+    margin: 8px 0;
+    font-size: 25px;
+}
+
+.product-description {
+    color: #aaa;
+    line-height: 1.6;
+    min-height: 50px;
+}
+
+.features {
+    list-style: none;
+    margin: 18px 0;
+}
+
+.features li {
+    color: #c5c5c5;
+    padding: 6px 0;
+}
+
+.features li::before {
+    content: "✓";
+    color: #55ff91;
+    font-weight: 900;
+    margin-right: 8px;
+}
+
+.product-bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    margin-top: 22px;
+}
+
+.price {
+    font-size: 25px;
+    font-weight: 900;
+}
+
+.add {
+    border: none;
+
+    background: #55ff91;
+    color: #06100a;
+
+    padding: 11px 15px;
+
+    border-radius: 9px;
+
+    cursor: pointer;
+    font-weight: 800;
+
+    transition: 0.2s;
+}
+
+.add:hover {
+    transform: translateY(-2px);
+    box-shadow:
+        0 8px 25px rgba(85,255,145,0.18);
+}
+
+.info {
+    margin-top: 25px;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    background: rgba(85,255,145,0.05);
+    border: 1px solid rgba(85,255,145,0.12);
+
+    color: #aaa;
+}
+
+/* =========================================================
+   WHY US
+========================================================= */
+
+.why-us {
+    padding: 70px 7%;
+}
+
+.why-grid {
+    display: grid;
+
+    grid-template-columns:
+        repeat(
+            auto-fit,
+            minmax(220px, 1fr)
+        );
+
+    gap: 18px;
+}
+
+.why-card {
+    background: #10141b;
+
+    border: 1px solid rgba(255,255,255,0.06);
+
+    border-radius: 15px;
+
+    padding: 25px;
+}
+
+.why-icon {
+    font-size: 35px;
+    margin-bottom: 15px;
+}
+
+.why-card h3 {
+    margin-bottom: 10px;
+}
+
+.why-card p {
+    color: #999;
+    line-height: 1.6;
+}
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+footer {
+    padding: 50px 7%;
+
+    text-align: center;
+
+    color: #777;
+
+    border-top: 1px solid rgba(255,255,255,0.06);
+}
+
+footer strong {
+    color: #55ff91;
+    font-size: 22px;
+}
+
+footer a:hover {
+    color: #55ff91;
+}
+
+/* =========================================================
+   CART
+========================================================= */
+
+#cartModal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 5000;
+
+    background:
+        rgba(0,0,0,0.72);
+
+    backdrop-filter: blur(8px);
+
+    display: none;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+#cartModal.open {
+    display: flex;
+}
+
+.cart-box {
+    width: 100%;
+    max-width: 620px;
+
+    max-height: 90vh;
+    overflow-y: auto;
+
+    background: #0e1218;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    border-radius: 20px;
+
+    padding: 25px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,0.5);
+}
+
+.cart-header {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.cart-header h2 {
+    font-size: 25px;
+}
+
+.close {
+    border: none;
+    background: transparent;
+
+    color: #aaa;
+
+    font-size: 32px;
+
+    cursor: pointer;
+}
+
+.close:hover {
+    color: #fff;
+}
+
+.cart-item {
+    display: flex;
+
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 15px;
+
+    padding: 14px;
+
+    margin-bottom: 10px;
+
+    border-radius: 10px;
+
+    background: rgba(255,255,255,0.04);
+}
+
+.cart-item-name {
+    font-weight: 700;
+}
+
+.cart-item-price {
+    color: #55ff91;
+    margin-top: 4px;
+}
+
+.remove {
+    border: 1px solid #ff5555;
+
+    background: transparent;
+    color: #ff6666;
+
+    padding: 7px 10px;
+
+    border-radius: 7px;
+
+    cursor: pointer;
+}
+
+.cart-total {
+    display: flex;
+
+    justify-content: space-between;
+
+    margin-top: 20px;
+
+    padding-top: 20px;
+
+    border-top:
+        1px solid
+        rgba(255,255,255,0.07);
+
+    font-size: 22px;
+    font-weight: 800;
+}
+
+.checkout {
+    width: 100%;
+
+    border: none;
+
+    background: #55ff91;
+    color: #06100a;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    margin-top: 20px;
+
+    cursor: pointer;
+
+    font-weight: 900;
+    font-size: 16px;
+
+    transition: 0.2s;
+}
+
+.checkout:hover {
+    transform: translateY(-2px);
+
+    box-shadow:
+        0 10px 30px rgba(85,255,145,0.16);
+}
+
+/* =========================================================
+   FORMULARZ
+========================================================= */
+
+#orderForm {
+    display: none;
+}
+
+#orderForm.show {
+    display: block;
+}
+
+#orderForm input,
+#orderForm textarea {
+    width: 100%;
+
+    margin-bottom: 12px;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    border:
+        1px solid
+        rgba(255,255,255,0.08);
+
+    background: #090d12;
+
+    color: #fff;
+
+    outline: none;
+
+    font-family: inherit;
+}
+
+#orderForm input:focus,
+#orderForm textarea:focus {
+    border-color: #55ff91;
+}
+
+#orderForm textarea {
+    min-height: 110px;
+    resize: vertical;
+}
+
+#error {
+    color: #ff6565;
+
+    margin-top: 15px;
+
+    text-align: center;
+}
+
+/* =========================================================
+   SUCCESS
+========================================================= */
+
+#success {
+    display: none;
+
+    text-align: center;
+}
+
+#success .icon {
+    font-size: 65px;
+    margin-bottom: 10px;
+}
+
+#success h3 {
+    font-size: 28px;
+    margin-bottom: 12px;
+}
+
+#success p {
+    color: #aaa;
+    line-height: 1.6;
+}
+
+.success-info {
+    margin-top: 22px;
+
+    padding: 20px;
+
+    text-align: left;
+
+    border-radius: 14px;
+
+    background:
+        rgba(85,255,145,0.05);
+
+    border:
+        1px solid
+        rgba(85,255,145,0.15);
+}
+
+.success-info strong {
+    display: block;
+    color: #55ff91;
+    margin-bottom: 15px;
+}
+
+.success-step {
+    color: #ccc;
+    padding: 7px 0;
+}
+
+.discord-success-button {
+    display: block;
+
+    margin-top: 22px;
+
+    padding: 14px;
+
+    border-radius: 10px;
+
+    background: #5865F2;
+
+    color: #fff;
+
+    font-weight: 900;
+
+    transition: 0.2s;
+}
+
+.discord-success-button:hover {
+    transform: translateY(-2px);
+
+    filter: brightness(1.12);
+}
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 700px) {
+
+    header {
+        padding: 15px 5%;
+    }
+
+    nav a {
+        display: none;
+    }
+
+    .hero {
+        padding: 60px 5%;
+    }
+
+    .section,
+    .why-us {
+        padding: 55px 5%;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+    }
+
+    .section-title h2 {
+        font-size: 34px;
+    }
+
+    .product-bottom {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .product-bottom .add {
+        width: 100%;
+    }
+
+}
+
+/* =========================================================
+   HEADER CART COUNT
+========================================================= */
+
+.cart-count {
+    display: inline-flex;
+
+    min-width: 20px;
+    height: 20px;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 0 5px;
+
+    margin-left: 5px;
+
+    border-radius: 20px;
+
+    background: #55ff91;
+    color: #06100a;
+
+    font-size: 12px;
+    font-weight: 900;
+}
+
+</style>
+
 </head>
 
 <body>
 
+<!-- =======================================================
+     HEADER
+======================================================= -->
+
 <header>
 
     <div class="logo">
-        Tanie<span>,pl</span>
+        KupGraj
     </div>
 
     <nav>
-        <a href="#minecraft">Minecraft</a>
-        <a href="#discord">Discord</a>
-        <a href="#dlaczego">Dlaczego my?</a>
-    </nav>
 
-    <div class="header-right">
+        <a href="#minecraft">
+            Minecraft
+        </a>
 
-        <a
-            class="discord-button"
-            href="https://discord.gg/yXUzU44Pu"
-            target="_blank"
-        >
-            💜 Discord
+        <a href="#discord">
+            Discord
+        </a>
+
+        <a href="#dlaczego">
+            Dlaczego my?
         </a>
 
         <button
@@ -956,65 +896,67 @@
         >
             🛒 Koszyk
             <span
-                class="cart-count"
                 id="cartCount"
-            >0</span>
+                class="cart-count"
+            >
+                0
+            </span>
         </button>
 
-    </div>
+    </nav>
 
 </header>
 
-<!-- BANER -->
-
-<div class="banner-container">
-
-    <img
-        src="banner.png"
-        alt="Tanie,pl — baner"
-    >
-
-</div>
-
-<!-- HERO -->
+<!-- =======================================================
+     HERO
+======================================================= -->
 
 <section class="hero">
 
-    <small>● TANIE,PL</small>
+    <div class="hero-content">
 
-    <h1>
-        Dobre ceny.
-        <span>Dobre usługi.</span>
-    </h1>
+        <small>
+            ● KUPGRAJ
+        </small>
 
-    <p>
-        Konta Minecraft oraz profesjonalne konfiguracje
-        serwerów Discord. Wybierz interesującą Cię ofertę,
-        dodaj ją do koszyka i złóż zamówienie.
-    </p>
+        <h1>
+            Twój sklep.
+            <br>
+            <span>Twoja gra.</span>
+        </h1>
 
-    <div class="hero-buttons">
+        <p>
+            Minecraft Premium, konfiguracje Discord
+            oraz inne produkty w atrakcyjnych cenach.
+            Szybka obsługa i kontakt przez Discord.
+        </p>
 
-        <a
-            href="#minecraft"
-            class="hero-button primary"
-        >
-            🛒 Zobacz ofertę
-        </a>
+        <div class="hero-buttons">
 
-        <a
-            href="https://discord.gg/yXUzU44Pu"
-            target="_blank"
-            class="hero-button secondary"
-        >
-            💜 Dołącz na Discord
-        </a>
+            <a
+                href="#minecraft"
+                class="hero-button primary"
+            >
+                🛒 Zobacz ofertę
+            </a>
+
+            <a
+                href="https://discord.gg/yXUzU44Pu"
+                target="_blank"
+                class="hero-button secondary"
+            >
+                💜 Dołącz na Discord
+            </a>
+
+        </div>
 
     </div>
 
 </section>
 
-<!-- KATEGORIE -->
+<!-- =======================================================
+     KATEGORIE
+======================================================= -->
 
 <div class="categories">
 
@@ -1041,7 +983,9 @@
 
 </div>
 
-<!-- MINECRAFT -->
+<!-- =======================================================
+     MINECRAFT
+======================================================= -->
 
 <section
     class="section"
@@ -1051,9 +995,13 @@
 
     <div class="section-title">
 
-        <small>● MINECRAFT</small>
+        <small>
+            ● MINECRAFT
+        </small>
 
-        <h2>Konta Minecraft</h2>
+        <h2>
+            Konta Minecraft
+        </h2>
 
         <p>
             Wybierz poziom dostępu odpowiadający Twoim potrzebom.
@@ -1066,23 +1014,37 @@
         <article class="product">
 
             <div class="product-image minecraft">
-                <div class="big-icon">⛏️</div>
+                <div class="big-icon">
+                    ⛏️
+                </div>
             </div>
 
             <div class="product-category">
                 MINECRAFT
             </div>
 
-            <h3>KOSZT KONTA</h3>
+            <h3>
+                KOSZT KONTA
+            </h3>
 
             <p class="product-description">
                 Konto bez dostępu do maila, gotowe do użycia.
             </p>
 
             <ul class="features">
-                <li>Konto bez dostępu do maila</li>
-                <li>Gotowe do użycia</li>
-                <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
+
+                <li>
+                    Konto bez dostępu do maila
+                </li>
+
+                <li>
+                    Gotowe do użycia
+                </li>
+
+                <li>
+                    Instrukcję aktywacji otrzymasz przed zakupem
+                </li>
+
             </ul>
 
             <div class="product-bottom">
@@ -1105,24 +1067,43 @@
         <article class="product">
 
             <div class="product-image minecraft">
-                <div class="big-icon">💎</div>
+
+                <div class="big-icon">
+                    💎
+                </div>
+
             </div>
 
             <div class="product-category">
                 MINECRAFT
             </div>
 
-            <h3>PEŁNY DOSTĘP</h3>
+            <h3>
+                PEŁNY DOSTĘP
+            </h3>
 
             <p class="product-description">
                 Pełny dostęp do konta oraz maila.
             </p>
 
             <ul class="features">
-                <li>Pełny dostęp do konta</li>
-                <li>Dostęp również do maila</li>
-                <li>Możliwość pełnego zarządzania kontem</li>
-                <li>Instrukcję aktywacji otrzymasz przed zakupem</li>
+
+                <li>
+                    Pełny dostęp do konta
+                </li>
+
+                <li>
+                    Dostęp również do maila
+                </li>
+
+                <li>
+                    Możliwość pełnego zarządzania kontem
+                </li>
+
+                <li>
+                    Instrukcję aktywacji otrzymasz przed zakupem
+                </li>
+
             </ul>
 
             <div class="product-bottom">
@@ -1150,7 +1131,9 @@
 
 </section>
 
-<!-- DISCORD -->
+<!-- =======================================================
+     DISCORD
+======================================================= -->
 
 <section
     class="section"
@@ -1160,9 +1143,13 @@
 
     <div class="section-title">
 
-        <small>● DISCORD</small>
+        <small>
+            ● DISCORD
+        </small>
 
-        <h2>Konfiguracje Discord</h2>
+        <h2>
+            Konfiguracje Discord
+        </h2>
 
         <p>
             Od podstawowego serwera po kompletną konfigurację.
@@ -1175,25 +1162,47 @@
         <article class="product">
 
             <div class="product-image discord">
-                <div class="big-icon">⚙️</div>
+
+                <div class="big-icon">
+                    ⚙️
+                </div>
+
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>START</h3>
+            <h3>
+                START
+            </h3>
 
             <p class="product-description">
                 Podstawowa konfiguracja serwera.
             </p>
 
             <ul class="features">
-                <li>Podstawowe boty</li>
-                <li>Estetyczny wygląd</li>
-                <li>Kanały i kategorie</li>
-                <li>Podstawowe role</li>
-                <li>Podstawowa konfiguracja</li>
+
+                <li>
+                    Podstawowe boty
+                </li>
+
+                <li>
+                    Estetyczny wygląd
+                </li>
+
+                <li>
+                    Kanały i kategorie
+                </li>
+
+                <li>
+                    Podstawowe role
+                </li>
+
+                <li>
+                    Podstawowa konfiguracja
+                </li>
+
             </ul>
 
             <div class="product-bottom">
@@ -1216,25 +1225,47 @@
         <article class="product">
 
             <div class="product-image discord">
-                <div class="big-icon">🤖</div>
+
+                <div class="big-icon">
+                    🤖
+                </div>
+
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>PRO</h3>
+            <h3>
+                PRO
+            </h3>
 
             <p class="product-description">
                 Średnio zaawansowana konfiguracja serwera.
             </p>
 
             <ul class="features">
-                <li>Więcej botów</li>
-                <li>Średnio zaawansowana konfiguracja</li>
-                <li>Estetyczne kanały</li>
-                <li>Role dopasowane do klienta</li>
-                <li>Rozbudowana organizacja serwera</li>
+
+                <li>
+                    Więcej botów
+                </li>
+
+                <li>
+                    Średnio zaawansowana konfiguracja
+                </li>
+
+                <li>
+                    Estetyczne kanały
+                </li>
+
+                <li>
+                    Role dopasowane do klienta
+                </li>
+
+                <li>
+                    Rozbudowana organizacja serwera
+                </li>
+
             </ul>
 
             <div class="product-bottom">
@@ -1257,26 +1288,51 @@
         <article class="product">
 
             <div class="product-image discord">
-                <div class="big-icon">🛡️</div>
+
+                <div class="big-icon">
+                    🛡️
+                </div>
+
             </div>
 
             <div class="product-category">
                 DISCORD
             </div>
 
-            <h3>FULL</h3>
+            <h3>
+                FULL
+            </h3>
 
             <p class="product-description">
                 Kompleksowa konfiguracja całego serwera.
             </p>
 
             <ul class="features">
-                <li>Pełna konfiguracja serwera</li>
-                <li>Zaawansowane boty i systemy</li>
-                <li>Profesjonalny wygląd</li>
-                <li>Role oraz kanały dopasowane do klienta</li>
-                <li>Rozbudowane systemy serwerowe</li>
-                <li>Indywidualne podejście do zamówienia</li>
+
+                <li>
+                    Pełna konfiguracja serwera
+                </li>
+
+                <li>
+                    Zaawansowane boty i systemy
+                </li>
+
+                <li>
+                    Profesjonalny wygląd
+                </li>
+
+                <li>
+                    Role oraz kanały dopasowane do klienta
+                </li>
+
+                <li>
+                    Rozbudowane systemy serwerowe
+                </li>
+
+                <li>
+                    Indywidualne podejście do zamówienia
+                </li>
+
             </ul>
 
             <div class="product-bottom">
@@ -1300,7 +1356,9 @@
 
 </section>
 
-<!-- DLACZEGO MY -->
+<!-- =======================================================
+     DLACZEGO MY
+======================================================= -->
 
 <section
     class="why-us"
@@ -1309,9 +1367,13 @@
 
     <div class="section-title">
 
-        <small>● Tanie,pl</small>
+        <small>
+            ● KUPGRAJ
+        </small>
 
-        <h2>Dlaczego my?</h2>
+        <h2>
+            Dlaczego my?
+        </h2>
 
         <p>
             Kilka powodów, dla których warto skorzystać z naszej oferty.
@@ -1323,9 +1385,13 @@
 
         <div class="why-card">
 
-            <div class="why-icon">💰</div>
+            <div class="why-icon">
+                💰
+            </div>
 
-            <h3>Dobre ceny</h3>
+            <h3>
+                Dobre ceny
+            </h3>
 
             <p>
                 Staramy się utrzymywać atrakcyjne ceny
@@ -1336,9 +1402,13 @@
 
         <div class="why-card">
 
-            <div class="why-icon">⚡</div>
+            <div class="why-icon">
+                ⚡
+            </div>
 
-            <h3>Szybka realizacja</h3>
+            <h3>
+                Szybka realizacja
+            </h3>
 
             <p>
                 Po złożeniu zamówienia otrzymujesz
@@ -1349,9 +1419,13 @@
 
         <div class="why-card">
 
-            <div class="why-icon">🛡️</div>
+            <div class="why-icon">
+                🛡️
+            </div>
 
-            <h3>Bezpieczeństwo</h3>
+            <h3>
+                Bezpieczeństwo
+            </h3>
 
             <p>
                 Zamówienia są przesyłane bezpośrednio
@@ -1362,9 +1436,13 @@
 
         <div class="why-card">
 
-            <div class="why-icon">💜</div>
+            <div class="why-icon">
+                💜
+            </div>
 
-            <h3>Wsparcie Discord</h3>
+            <h3>
+                Wsparcie Discord
+            </h3>
 
             <p>
                 Masz pytanie? Dołącz do naszego Discorda
@@ -1377,13 +1455,18 @@
 
 </section>
 
-<!-- FOOTER -->
+<!-- =======================================================
+     FOOTER
+======================================================= -->
 
 <footer>
 
-    <strong>Tanie,pl</strong>
+    <strong>
+        KupGraj
+    </strong>
 
-    <br><br>
+    <br>
+    <br>
 
     <a
         href="https://discord.gg/yXUzU44Pu"
@@ -1392,13 +1475,16 @@
         💜 Discord
     </a>
 
-    <br><br>
+    <br>
+    <br>
 
-    © 2026 Tanie,pl — Wszystkie prawa zastrzeżone.
+    © 2026 KupGraj — Wszystkie prawa zastrzeżone.
 
 </footer>
 
-<!-- KOSZYK -->
+<!-- =======================================================
+     KOSZYK
+======================================================= -->
 
 <div id="cartModal">
 
@@ -1406,7 +1492,9 @@
 
         <div class="cart-header">
 
-            <h2>🛒 Koszyk</h2>
+            <h2>
+                🛒 Koszyk
+            </h2>
 
             <button
                 class="close"
@@ -1442,13 +1530,17 @@
 
         </div>
 
-        <!-- FORMULARZ -->
+        <!-- =================================================
+             FORMULARZ
+        ================================================= -->
 
         <div id="orderForm">
 
             <div class="cart-header">
 
-                <h2>📋 Zamówienie</h2>
+                <h2>
+                    📋 Zamówienie
+                </h2>
 
                 <button
                     class="close"
@@ -1487,7 +1579,9 @@
 
         </div>
 
-        <!-- SUKCES -->
+        <!-- =================================================
+             SUKCES
+        ================================================= -->
 
         <div id="success">
 
@@ -1500,13 +1594,13 @@
             </h3>
 
             <p>
-                🎉 Dziękujemy za złożenie zamówienia!
+                🎉 Twoje zamówienie zostało przekazane do obsługi.
             </p>
 
             <div class="success-info">
 
                 <strong>
-                    Aby rozpocząć realizację zamówienia:
+                    🛒 Co teraz?
                 </strong>
 
                 <div class="success-step">
@@ -1514,21 +1608,29 @@
                 </div>
 
                 <div class="success-step">
-                    2️⃣ Wejdź na kanał 📨・zamów.
+                    2️⃣ Wejdź na kanał 📨・zamówienia.
                 </div>
 
                 <div class="success-step">
-                    3️⃣ Napisz tam, że złożyłeś zamówienie przez stronę.
+                    3️⃣ Napisz, że złożyłeś zamówienie przez sklep.
+                </div>
+
+                <div class="success-step">
+                    ⏳ Poczekaj na obsługę.
                 </div>
 
             </div>
 
+            <p style="margin-top:20px;">
+                🔄 Za chwilę zostaniesz automatycznie
+                przekierowany na Discorda...
+            </p>
+
             <a
                 href="https://discord.gg/yXUzU44Pu"
-                target="_blank"
                 class="discord-success-button"
             >
-                🟢 DOŁĄCZ DO DISCORDA
+                🟢 PRZEJDŹ NA DISCORDA
             </a>
 
         </div>
@@ -1537,63 +1639,84 @@
 
 </div>
 
+<!-- =======================================================
+     JAVASCRIPT
+======================================================= -->
+
 <script>
 
-    let cart = [];
+let cart = [];
 
+/* =========================================================
+   DODAWANIE DO KOSZYKA
+========================================================= */
 
-    function addToCart(name, price) {
+function addToCart(name, price) {
 
-        cart.push({
-            name: name,
-            price: price
-        });
+    cart.push({
+        name: name,
+        price: price
+    });
 
-        updateCart();
-        openCart();
-    }
+    updateCart();
 
+    openCart();
+}
 
-    function updateCart() {
+/* =========================================================
+   AKTUALIZACJA KOSZYKA
+========================================================= */
 
-        const items =
-            document.getElementById("cartItems");
+function updateCart() {
 
-        const count =
-            document.getElementById("cartCount");
+    const items =
+        document.getElementById(
+            "cartItems"
+        );
 
-        const total =
-            document.getElementById("cartTotal");
+    const count =
+        document.getElementById(
+            "cartCount"
+        );
 
-        count.textContent = cart.length;
+    const total =
+        document.getElementById(
+            "cartTotal"
+        );
 
-        items.innerHTML = "";
+    count.textContent =
+        cart.length;
 
-        let sum = 0;
+    items.innerHTML = "";
 
+    let sum = 0;
 
-        if (cart.length === 0) {
+    if (cart.length === 0) {
 
-            items.innerHTML = `
-                <p style="
-                    text-align:center;
-                    color:#777;
-                    padding:35px 0;
-                ">
-                    Koszyk jest pusty.
-                </p>
-            `;
+        items.innerHTML = `
+            <p style="
+                text-align:center;
+                color:#777;
+                padding:35px 0;
+            ">
+                Koszyk jest pusty.
+            </p>
+        `;
 
-        } else {
+    } else {
 
-            cart.forEach((item, index) => {
+        cart.forEach(
+            (item, index) => {
 
                 sum += item.price;
 
                 const row =
-                    document.createElement("div");
+                    document.createElement(
+                        "div"
+                    );
 
-                row.className = "cart-item";
+                row.className =
+                    "cart-item";
 
                 row.innerHTML = `
 
@@ -1620,242 +1743,355 @@
 
                 items.appendChild(row);
 
-            });
+            }
+        );
 
-        }
-
-        total.textContent = sum + " zł";
     }
 
+    total.textContent =
+        sum + " zł";
+}
 
-    function removeItem(index) {
+/* =========================================================
+   USUWANIE
+========================================================= */
 
-        cart.splice(index, 1);
+function removeItem(index) {
 
-        updateCart();
+    cart.splice(
+        index,
+        1
+    );
+
+    updateCart();
+}
+
+/* =========================================================
+   OTWIERANIE KOSZYKA
+========================================================= */
+
+function openCart() {
+
+    document
+        .getElementById("cartModal")
+        .classList.add("open");
+
+    document
+        .getElementById("cartView")
+        .style.display = "block";
+
+    document
+        .getElementById("orderForm")
+        .classList.remove("show");
+
+    document
+        .getElementById("success")
+        .style.display = "none";
+
+    updateCart();
+}
+
+/* =========================================================
+   ZAMYKANIE
+========================================================= */
+
+function closeCart() {
+
+    document
+        .getElementById("cartModal")
+        .classList.remove("open");
+}
+
+/* =========================================================
+   FORMULARZ
+========================================================= */
+
+function showOrderForm() {
+
+    if (cart.length === 0) {
+
+        alert(
+            "Najpierw dodaj produkt do koszyka."
+        );
+
+        return;
     }
 
+    document
+        .getElementById("cartView")
+        .style.display = "none";
 
-    function openCart() {
+    document
+        .getElementById("orderForm")
+        .classList.add("show");
+}
 
+/* =========================================================
+   WYSYŁANIE ZAMÓWIENIA
+========================================================= */
+
+async function sendOrder() {
+
+    const name =
         document
-            .getElementById("cartModal")
-            .classList.add("open");
+            .getElementById(
+                "customerName"
+            )
+            .value
+            .trim();
 
+    const contact =
         document
-            .getElementById("cartView")
-            .style.display = "block";
+            .getElementById(
+                "customerContact"
+            )
+            .value
+            .trim();
 
+    const message =
         document
-            .getElementById("orderForm")
-            .classList.remove("show");
+            .getElementById(
+                "customerMessage"
+            )
+            .value
+            .trim();
 
-        document
-            .getElementById("success")
-            .style.display = "none";
+    const error =
+        document.getElementById(
+            "error"
+        );
 
-        updateCart();
+    error.textContent = "";
+
+    /* =====================================================
+       WALIDACJA
+    ===================================================== */
+
+    if (!name) {
+
+        error.textContent =
+            "❌ Wpisz nick Discord.";
+
+        return;
     }
 
+    if (!contact) {
 
-    function closeCart() {
+        error.textContent =
+            "❌ Wpisz kontakt.";
 
-        document
-            .getElementById("cartModal")
-            .classList.remove("open");
+        return;
     }
 
+    if (cart.length === 0) {
 
-    function showOrderForm() {
+        error.textContent =
+            "❌ Koszyk jest pusty.";
 
-        if (cart.length === 0) {
-
-            alert(
-                "Najpierw dodaj produkt do koszyka."
-            );
-
-            return;
-        }
-
-        document
-            .getElementById("cartView")
-            .style.display = "none";
-
-        document
-            .getElementById("orderForm")
-            .classList.add("show");
+        return;
     }
 
+    /* =====================================================
+       SUMA
+    ===================================================== */
 
-    async function sendOrder() {
+    const total =
+        cart.reduce(
+            (sum, item) =>
+                sum + item.price,
+            0
+        );
 
-        const name =
-            document
-                .getElementById("customerName")
-                .value
-                .trim();
+    try {
 
-        const contact =
-            document
-                .getElementById("customerContact")
-                .value
-                .trim();
+        /* =================================================
+           WYSŁANIE DO SERVER.JS
+        ================================================= */
 
-        const message =
-            document
-                .getElementById("customerMessage")
-                .value
-                .trim();
+        const response =
+            await fetch(
+                "/api/order",
+                {
+                    method: "POST",
 
-        const error =
-            document.getElementById("error");
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    },
 
-        error.textContent = "";
-
-
-        if (!name) {
-
-            error.textContent =
-                "❌ Wpisz nick Discord.";
-
-            return;
-        }
-
-
-        if (!contact) {
-
-            error.textContent =
-                "❌ Wpisz kontakt.";
-
-            return;
-        }
-
-
-        if (cart.length === 0) {
-
-            error.textContent =
-                "❌ Koszyk jest pusty.";
-
-            return;
-        }
-
-
-        const total =
-            cart.reduce(
-                (sum, item) =>
-                    sum + item.price,
-                0
-            );
-
-
-        try {
-
-            const response =
-                await fetch(
-                    "/api/order",
-                    {
-                        method: "POST",
-
-                        headers: {
-                            "Content-Type":
-                                "application/json"
-                        },
-
-                        body: JSON.stringify({
+                    body:
+                        JSON.stringify({
 
                             customer: {
-                                name: name,
-                                contact: contact,
-                                message: message
+
+                                name:
+                                    name,
+
+                                contact:
+                                    contact,
+
+                                message:
+                                    message
+
                             },
 
-                            cart: cart.map(item => ({
-                                name: item.name,
-                                price: item.price,
-                                quantity: 1
-                            })),
+                            cart:
+                                cart.map(
+                                    item => ({
 
-                            total: total
+                                        name:
+                                            item.name,
+
+                                        price:
+                                            item.price,
+
+                                        quantity:
+                                            1
+
+                                    })
+                                ),
+
+                            total:
+                                total
+
                         })
-                    }
-                );
 
+                }
+            );
 
-            const data =
-                await response.json();
+        const data =
+            await response.json();
 
+        /* =================================================
+           BŁĄD SERWERA
+        ================================================= */
 
-            if (!response.ok) {
+        if (!response.ok) {
 
-                throw new Error(
-                    data.error ||
-                    "Nie udało się wysłać zamówienia."
-                );
-            }
+            throw new Error(
+                data.error ||
+                "Nie udało się wysłać zamówienia."
+            );
 
-
-            document
-                .getElementById("orderForm")
-                .classList.remove("show");
-
-            document
-                .getElementById("success")
-                .style.display = "block";
-
-
-            cart = [];
-
-            updateCart();
-
-
-        } catch (err) {
-
-            error.textContent =
-                "❌ " +
-                (
-                    err.message ||
-                    "Wystąpił błąd."
-                );
         }
+
+        /* =================================================
+           SUKCES
+        ================================================= */
+
+        document
+            .getElementById(
+                "orderForm"
+            )
+            .classList.remove(
+                "show"
+            );
+
+        document
+            .getElementById(
+                "success"
+            )
+            .style.display =
+                "block";
+
+        cart = [];
+
+        updateCart();
+
+        /* =================================================
+           AUTOMATYCZNE PRZEJŚCIE NA DISCORD
+        ================================================= */
+
+        setTimeout(
+            () => {
+
+                window.location.href =
+                    "https://discord.gg/yXUzU44Pu";
+
+            },
+            3000
+        );
+
+    } catch (err) {
+
+        console.error(
+            "❌ Błąd wysyłania zamówienia:",
+            err
+        );
+
+        error.textContent =
+            "❌ " +
+            (
+                err.message ||
+                "Wystąpił błąd."
+            );
+
     }
 
+}
 
-    function filterCategory(category, button) {
+/* =========================================================
+   FILTROWANIE KATEGORII
+========================================================= */
 
-        document
-            .querySelectorAll(".category")
-            .forEach(btn => {
-                btn.classList.remove("active");
-            });
+function filterCategory(
+    category,
+    button
+) {
 
+    document
+        .querySelectorAll(
+            ".category"
+        )
+        .forEach(
+            btn => {
 
-        button.classList.add("active");
+                btn.classList.remove(
+                    "active"
+                );
 
+            }
+        );
 
-        document
-            .querySelectorAll("[data-category]")
-            .forEach(section => {
+    button.classList.add(
+        "active"
+    );
+
+    document
+        .querySelectorAll(
+            "[data-category]"
+        )
+        .forEach(
+            section => {
 
                 if (
                     category === "all" ||
-                    section.dataset.category === category
+                    section.dataset.category ===
+                        category
                 ) {
 
-                    section.style.display = "block";
+                    section.style.display =
+                        "block";
 
                 } else {
 
-                    section.style.display = "none";
+                    section.style.display =
+                        "none";
 
                 }
 
-            });
-    }
+            }
+        );
 
+}
 
-    updateCart();
+/* =========================================================
+   START
+========================================================= */
+
+updateCart();
 
 </script>
 
 </body>
-                    </html>
+</html>
