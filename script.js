@@ -1,6 +1,6 @@
 const CONFIG = {
   // Po wdrożeniu ustaw tutaj publiczny adres API bota z Render, np. https://kupujemy-bot.onrender.com
-  BOT_API_URL: "https://TWOJ-BOT-NA-RENDER.onrender.com"
+  BOT_API_URL: "https://kupujemy.onrender.com"
 };
 
 const cart = [];
