@@ -1065,3 +1065,14 @@ footer{
     padding:20px
   }
 }
+@media (min-width:1001px){
+  .category-card:nth-child(3){
+    grid-column:3;
+    grid-row:2;
+  }
+
+  .category-card:nth-child(6){
+    grid-column:3;
+    grid-row:1;
+  }
+}
