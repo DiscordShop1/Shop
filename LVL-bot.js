@@ -36,7 +36,7 @@ const XP_COOLDOWN = 60;
 const LEVEL_ROLES = [];
 
 for (let i = 1; i <= 100; i++) {
-    LEVEL_ROLES.push(`〈Lvl ${i}〉`);
+    LEVEL_ROLES.push(`🆙 LvL ${i}`);
 }
 
 // ======================================================
