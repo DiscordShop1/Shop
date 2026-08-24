@@ -1,561 +1,425 @@
 require("dotenv").config();
 
+const fs = require("fs");
 const path = require("path");
-const express = require("express");
-const cors = require("cors");
 
 const {
-  Client,
-  GatewayIntentBits,
-  EmbedBuilder,
-  ActionRowBuilder,
-  ButtonBuilder,
-  ButtonStyle
+    Client,
+    GatewayIntentBits
 } = require("discord.js");
 
-const app = express();
+// ======================================================
+// KONFIGURACJA
+// ======================================================
 
-/* =========================================================
-   KONFIGURACJA
-========================================================= */
+const TOKEN = process.env.DISCORD_TOKEN;
 
-const PORT = process.env.PORT || 3000;
-const ORDER_CHANNEL_NAME = "zamówienia";
+// ID SERWERA
+const GUILD_ID = "1538986523234672661";
 
-/*
-  Strona i bot działają na tym samym Render Web Service.
-  Pliki:
-  index.html
-  style.css
-  script.js
-  banner.png
-  bot.js
-*/
+// Ile XP za wiadomość
+const XP_MIN = 15;
+const XP_MAX = 25;
 
-/* =========================================================
-   EXPRESS
-========================================================= */
+// Ile sekund trzeba odczekać przed kolejnym XP
+const XP_COOLDOWN = 60;
 
-app.use(cors({
-  origin: true,
-  methods: ["GET", "POST", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "x-order-key"]
-}));
+// ======================================================
+// ROLE 1-100
+// ======================================================
 
-app.use(express.json({
-  limit: "100kb"
-}));
+// Bot szuka ról po nazwie.
+// Jeżeli role nazywają się np.:
+// 1, 2, 3, 4 ... 100
+// to nic więcej nie trzeba tutaj wpisywać.
 
-/*
-  Udostępniamy pliki strony z głównego folderu projektu.
-  Dzięki temu:
-  /              -> index.html
-  /style.css     -> style.css
-  /script.js     -> script.js
-  /banner.png    -> banner.png
-*/
-app.use(express.static(__dirname));
+const LEVEL_ROLES = [];
 
-/* =========================================================
-   DISCORD BOT
-========================================================= */
+for (let i = 1; i <= 100; i++) {
+    LEVEL_ROLES.push(String(i));
+}
+
+// ======================================================
+// PLIK Z DANYMI
+// ======================================================
+
+const DATA_FILE = path.join(__dirname, "levels.json");
+
+let levels = {};
+
+// Wczytywanie danych
+if (fs.existsSync(DATA_FILE)) {
+    try {
+        levels = JSON.parse(fs.readFileSync(DATA_FILE, "utf8"));
+        console.log("Wczytano dane leveli.");
+    } catch (error) {
+        console.log("Nie udało się wczytać levels.json.");
+        levels = {};
+    }
+}
+
+// Zapisywanie danych
+function saveLevels() {
+    fs.writeFileSync(
+        DATA_FILE,
+        JSON.stringify(levels, null, 2),
+        "utf8"
+    );
+}
+
+// ======================================================
+// FUNKCJE XP
+// ======================================================
+
+// XP potrzebne do konkretnego poziomu
+function xpForLevel(level) {
+    // Poziom 1 = 100 XP
+    // Poziom 2 = 200 XP
+    // Poziom 3 = 300 XP itd.
+    return level * 100;
+}
+
+// Obliczanie poziomu na podstawie XP
+function getLevel(xp) {
+    let level = 0;
+
+    for (let i = 1; i <= 100; i++) {
+        if (xp >= xpForLevel(i)) {
+            level = i;
+        } else {
+            break;
+        }
+    }
+
+    return level;
+}
+
+// Losowa ilość XP
+function randomXP() {
+    return Math.floor(
+        Math.random() * (XP_MAX - XP_MIN + 1)
+    ) + XP_MIN;
+}
+
+// ======================================================
+// DISCORD CLIENT
+// ======================================================
 
 const client = new Client({
-  intents: [
-    GatewayIntentBits.Guilds,
-    GatewayIntentBits.GuildMessages,
-    GatewayIntentBits.MessageContent
-  ]
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessages,
+        GatewayIntentBits.MessageContent
+    ]
 });
 
-/* =========================================================
-   ZNAJDOWANIE KANAŁU ZAMÓWIENIA
-========================================================= */
+// ======================================================
+// GOTOWOŚĆ BOTA
+// ======================================================
 
-function findOrdersChannel(guild) {
-  return guild.channels.cache.find(channel =>
-    channel.isTextBased() &&
-    channel.name.toLowerCase().includes(ORDER_CHANNEL_NAME.toLowerCase())
-  );
+client.once("ready", async () => {
+    console.log("====================================");
+    console.log("       LVL BOT URUCHOMIONY");
+    console.log("====================================");
+
+    console.log(`Bot: ${client.user.tag}`);
+
+    try {
+        const guild = await client.guilds.fetch(GUILD_ID);
+
+        console.log(`Serwer: ${guild.name}`);
+
+        // Sprawdzenie ról
+        let znalezione = 0;
+
+        for (let i = 0; i < LEVEL_ROLES.length; i++) {
+            const roleName = LEVEL_ROLES[i];
+
+            const role = guild.roles.cache.find(
+                r => r.name === roleName
+            );
+
+            if (role) {
+                znalezione++;
+            } else {
+                console.log(
+                    `BRAK ROLI: ${roleName}`
+                );
+            }
+        }
+
+        console.log(
+            `Znaleziono ${znalezione}/100 ról levelowych.`
+        );
+
+    } catch (error) {
+        console.error(
+            "Nie udało się pobrać serwera:",
+            error
+        );
+    }
+});
+
+// ======================================================
+// XP COOLDOWN
+// ======================================================
+
+const cooldowns = new Map();
+
+// ======================================================
+// WIADOMOŚCI
+// ======================================================
+
+client.on("messageCreate", async (message) => {
+
+    // Ignoruj boty
+    if (message.author.bot) return;
+
+    // Ignoruj DM
+    if (!message.guild) return;
+
+    // Tylko nasz serwer
+    if (message.guild.id !== GUILD_ID) return;
+
+    const userId = message.author.id;
+
+    // ==================================================
+    // COOLDOWN
+    // ==================================================
+
+    const now = Date.now();
+
+    if (cooldowns.has(userId)) {
+
+        const lastMessage = cooldowns.get(userId);
+
+        if (now - lastMessage < XP_COOLDOWN * 1000) {
+            return;
+        }
+    }
+
+    cooldowns.set(userId, now);
+
+    // ==================================================
+    // DANE UŻYTKOWNIKA
+    // ==================================================
+
+    if (!levels[userId]) {
+        levels[userId] = {
+            xp: 0,
+            level: 0
+        };
+    }
+
+    const userData = levels[userId];
+
+    const oldLevel = userData.level;
+
+    // Dodaj XP
+    userData.xp += randomXP();
+
+    // Oblicz nowy poziom
+    let newLevel = getLevel(userData.xp);
+
+    // Maksymalny poziom
+    if (newLevel > 100) {
+        newLevel = 100;
+    }
+
+    userData.level = newLevel;
+
+    // Zapis
+    saveLevels();
+
+    // ==================================================
+    // AWANS
+    // ==================================================
+
+    if (newLevel > oldLevel) {
+
+        await giveLevelRole(
+            message.member,
+            newLevel
+        );
+
+        // Wiadomość o awansie
+        await message.channel.send(
+            `🎉 **${message.author} awansował na poziom ${newLevel}!**`
+        );
+    }
+});
+
+// ======================================================
+// NADAWANIE RANGI
+// ======================================================
+
+async function giveLevelRole(member, level) {
+
+    if (level < 1) return;
+
+    if (level > 100) level = 100;
+
+    // Znajdź aktualną rolę poziomu
+    const newRoleName = LEVEL_ROLES[level - 1];
+
+    const newRole = member.guild.roles.cache.find(
+        role => role.name === newRoleName
+    );
+
+    if (!newRole) {
+
+        console.log(
+            `Nie znaleziono roli poziomu ${level}: ${newRoleName}`
+        );
+
+        return;
+    }
+
+    // ==================================================
+    // USUWANIE STAREJ RANGI
+    // ==================================================
+
+    for (const roleName of LEVEL_ROLES) {
+
+        const oldRole = member.guild.roles.cache.find(
+            role => role.name === roleName
+        );
+
+        if (
+            oldRole &&
+            member.roles.cache.has(oldRole.id) &&
+            oldRole.id !== newRole.id
+        ) {
+
+            try {
+                await member.roles.remove(oldRole);
+            } catch (error) {
+                console.log(
+                    `Nie udało się usunąć roli ${oldRole.name}.`
+                );
+            }
+        }
+    }
+
+    // ==================================================
+    // NADANIE NOWEJ RANGI
+    // ==================================================
+
+    if (!member.roles.cache.has(newRole.id)) {
+
+        try {
+
+            await member.roles.add(newRole);
+
+            console.log(
+                `${member.user.tag} otrzymał rangę ${newRole.name}`
+            );
+
+        } catch (error) {
+
+            console.error(
+                `Nie udało się nadać rangi ${newRole.name}:`,
+                error
+            );
+        }
+    }
 }
 
-/* =========================================================
-   STRONA GŁÓWNA
-========================================================= */
+// ======================================================
+// KOMENDA !level
+// ======================================================
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "index.html"));
-});
+client.on("messageCreate", async (message) => {
 
-/* =========================================================
-   HEALTH
-========================================================= */
+    if (message.author.bot) return;
 
-app.get("/health", (req, res) => {
-  res.json({
-    ok: true,
-    discord: client.isReady(),
-    bot: client.isReady() ? client.user.tag : null,
-    service: "Kupujemy — Sklep + Discord Bot"
-  });
-});
+    if (!message.guild) return;
 
-/* =========================================================
-   TEST DISCORDA
-========================================================= */
+    if (message.guild.id !== GUILD_ID) return;
 
-app.get("/api/test", async (req, res) => {
-  try {
-    if (!client.isReady()) {
-      return res.status(503).json({
-        ok: false,
-        error: "Bot Discord nie jest jeszcze gotowy."
-      });
-    }
+    if (message.content.toLowerCase() === "!level") {
 
-    const guild = client.guilds.cache.first();
+        const userId = message.author.id;
 
-    if (!guild) {
-      return res.status(503).json({
-        ok: false,
-        error: "Bot nie znajduje serwera Discord."
-      });
-    }
-
-    const channel = findOrdersChannel(guild);
-
-    if (!channel) {
-      return res.status(404).json({
-        ok: false,
-        error: `Nie znaleziono kanału ${ORDER_CHANNEL_NAME}.`
-      });
-    }
-
-    await channel.send(
-      "🧪 **TEST KUPUJEMY**\n" +
-      "Bot, API i kanał zamówień działają poprawnie! ✅"
-    );
-
-    res.json({
-      ok: true,
-      message: "Wiadomość testowa została wysłana.",
-      channel: channel.name
-    });
-
-  } catch (error) {
-    console.error("Błąd /api/test:", error);
-
-    res.status(500).json({
-      ok: false,
-      error: "Nie udało się wysłać wiadomości testowej."
-    });
-  }
-});
-
-/* =========================================================
-   API — NOWE ZAMÓWIENIE
-========================================================= */
-
-app.post("/api/order", async (req, res) => {
-  try {
-
-    /* -----------------------------------------------------
-       OPCJONALNY KLUCZ API
-    ----------------------------------------------------- */
-
-    if (
-      process.env.ORDER_API_KEY &&
-      req.headers["x-order-key"] !== process.env.ORDER_API_KEY
-    ) {
-      return res.status(401).json({
-        ok: false,
-        error: "Nieprawidłowy klucz API."
-      });
-    }
-
-    /* -----------------------------------------------------
-       SPRAWDZENIE BOTA
-    ----------------------------------------------------- */
-
-    if (!client.isReady()) {
-      return res.status(503).json({
-        ok: false,
-        error: "Bot Discord nie jest jeszcze gotowy."
-      });
-    }
-
-    /* -----------------------------------------------------
-       DANE ZAMÓWIENIA
-    ----------------------------------------------------- */
-
-    const {
-      discord,
-      payment,
-      extra,
-      items,
-      total,
-      baseTotal,
-      surcharge
-    } = req.body || {};
-
-    if (
-      !discord ||
-      !payment ||
-      !Array.isArray(items) ||
-      !items.length
-    ) {
-      return res.status(400).json({
-        ok: false,
-        error: "Brak wymaganych danych zamówienia."
-      });
-    }
-
-    /* -----------------------------------------------------
-       PŁATNOŚĆ
-    ----------------------------------------------------- */
-
-    if (!["BLIK", "Paysafecard"].includes(payment)) {
-      return res.status(400).json({
-        ok: false,
-        error: "Nieprawidłowa metoda płatności."
-      });
-    }
-
-    /* -----------------------------------------------------
-       SERWER DISCORD
-    ----------------------------------------------------- */
-
-    const guild = client.guilds.cache.first();
-
-    if (!guild) {
-      return res.status(503).json({
-        ok: false,
-        error: "Bot nie znajduje serwera Discord."
-      });
-    }
-
-    /* -----------------------------------------------------
-       KANAŁ ZAMÓWIENIA
-    ----------------------------------------------------- */
-
-    const channel = findOrdersChannel(guild);
-
-    if (!channel) {
-      return res.status(404).json({
-        ok: false,
-        error: `Nie znaleziono kanału ${ORDER_CHANNEL_NAME}.`
-      });
-    }
-
-    /* -----------------------------------------------------
-       PRODUKTY
-    ----------------------------------------------------- */
-
-    const productLines = items
-      .map(item => {
-        const quantity = Number(item.quantity || 1);
-        const price = Number(item.price || 0);
-        const name = String(item.name || "Nieznany produkt");
-
-        return `• ${quantity}× ${name} — ${(price * quantity).toFixed(2).replace(".00", "")} zł`;
-      })
-      .join("\n");
-
-    /* -----------------------------------------------------
-       KATEGORIA
-    ----------------------------------------------------- */
-
-    const itemNames = items
-      .map(item => String(item.name || "").toLowerCase())
-      .join(" ");
-
-    let category = "Inne gry";
-
-    if (
-      itemNames.includes("minecraft") ||
-      itemNames.includes("mc premium")
-    ) {
-      category = "Minecraft Premium";
-    } else if (
-      itemNames.includes("discord") ||
-      itemNames.includes("konfiguracja")
-    ) {
-      category = "Konfiguracja Discord";
-    }
-
-    /* -----------------------------------------------------
-       KWOTY
-    ----------------------------------------------------- */
-
-    const safeBaseTotal = Number(baseTotal || total || 0);
-    const safeSurcharge = Number(surcharge || 0);
-    const safeTotal = Number(
-      total || safeBaseTotal + safeSurcharge
-    );
-
-    /* -----------------------------------------------------
-       EMBED
-    ----------------------------------------------------- */
-
-    const embed = new EmbedBuilder()
-      .setTitle("🛒 NOWE ZAMÓWIENIE — KUPUJEMY")
-      .setColor(0x57F287)
-
-      .addFields(
-        {
-          name: "📦 Kategoria",
-          value: category,
-          inline: true
-        },
-        {
-          name: "💳 Płatność",
-          value: payment,
-          inline: true
-        },
-        {
-          name: "👤 Discord",
-          value: String(discord).slice(0, 1024),
-          inline: true
-        },
-        {
-          name: "🛍️ Produkty",
-          value: productLines.slice(0, 1024),
-          inline: false
-        },
-        {
-          name: "💰 Kwota bazowa",
-          value: `${safeBaseTotal.toFixed(2).replace(".00", "")} zł`,
-          inline: true
-        },
-        {
-          name: "💵 Do zapłaty",
-          value: `${safeTotal.toFixed(2).replace(".00", "")} zł`,
-          inline: true
-        },
-        {
-          name: "📝 Dodatkowe informacje",
-          value: String(extra || "Brak").slice(0, 1024),
-          inline: false
+        if (!levels[userId]) {
+            levels[userId] = {
+                xp: 0,
+                level: 0
+            };
         }
-      )
-      .setFooter({
-        text: `Kupujemy • ${new Date().toLocaleString("pl-PL")}`
-      })
-      .setTimestamp();
 
-    /* -----------------------------------------------------
-       DOPŁATA PAYSAFECARD
-    ----------------------------------------------------- */
+        const userData = levels[userId];
 
-    if (payment === "Paysafecard") {
-      embed.addFields({
-        name: "➕ Dopłata Paysafecard",
-        value:
-          `+10% = ${safeSurcharge.toFixed(2).replace(".00", "")} zł`,
-        inline: true
-      });
+        const currentLevel = userData.level;
+
+        if (currentLevel >= 100) {
+
+            return message.reply(
+                `🏆 **${message.author.username}**, masz maksymalny poziom **100**!`
+            );
+        }
+
+        const nextLevel = currentLevel + 1;
+
+        const requiredXP = xpForLevel(nextLevel);
+
+        const missingXP =
+            Math.max(0, requiredXP - userData.xp);
+
+        await message.reply(
+            `📊 **Twój poziom:** ${currentLevel}\n` +
+            `✨ **XP:** ${userData.xp}\n` +
+            `🎯 **Następny poziom:** ${nextLevel}\n` +
+            `📈 **Brakuje:** ${missingXP} XP`
+        );
     }
-
-    /* -----------------------------------------------------
-       PRZYCISKI
-    ----------------------------------------------------- */
-
-    const row = new ActionRowBuilder().addComponents(
-
-      new ButtonBuilder()
-        .setCustomId("order_realize")
-        .setLabel("REALIZUJ")
-        .setEmoji("🟢")
-        .setStyle(ButtonStyle.Success),
-
-      new ButtonBuilder()
-        .setCustomId("order_cancel")
-        .setLabel("ANULUJ")
-        .setEmoji("🔴")
-        .setStyle(ButtonStyle.Danger),
-
-      new ButtonBuilder()
-        .setCustomId("order_accept")
-        .setLabel("ZATWIERDŹ")
-        .setEmoji("✅")
-        .setStyle(ButtonStyle.Primary)
-
-    );
-
-    /* -----------------------------------------------------
-       WYSŁANIE ZAMÓWIENIA
-    ----------------------------------------------------- */
-
-    const sentMessage = await channel.send({
-      content: "📨 **NOWE ZAMÓWIENIE!**",
-      embeds: [embed],
-      components: [row]
-    });
-
-    console.log(
-      `📦 Nowe zamówienie wysłane. ID wiadomości: ${sentMessage.id}`
-    );
-
-    /* -----------------------------------------------------
-       ODPOWIEDŹ DO STRONY
-    ----------------------------------------------------- */
-
-    res.json({
-      ok: true,
-      message: "Zamówienie zostało wysłane do Discorda.",
-      orderMessageId: sentMessage.id,
-      channel: channel.name
-    });
-
-  } catch (error) {
-
-    console.error("❌ Błąd podczas obsługi zamówienia:");
-    console.error(error);
-
-    res.status(500).json({
-      ok: false,
-      error: "Wystąpił błąd podczas wysyłania zamówienia."
-    });
-  }
 });
 
-/* =========================================================
-   PRZYCISKI DISCORD
-========================================================= */
+// ======================================================
+// KOMENDA !rank
+// ======================================================
 
-client.on("interactionCreate", async interaction => {
+client.on("messageCreate", async (message) => {
 
-  if (!interaction.isButton()) return;
+    if (message.author.bot) return;
 
-  const allowedButtons = [
-    "order_realize",
-    "order_cancel",
-    "order_accept"
-  ];
+    if (!message.guild) return;
 
-  if (!allowedButtons.includes(interaction.customId)) {
-    return;
-  }
+    if (message.guild.id !== GUILD_ID) return;
 
-  const messages = {
+    if (message.content.toLowerCase() === "!rank") {
 
-    order_realize:
-      "🟢 **Zamówienie oznaczone jako REALIZOWANE.**",
+        const userId = message.author.id;
 
-    order_cancel:
-      "🔴 **Zamówienie ANULOWANE.**",
+        if (!levels[userId]) {
+            levels[userId] = {
+                xp: 0,
+                level: 0
+            };
+        }
 
-    order_accept:
-      "✅ **Zamówienie ZATWIERDZONE.**"
+        const userData = levels[userId];
 
-  };
+        await message.reply(
+            `🏅 **${message.author.username}**\n\n` +
+            `⭐ Poziom: **${userData.level}/100**\n` +
+            `✨ XP: **${userData.xp}**`
+        );
+    }
+});
 
-  try {
+// ======================================================
+// LOGOWANIE
+// ======================================================
 
-    await interaction.reply({
-      content:
-        `${messages[interaction.customId]}\n` +
-        `👤 Obsługa: ${interaction.user}`,
-      ephemeral: false
-    });
-
-    console.log(
-      `🔘 ${interaction.customId} użyte przez ${interaction.user.tag}`
-    );
-
-  } catch (error) {
+if (!TOKEN) {
 
     console.error(
-      "❌ Błąd podczas obsługi przycisku:",
-      error
+        "BRAK DISCORD_TOKEN w Environment Variables!"
     );
 
-  }
-
-});
-
-/* =========================================================
-   KOMENDA !test
-========================================================= */
-
-client.on("messageCreate", async message => {
-
-  if (message.author.bot) return;
-
-  if (message.content.trim() === "!test") {
-
-    await message.reply(
-      "✅ **Kupujemy-BOT działa poprawnie!**\n" +
-      "🌐 API działa\n" +
-      "🤖 Discord działa\n" +
-      "🛒 Sklep działa"
-    );
-
-  }
-
-});
-
-/* =========================================================
-   BOT READY
-========================================================= */
-
-client.once("ready", () => {
-
-  console.log("========================================");
-  console.log("✅ KUPUJEMY BOT URUCHOMIONY");
-  console.log(`🤖 Bot: ${client.user.tag}`);
-  console.log(`🌐 Port: ${PORT}`);
-  console.log(`📨 Kanał zamówień: ${ORDER_CHANNEL_NAME}`);
-  console.log("========================================");
-
-});
-
-/* =========================================================
-   BŁĘDY DISCORDA
-========================================================= */
-
-client.on("error", error => {
-  console.error("❌ Discord Client Error:", error);
-});
-
-/* =========================================================
-   START SERWERA HTTP
-========================================================= */
-
-app.listen(PORT, "0.0.0.0", () => {
-
-  console.log("========================================");
-  console.log("🌐 KUPUJEMY WEB SERVICE URUCHOMIONY");
-  console.log(`🚀 Port: ${PORT}`);
-  console.log("📄 Strona: index.html");
-  console.log("🎨 CSS: style.css");
-  console.log("⚙️ JS: script.js");
-  console.log("🖼️ Obrazy: pliki z folderu projektu");
-  console.log("========================================");
-
-});
-
-/* =========================================================
-   LOGOWANIE BOTA
-========================================================= */
-
-if (!process.env.DISCORD_TOKEN) {
-
-  console.error(
-    "❌ BRAK DISCORD_TOKEN W ENVIRONMENT VARIABLES!"
-  );
-
-} else {
-
-  client.login(process.env.DISCORD_TOKEN)
-    .then(() => {
-      console.log("🔐 Token Discord został zaakceptowany.");
-    })
-    .catch(error => {
-      console.error(
-        "❌ Nie udało się zalogować bota Discord:",
-        error
-      );
-    });
-
+    process.exit(1);
 }
+
+client.login(TOKEN);
