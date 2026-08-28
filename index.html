@@ -361,10 +361,9 @@
         <button
             type="button"
             class="close-order"
-            onclick="closeOrder()">
-
+            onclick="closeOrder()"
+        >
             ×
-
         </button>
 
 
@@ -376,21 +375,28 @@
 
 
         <!-- INFORMACJA O GMAIL -->
-        <!-- TO JEST TEN NOWY NAPIS -->
 
         <div class="gmail-info">
-    <span class="gmail-icon">✉</span>
-    <div>
-        <strong>Ważna informacja</strong>
-        <p>Aby wysłać zamówienie, musisz być zalogowany do aplikacji Gmail na swoim urządzeniu.</p>
-    </div>
-</div>
+
+            <span class="gmail-icon">✉</span>
+
+            <div>
+
+                <strong>Ważna informacja</strong>
+
+                <p>
+                    Aby wysłać zamówienie, musisz być zalogowany
+                    do aplikacji Gmail na swoim urządzeniu.
+                </p>
+
+            </div>
+
+        </div>
 
 
-        <p class="order-description">
+        <!-- PUSTY OPIS -->
 
-        
-        </p>
+        <p class="order-description"></p>
 
 
         <!-- PAKIET -->
@@ -444,7 +450,9 @@
                 id="age"
             >
 
-            Potwierdzam, że mam ukończone 18 lat.
+            <span>
+                Potwierdzam, że mam ukończone 18 lat.
+            </span>
 
         </label>
 
@@ -454,12 +462,13 @@
         <button
             type="button"
             class="send-order"
-            onclick="sendOrder()">
-
+            onclick="sendOrder()"
+        >
             Wyślij zamówienie →
-
         </button>
 
+
+        <!-- INFORMACJA O WIADOMOŚCI -->
 
         <p class="mail-note">
 
@@ -471,7 +480,6 @@
     </div>
 
 </div>
-
 
 <!-- ================================================== -->
 <!-- JAVASCRIPT -->
