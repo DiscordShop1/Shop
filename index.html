@@ -2,367 +2,930 @@
 <html lang="pl">
 
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
 
     <title>WebCraft — Nowoczesne strony internetowe</title>
 
-    <link rel="icon" type="image/png" href="logo.png">
-    <link rel="stylesheet" href="style.css">
+    <link rel="icon"
+          type="image/png"
+          href="logo.png">
+
+    <link rel="stylesheet"
+          href="style.css">
+
+
+    <!-- DODATKOWE STYLE DLA OKNA ZAMÓWIENIA -->
+
+    <style>
+
+        .order-modal {
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+
+            display: none;
+            align-items: center;
+            justify-content: center;
+
+            padding: 20px;
+
+            background: rgba(5, 5, 30, 0.85);
+
+            backdrop-filter: blur(8px);
+        }
+
+
+        .order-box {
+            position: relative;
+
+            width: 100%;
+            max-width: 520px;
+            max-height: 90vh;
+
+            overflow-y: auto;
+
+            padding: 35px;
+
+            border-radius: 24px;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #15155a,
+                    #10104a
+                );
+
+            border: 1px solid rgba(0, 220, 255, 0.45);
+
+            box-shadow:
+                0 25px 80px rgba(0, 0, 0, 0.55),
+                0 0 35px rgba(0, 220, 255, 0.12);
+
+            color: white;
+        }
+
+
+        .close-order {
+            position: absolute;
+
+            top: 15px;
+            right: 18px;
+
+            width: 38px;
+            height: 38px;
+
+            border: none;
+            border-radius: 50%;
+
+            background: rgba(255,255,255,0.08);
+
+            color: white;
+
+            font-size: 27px;
+
+            cursor: pointer;
+
+            transition: 0.2s;
+        }
+
+
+        .close-order:hover {
+            background: rgba(255,255,255,0.18);
+
+            transform: rotate(90deg);
+        }
+
+
+        .order-box h2 {
+            margin-top: 0;
+            margin-bottom: 8px;
+
+            font-size: 30px;
+        }
+
+
+        .order-subtitle {
+            margin-top: 0;
+            margin-bottom: 25px;
+
+            opacity: 0.75;
+        }
+
+
+        .order-product {
+            padding: 20px;
+
+            margin-bottom: 22px;
+
+            border-radius: 16px;
+
+            background: rgba(255,255,255,0.07);
+
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+
+        .order-product-name {
+            font-size: 20px;
+            font-weight: 700;
+
+            margin-bottom: 8px;
+        }
+
+
+        .order-product-price {
+            font-size: 32px;
+            font-weight: 800;
+
+            color: #00eaff;
+        }
+
+
+        .order-info {
+            margin-bottom: 22px;
+
+            padding: 16px;
+
+            border-radius: 14px;
+
+            background: rgba(0, 220, 255, 0.07);
+
+            border: 1px solid rgba(0, 220, 255, 0.2);
+        }
+
+
+        .order-info strong {
+            display: block;
+
+            margin-bottom: 7px;
+        }
+
+
+        .order-box label {
+            display: block;
+
+            margin-top: 15px;
+            margin-bottom: 7px;
+
+            font-weight: 600;
+        }
+
+
+        .order-box input,
+        .order-box textarea {
+            width: 100%;
+
+            box-sizing: border-box;
+
+            padding: 13px 15px;
+
+            border: 1px solid rgba(255,255,255,0.15);
+
+            border-radius: 12px;
+
+            outline: none;
+
+            background: rgba(255,255,255,0.07);
+
+            color: white;
+
+            font-size: 15px;
+        }
+
+
+        .order-box input::placeholder,
+        .order-box textarea::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+
+        .order-box input:focus,
+        .order-box textarea:focus {
+            border-color: #00eaff;
+        }
+
+
+        .order-box textarea {
+            min-height: 110px;
+
+            resize: vertical;
+        }
+
+
+        .age-verification {
+            display: flex;
+
+            align-items: flex-start;
+
+            gap: 10px;
+
+            margin-top: 20px;
+            margin-bottom: 20px;
+
+            padding: 15px;
+
+            border-radius: 13px;
+
+            background: rgba(255,255,255,0.06);
+
+            border: 1px solid rgba(255,255,255,0.12);
+        }
+
+
+        .age-verification input {
+            width: 18px;
+            height: 18px;
+
+            margin-top: 2px;
+
+            flex-shrink: 0;
+        }
+
+
+        .age-verification label {
+            margin: 0;
+
+            font-size: 14px;
+
+            line-height: 1.4;
+
+            cursor: pointer;
+        }
+
+
+        .payment-info {
+            margin-bottom: 20px;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            opacity: 0.8;
+        }
+
+
+        .send-order-button {
+            width: 100%;
+
+            margin-top: 8px;
+
+            padding: 15px 20px;
+
+            border: none;
+
+            border-radius: 13px;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    #00eaff,
+                    #008cff
+                );
+
+            color: white;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition: 0.25s;
+        }
+
+
+        .send-order-button:hover {
+            transform: translateY(-2px);
+
+            box-shadow:
+                0 10px 30px rgba(0, 200, 255, 0.25);
+        }
+
+
+        .gmail-note {
+            margin-top: 13px;
+
+            text-align: center;
+
+            font-size: 12px;
+
+            opacity: 0.55;
+
+            line-height: 1.4;
+        }
+
+
+        @media (max-width: 600px) {
+
+            .order-box {
+                padding: 25px 20px;
+            }
+
+            .order-box h2 {
+                font-size: 25px;
+            }
+
+            .order-product-price {
+                font-size: 28px;
+            }
+
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
+
+<!-- ========================= -->
+<!-- NAWIGACJA -->
+<!-- ========================= -->
 
 <header class="navbar">
 
     <div class="logo">
-        <img src="logo.png" alt="WebCraft">
+
+        <img
+            src="logo.png"
+            alt="WebCraft">
+
     </div>
 
+
     <nav>
-        <a href="#start">Start</a>
-        <a href="#oferta">Oferta</a>
-        <a href="#cennik">Cennik</a>
-        <a href="#kontakt">Kontakt</a>
+
+        <a href="#start">
+            Start
+        </a>
+
+        <a href="#oferta">
+            Oferta
+        </a>
+
+        <a href="#cennik">
+            Cennik
+        </a>
+
+        <a href="#kontakt">
+            Kontakt
+        </a>
+
     </nav>
 
-    <a href="#cennik" class="nav-button">
+
+    <a
+        href="#cennik"
+        class="nav-button">
+
         Zamów stronę
+
     </a>
 
 </header>
 
 
+
 <main>
 
-    <!-- ========================= -->
-    <!-- START -->
-    <!-- ========================= -->
 
-    <section id="start" class="hero">
+<!-- ========================= -->
+<!-- START -->
+<!-- ========================= -->
 
-        <div class="hero-content">
+<section
+    id="start"
+    class="hero">
 
-            <div class="badge">
-                ✦ Nowi na rynku • Wielkie możliwości
+
+    <div class="hero-content">
+
+
+        <div class="badge">
+
+            ✦ Nowi na rynku • Wielkie możliwości
+
+        </div>
+
+
+        <h1>
+
+            Twoja strona.
+            <span>Twój wizerunek.</span>
+
+        </h1>
+
+
+        <p>
+
+            Tworzymy nowoczesne, szybkie i przyjemne w użyciu
+            strony internetowe dopasowane do telefonów i komputerów.
+
+        </p>
+
+
+        <div class="hero-buttons">
+
+
+            <a
+                href="#cennik"
+                class="primary-button">
+
+                Zobacz cennik →
+
+            </a>
+
+
+            <a
+                href="#oferta"
+                class="secondary-button">
+
+                Dowiedz się więcej
+
+            </a>
+
+
+        </div>
+
+
+    </div>
+
+
+
+    <div class="hero-card">
+
+
+        <div class="card-top">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+        </div>
+
+
+        <div class="website-preview">
+
+            <div class="preview-line"></div>
+
+            <div class="preview-title"></div>
+
+
+            <div class="preview-boxes">
+
+                <div></div>
+                <div></div>
+                <div></div>
+
             </div>
 
-            <h1>
-                Twoja strona.
-                <span>Twój wizerunek.</span>
-            </h1>
+
+            <div class="preview-button"></div>
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ========================= -->
+<!-- OFERTA -->
+<!-- ========================= -->
+
+<section
+    id="oferta"
+    class="section">
+
+
+    <div class="section-heading">
+
+
+        <p>
+            DLACZE WEBCRAFT?
+        </p>
+
+
+        <h2>
+
+            Strona, która robi
+            <span>pierwsze wrażenie.</span>
+
+        </h2>
+
+
+        <p>
+
+            Dopiero zaczynamy swoją działalność, ale od początku
+            stawiamy na jakość, nowoczesny wygląd i wygodę użytkownika.
+
+        </p>
+
+
+    </div>
+
+
+
+    <div class="features">
+
+
+        <div class="feature">
+
+
+            <div class="feature-icon">
+                📱
+            </div>
+
+
+            <h3>
+                Telefon i komputer
+            </h3>
+
 
             <p>
-                Tworzymy nowoczesne, szybkie i przyjemne w użyciu
-                strony internetowe dopasowane do telefonów i komputerów.
+
+                Strona będzie dopasowana
+                do różnych rozmiarów ekranów.
+
             </p>
 
-            <div class="hero-buttons">
-
-                <a href="#cennik" class="primary-button">
-                    Zobacz cennik →
-                </a>
-
-                <a href="#oferta" class="secondary-button">
-                    Dowiedz się więcej
-                </a>
-
-            </div>
 
         </div>
 
 
-        <div class="hero-card">
 
-            <div class="card-top">
-                <span></span>
-                <span></span>
-                <span></span>
+        <div class="feature">
+
+
+            <div class="feature-icon">
+                ⚡
             </div>
 
-            <div class="website-preview">
 
-                <div class="preview-line"></div>
-                <div class="preview-title"></div>
+            <h3>
+                Nowoczesny wygląd
+            </h3>
 
-                <div class="preview-boxes">
-                    <div></div>
-                    <div></div>
-                    <div></div>
-                </div>
-
-                <div class="preview-button"></div>
-
-            </div>
-
-        </div>
-
-    </section>
-
-
-    <!-- ========================= -->
-    <!-- OFERTA -->
-    <!-- ========================= -->
-
-    <section id="oferta" class="section">
-
-        <div class="section-heading">
-
-            <p>DLACZE WEBCRAFT?</p>
-
-            <h2>
-                Strona, która robi
-                <span>pierwsze wrażenie.</span>
-            </h2>
 
             <p>
-                Dopiero zaczynamy swoją działalność, ale od początku
-                stawiamy na jakość, nowoczesny wygląd i wygodę użytkownika.
+
+                Tworzymy estetyczne strony
+                z animacjami i efektami.
+
             </p>
 
-        </div>
-
-
-        <div class="features">
-
-            <div class="feature">
-
-                <div class="feature-icon">📱</div>
-
-                <h3>Telefon i komputer</h3>
-
-                <p>
-                    Strona będzie dopasowana do różnych rozmiarów ekranów.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">⚡</div>
-
-                <h3>Nowoczesny wygląd</h3>
-
-                <p>
-                    Tworzymy estetyczne strony z animacjami i efektami.
-                </p>
-
-            </div>
-
-
-            <div class="feature">
-
-                <div class="feature-icon">💬</div>
-
-                <h3>Łatwy kontakt</h3>
-
-                <p>
-                    Zamówienie możesz rozpocząć bezpośrednio przez naszą stronę.
-                </p>
-
-            </div>
 
         </div>
 
-    </section>
 
 
-    <!-- ========================= -->
-    <!-- CENNIK -->
-    <!-- ========================= -->
+        <div class="feature">
 
-    <section id="cennik" class="section pricing-section">
 
-        <div class="section-heading">
+            <div class="feature-icon">
+                💬
+            </div>
 
-            <p>CENNIK</p>
 
-            <h2>
-                Wybierz swój
-                <span>pakiet.</span>
-            </h2>
+            <h3>
+                Łatwy kontakt
+            </h3>
+
 
             <p>
-                Wybierz pakiet, a następnie wypełnij formularz zamówienia.
+
+                Zamówienie możesz rozpocząć
+                bezpośrednio przez naszą stronę.
+
             </p>
 
-        </div>
-
-
-        <div class="pricing">
-
-
-            <!-- ========================= -->
-            <!-- START -->
-            <!-- ========================= -->
-
-            <div class="price-card">
-
-                <h3>START</h3>
-
-                <div class="price">
-                    149 zł
-                </div>
-
-                <p>
-                    Podstawowa strona internetowa.
-                </p>
-
-                <ul>
-                    <li>✓ Nowoczesny wygląd</li>
-                    <li>✓ Wersja mobilna</li>
-                    <li>✓ Podstawowe sekcje</li>
-                    <li>✓ Kontakt</li>
-                </ul>
-
-                <button
-                    type="button"
-                    class="order-button"
-                    onclick="openOrder('START')">
-
-                    Zamów pakiet
-
-                </button>
-
-            </div>
-
-
-            <!-- ========================= -->
-            <!-- PRO -->
-            <!-- ========================= -->
-
-            <div class="price-card featured">
-
-                <div class="popular">
-                    NAJCZĘŚCIEJ WYBIERANY
-                </div>
-
-                <h3>PRO</h3>
-
-                <div class="price">
-                    299 zł
-                </div>
-
-                <p>
-                    Rozbudowana strona dla firmy lub marki.
-                </p>
-
-                <ul>
-                    <li>✓ Nowoczesny design</li>
-                    <li>✓ Wersja mobilna</li>
-                    <li>✓ Animacje i efekty</li>
-                    <li>✓ Rozbudowane funkcje</li>
-                    <li>✓ Formularz kontaktowy</li>
-                </ul>
-
-                <button
-                    type="button"
-                    class="order-button"
-                    onclick="openOrder('PRO')">
-
-                    Zamów pakiet
-
-                </button>
-
-            </div>
-
-
-            <!-- ========================= -->
-            <!-- PREMIUM -->
-            <!-- ========================= -->
-
-            <div class="price-card">
-
-                <h3>PREMIUM</h3>
-
-                <div class="price">
-                    499 zł
-                </div>
-
-                <p>
-                    Profesjonalna i rozbudowana strona.
-                </p>
-
-                <ul>
-                    <li>✓ Profesjonalny projekt</li>
-                    <li>✓ Wersja mobilna</li>
-                    <li>✓ Animacje i efekty</li>
-                    <li>✓ Rozbudowane funkcje</li>
-                    <li>✓ Pomoc przy uruchomieniu</li>
-                </ul>
-
-                <button
-                    type="button"
-                    class="order-button"
-                    onclick="openOrder('PREMIUM')">
-
-                    Zamów pakiet
-
-                </button>
-
-            </div>
 
         </div>
 
-    </section>
+
+    </div>
 
 
-    <!-- ========================= -->
-    <!-- KONTAKT -->
-    <!-- ========================= -->
+</section>
 
-    <section id="kontakt" class="section contact-section">
 
-        <div class="section-heading">
 
-            <p>KONTAKT</p>
+<!-- ========================= -->
+<!-- CENNIK -->
+<!-- ========================= -->
 
-            <h2>
-                Masz pytania?
-                <span>Napisz do nas.</span>
-            </h2>
+<section
+    id="cennik"
+    class="section pricing-section">
+
+
+    <div class="section-heading">
+
+
+        <p>
+            CENNIK
+        </p>
+
+
+        <h2>
+
+            Wybierz swój
+            <span>pakiet.</span>
+
+        </h2>
+
+
+        <p>
+
+            Wybierz pakiet, aby przejść
+            do formularza zamówienia.
+
+        </p>
+
+
+    </div>
+
+
+
+    <div class="pricing">
+
+
+        <!-- ========================= -->
+        <!-- START -->
+        <!-- ========================= -->
+
+        <div class="price-card">
+
+
+            <h3>
+                START
+            </h3>
+
+
+            <div class="price">
+                149 zł
+            </div>
+
 
             <p>
-                Chcesz stworzyć stronę internetową dla swojej firmy?
-                Skontaktuj się z nami.
+                Podstawowa strona internetowa.
             </p>
 
-        </div>
 
+            <ul>
 
-        <div class="contact-box">
+                <li>
+                    ✓ Nowoczesny wygląd
+                </li>
 
-            <p>
-                📧 Kontakt e-mail
-            </p>
+                <li>
+                    ✓ Wersja mobilna
+                </li>
+
+                <li>
+                    ✓ Podstawowe sekcje
+                </li>
+
+                <li>
+                    ✓ Kontakt
+                </li>
+
+            </ul>
+
 
             <button
                 type="button"
-                class="primary-button"
-                onclick="openGmail()">
+                class="order-button"
+                onclick="openOrder('START', '149 zł')">
 
-                Napisz wiadomość
+                Zamów pakiet
 
             </button>
 
+
         </div>
 
-    </section>
+
+
+        <!-- ========================= -->
+        <!-- PRO -->
+        <!-- ========================= -->
+
+        <div class="price-card featured">
+
+
+            <div class="popular">
+                NAJCZĘŚCIEJ WYBIERANY
+            </div>
+
+
+            <h3>
+                PRO
+            </h3>
+
+
+            <div class="price">
+                299 zł
+            </div>
+
+
+            <p>
+                Rozbudowana strona dla firmy lub marki.
+            </p>
+
+
+            <ul>
+
+                <li>
+                    ✓ Nowoczesny design
+                </li>
+
+                <li>
+                    ✓ Wersja mobilna
+                </li>
+
+                <li>
+                    ✓ Animacje i efekty
+                </li>
+
+                <li>
+                    ✓ Rozbudowane funkcje
+                </li>
+
+                <li>
+                    ✓ Formularz kontaktowy
+                </li>
+
+            </ul>
+
+
+            <button
+                type="button"
+                class="order-button"
+                onclick="openOrder('PRO', '299 zł')">
+
+                Zamów pakiet
+
+            </button>
+
+
+        </div>
+
+
+
+        <!-- ========================= -->
+        <!-- PREMIUM -->
+        <!-- ========================= -->
+
+        <div class="price-card">
+
+
+            <h3>
+                PREMIUM
+            </h3>
+
+
+            <div class="price">
+                499 zł
+            </div>
+
+
+            <p>
+                Profesjonalna i rozbudowana strona.
+            </p>
+
+
+            <ul>
+
+                <li>
+                    ✓ Profesjonalny projekt
+                </li>
+
+                <li>
+                    ✓ Wersja mobilna
+                </li>
+
+                <li>
+                    ✓ Animacje i efekty
+                </li>
+
+                <li>
+                    ✓ Rozbudowane funkcje
+                </li>
+
+                <li>
+                    ✓ Pomoc przy uruchomieniu
+                </li>
+
+            </ul>
+
+
+            <button
+                type="button"
+                class="order-button"
+                onclick="openOrder('PREMIUM', '499 zł')">
+
+                Zamów pakiet
+
+            </button>
+
+
+        </div>
+
+
+    </div>
+
+
+</section>
+
+
+
+<!-- ========================= -->
+<!-- KONTAKT -->
+<!-- ========================= -->
+
+<section
+    id="kontakt"
+    class="section contact-section">
+
+
+    <div class="section-heading">
+
+
+        <p>
+            KONTAKT
+        </p>
+
+
+        <h2>
+
+            Masz pytania?
+            <span>Napisz do nas.</span>
+
+        </h2>
+
+
+        <p>
+
+            Chcesz stworzyć stronę internetową
+            dla swojej firmy? Skontaktuj się z nami.
+
+        </p>
+
+
+    </div>
+
+
+
+    <div class="contact-box">
+
+
+        <p>
+            📧 Kontakt e-mail
+        </p>
+
+
+        <button
+            type="button"
+            class="primary-button"
+            onclick="openGmail()">
+
+            Napisz wiadomość
+
+        </button>
+
+
+    </div>
+
+
+</section>
+
 
 </main>
 
 
-<!-- ========================= -->
+
+<!-- ================================================= -->
 <!-- OKNO ZAMÓWIENIA -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <div
     id="orderModal"
-    class="order-modal"
-    style="display: none;">
+    class="order-modal">
+
 
     <div class="order-box">
+
+
+        <!-- ZAMKNIĘCIE -->
 
         <button
             type="button"
@@ -374,24 +937,96 @@
         </button>
 
 
+
         <h2>
-            Zamów pakiet
+            Zamówienie
         </h2>
 
 
-        <p>
-            Wybrany pakiet:
+        <p class="order-subtitle">
+
+            Sprawdź szczegóły wybranego pakietu.
+
         </p>
 
 
-        <strong id="selectedPackage">
-            —
-        </strong>
 
+        <!-- PRODUKT I CENA -->
+
+        <div class="order-product">
+
+
+            <div class="order-product-name">
+
+                Pakiet
+                <span id="selectedPackage">
+                    —
+                </span>
+
+            </div>
+
+
+            <div
+                class="order-product-price"
+                id="selectedPrice">
+
+                0 zł
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- INFORMACJA O PŁATNOŚCI -->
+
+        <div class="order-info">
+
+
+            <strong>
+                💳 Informacje o płatności
+            </strong>
+
+
+            Płatność za wybrany pakiet zostanie
+            ustalona po kontakcie i potwierdzeniu
+            szczegółów zamówienia.
+
+        </div>
+
+
+
+        <!-- WERYFIKACJA WIEKU -->
+
+        <div class="age-verification">
+
+
+            <input
+                type="checkbox"
+                id="ageCheck">
+
+
+            <label for="ageCheck">
+
+                Potwierdzam, że mam ukończone
+                <strong>18 lat</strong>.
+
+            </label>
+
+
+        </div>
+
+
+
+        <!-- IMIĘ / FIRMA -->
 
         <label for="clientName">
+
             Imię / nazwa firmy
+
         </label>
+
 
         <input
             type="text"
@@ -399,9 +1034,15 @@
             placeholder="Wpisz imię lub nazwę firmy">
 
 
+
+        <!-- TELEFON -->
+
         <label for="clientPhone">
+
             Numer telefonu
+
         </label>
+
 
         <input
             type="tel"
@@ -409,226 +1050,399 @@
             placeholder="Wpisz numer telefonu">
 
 
+
+        <!-- DODATKOWA WIADOMOŚĆ -->
+
         <label for="clientMessage">
+
             Dodatkowe informacje
+
         </label>
+
 
         <textarea
             id="clientMessage"
             placeholder="Napisz, czego potrzebujesz..."></textarea>
 
 
+
+        <!-- INFORMACJA -->
+
+        <div class="payment-info">
+
+            Po kliknięciu przycisku
+            <strong>„Wyślij wiadomość”</strong>
+            otworzy się Gmail z przygotowaną
+            wiadomością dotyczącą zamówienia.
+
+        </div>
+
+
+
+        <!-- WYŚLIJ -->
+
         <button
             type="button"
-            class="order-button"
+            class="send-order-button"
             onclick="sendOrder()">
 
-            Wyślij zamówienie
+            ✉ Wyślij wiadomość
 
         </button>
 
+
+        <div class="gmail-note">
+
+            Jeśli nie jesteś zalogowany w Gmailu,
+            Gmail może poprosić Cię o zalogowanie.
+
+        </div>
+
+
     </div>
+
 
 </div>
 
 
-<!-- ========================= -->
+
+<!-- ================================================= -->
 <!-- JAVASCRIPT -->
-<!-- ========================= -->
+<!-- ================================================= -->
 
 <script>
 
-    /* =========================================
-       TWÓJ ADRES E-MAIL
-       ========================================= */
+
+    /* ================================================
+       ADRES E-MAIL WEBCRAFT
+       ================================================ */
 
     const EMAIL = "paweladominik4@gmail.com";
 
 
-    /* Wybrany pakiet */
+    /* Aktualnie wybrany pakiet */
 
     let selectedPackage = "";
 
+    let selectedPrice = "";
 
-    /* =========================================
-       OTWIERANIE FORMULARZA
-       ========================================= */
 
-    function openOrder(packageName) {
+    /* ================================================
+       OTWIERANIE OKNA ZAMÓWIENIA
+       ================================================ */
+
+    function openOrder(packageName, packagePrice) {
+
 
         selectedPackage = packageName;
 
-        document.getElementById("selectedPackage").textContent =
-            packageName;
+        selectedPrice = packagePrice;
 
-        document.getElementById("orderModal").style.display =
-            "flex";
+
+        document.getElementById(
+            "selectedPackage"
+        ).textContent = packageName;
+
+
+        document.getElementById(
+            "selectedPrice"
+        ).textContent = packagePrice;
+
+
+        document.getElementById(
+            "orderModal"
+        ).style.display = "flex";
+
 
         document.body.style.overflow = "hidden";
+
     }
 
 
-    /* =========================================
-       ZAMYKANIE FORMULARZA
-       ========================================= */
+
+    /* ================================================
+       ZAMYKANIE OKNA
+       ================================================ */
 
     function closeOrder() {
 
-        document.getElementById("orderModal").style.display =
-            "none";
+
+        document.getElementById(
+            "orderModal"
+        ).style.display = "none";
+
 
         document.body.style.overflow = "";
+
+
     }
 
 
-    /* =========================================
+
+    /* ================================================
        WYSYŁANIE ZAMÓWIENIA
-       ========================================= */
+       ================================================ */
 
     function sendOrder() {
 
+
         const name =
-            document.getElementById("clientName").value.trim();
+            document.getElementById(
+                "clientName"
+            ).value.trim();
+
 
         const phone =
-            document.getElementById("clientPhone").value.trim();
+            document.getElementById(
+                "clientPhone"
+            ).value.trim();
+
 
         const message =
-            document.getElementById("clientMessage").value.trim();
+            document.getElementById(
+                "clientMessage"
+            ).value.trim();
 
 
-        /* Sprawdzenie imienia / firmy */
+        const ageCheck =
+            document.getElementById(
+                "ageCheck"
+            ).checked;
+
+
+
+        /* ============================================
+           SPRAWDZENIE WIEKU
+           ============================================ */
+
+        if (!ageCheck) {
+
+            alert(
+                "Aby kontynuować, musisz potwierdzić, że masz ukończone 18 lat."
+            );
+
+            return;
+
+        }
+
+
+
+        /* ============================================
+           SPRAWDZENIE IMIENIA / FIRMY
+           ============================================ */
 
         if (name === "") {
 
-            alert("Wpisz imię lub nazwę firmy.");
+            alert(
+                "Wpisz imię lub nazwę firmy."
+            );
 
             return;
+
         }
 
 
-        /* Sprawdzenie telefonu */
+
+        /* ============================================
+           SPRAWDZENIE TELEFONU
+           ============================================ */
 
         if (phone === "") {
 
-            alert("Wpisz numer telefonu.");
+            alert(
+                "Wpisz numer telefonu."
+            );
 
             return;
+
         }
 
 
-        /* =========================================
+
+        /* ============================================
            TEMAT WIADOMOŚCI
-           ========================================= */
+           ============================================ */
 
         const subject =
-            "Zamówienie strony internetowej - " +
-            selectedPackage;
+            "Zamówienie WebCraft - " +
+            selectedPackage +
+            " - " +
+            selectedPrice;
 
 
-        /* =========================================
+
+        /* ============================================
            TREŚĆ WIADOMOŚCI
-           ========================================= */
+           ============================================ */
 
         const body =
-            "Dzień dobry,\n\n" +
 
-            "Chcę zamówić pakiet: " +
+            "Dzień dobry,%0D%0A%0D%0A" +
+
+            "Chciałbym/chciałabym zamówić pakiet " +
             selectedPackage +
-            "\n\n" +
+            ".%0D%0A%0D%0A" +
+
+            "SZCZEGÓŁY ZAMÓWIENIA:%0D%0A" +
+
+            "Produkt: " +
+            selectedPackage +
+            "%0D%0A" +
+
+            "Cena: " +
+            selectedPrice +
+            "%0D%0A%0D%0A" +
+
+            "DANE KLIENTA:%0D%0A" +
 
             "Imię / nazwa firmy: " +
-            name +
-            "\n" +
+            encodeURIComponent(name) +
+            "%0D%0A" +
 
             "Numer telefonu: " +
-            phone +
-            "\n\n" +
+            encodeURIComponent(phone) +
+            "%0D%0A%0D%0A" +
 
-            "Dodatkowe informacje:\n" +
-            message +
-            "\n\n" +
+            "Dodatkowe informacje:%0D%0A" +
+
+            encodeURIComponent(
+                message || "Brak dodatkowych informacji."
+            ) +
+
+            "%0D%0A%0D%0A" +
+
+            "Potwierdzam, że mam ukończone 18 lat.%0D%0A%0D%0A" +
 
             "Pozdrawiam";
 
 
-        /* =========================================
-           ADRES GMAIL
-           ========================================= */
+
+        /* ============================================
+           LINK DO GMAIL
+           ============================================ */
 
         const gmailURL =
-            "https://mail.google.com/mail/?view=cm&fs=1" +
-            "&to=" + encodeURIComponent(EMAIL) +
-            "&su=" + encodeURIComponent(subject) +
-            "&body=" + encodeURIComponent(body);
+
+            "https://mail.google.com/mail/?" +
+
+            "view=cm" +
+
+            "&fs=1" +
+
+            "&to=" +
+            encodeURIComponent(EMAIL) +
+
+            "&su=" +
+            encodeURIComponent(subject) +
+
+            "&body=" +
+            body;
 
 
-        /* =========================================
-           OTWARCIE GMAIL
-           ========================================= */
+
+        /* ============================================
+           PRZEJŚCIE DO GMAIL
+           ============================================ */
 
         window.location.href = gmailURL;
+
     }
 
 
-    /* =========================================
-       PRZYCISK KONTAKTU
-       ========================================= */
+
+    /* ================================================
+       PRZYCISK „NAPISZ WIADOMOŚĆ” W KONTAKCIE
+       ================================================ */
 
     function openGmail() {
+
 
         const subject =
             "Zapytanie dotyczące strony internetowej";
 
 
         const body =
-            "Dzień dobry,\n\n" +
+
+            "Dzień dobry,%0D%0A%0D%0A" +
+
             "Chciałbym/chciałabym dowiedzieć się więcej " +
-            "na temat strony internetowej.\n\n" +
+            "na temat strony internetowej.%0D%0A%0D%0A" +
+
             "Pozdrawiam";
 
 
+
         const gmailURL =
-            "https://mail.google.com/mail/?view=cm&fs=1" +
-            "&to=" + encodeURIComponent(EMAIL) +
-            "&su=" + encodeURIComponent(subject) +
-            "&body=" + encodeURIComponent(body);
+
+            "https://mail.google.com/mail/?" +
+
+            "view=cm" +
+
+            "&fs=1" +
+
+            "&to=" +
+            encodeURIComponent(EMAIL) +
+
+            "&su=" +
+            encodeURIComponent(subject) +
+
+            "&body=" +
+            body;
+
 
 
         window.location.href = gmailURL;
+
     }
 
 
-    /* =========================================
+
+    /* ================================================
        KLIKNIĘCIE POZA OKNEM
-       ========================================= */
+       ================================================ */
 
-    document.addEventListener("click", function(event) {
+    document.addEventListener(
+        "click",
+        function(event) {
 
-        const modal =
-            document.getElementById("orderModal");
+
+            const modal =
+                document.getElementById(
+                    "orderModal"
+                );
 
 
-        if (event.target === modal) {
+            if (event.target === modal) {
 
-            closeOrder();
+                closeOrder();
+
+            }
+
+
         }
+    );
 
-    });
 
 
-    /* =========================================
+    /* ================================================
        KLAWISZ ESC
-       ========================================= */
+       ================================================ */
 
-    document.addEventListener("keydown", function(event) {
+    document.addEventListener(
+        "keydown",
+        function(event) {
 
-        if (event.key === "Escape") {
 
-            closeOrder();
+            if (event.key === "Escape") {
+
+                closeOrder();
+
+            }
+
+
         }
+    );
 
-    });
 
 </script>
 
