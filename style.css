@@ -390,6 +390,7 @@ body {
 .order-button {
     width: 100%;
     padding: 17px;
+    margin-top: auto; /* WYRÓWNUJE PRZYCISKI */
     border: none;
     border-radius: 12px;
     background: linear-gradient(135deg, #00dfff, #2868ff);
@@ -408,7 +409,6 @@ body {
 .order-button:active {
     transform: scale(0.98);
 }
-
 
 /* ========================= */
 /* KONTAKT */
