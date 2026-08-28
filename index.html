@@ -1,20 +1,23 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>WebCraft — Nowoczesne strony internetowe</title>
-<link rel="icon" type="image/png" href="logo.png">
+
+    <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header class="navbar">
+
     <div class="logo">
-    <img src="logo.png" alt="CraftWeb">
-</div>
+        <img src="logo.png" alt="WebCraft">
+    </div>
 
     <nav>
         <a href="#start">Start</a>
@@ -26,6 +29,7 @@
     <a href="#cennik" class="nav-button">
         Zamów stronę
     </a>
+
 </header>
 
 
@@ -180,7 +184,7 @@
             </h2>
 
             <p>
-                Aby wysłać zamówienie, musisz być zalogowany do aplikacji Gmail na swoim urządzeniu.
+                Wybierz pakiet, a następnie wypełnij formularz zamówienia.
             </p>
 
         </div>
@@ -189,7 +193,9 @@
         <div class="pricing">
 
 
+            <!-- ========================= -->
             <!-- START -->
+            <!-- ========================= -->
 
             <div class="price-card">
 
@@ -222,7 +228,9 @@
             </div>
 
 
+            <!-- ========================= -->
             <!-- PRO -->
+            <!-- ========================= -->
 
             <div class="price-card featured">
 
@@ -260,7 +268,9 @@
             </div>
 
 
+            <!-- ========================= -->
             <!-- PREMIUM -->
+            <!-- ========================= -->
 
             <div class="price-card">
 
@@ -314,8 +324,27 @@
             </h2>
 
             <p>
-                Wybierz pakiet powyżej i rozpocznij zamówienie.
+                Chcesz stworzyć stronę internetową dla swojej firmy?
+                Skontaktuj się z nami.
             </p>
+
+        </div>
+
+
+        <div class="contact-box">
+
+            <p>
+                📧 Kontakt e-mail
+            </p>
+
+            <button
+                type="button"
+                class="primary-button"
+                onclick="openGmail()">
+
+                Napisz wiadomość
+
+            </button>
 
         </div>
 
@@ -324,17 +353,20 @@
 </main>
 
 
-<!-- ================================================= -->
+<!-- ========================= -->
 <!-- OKNO ZAMÓWIENIA -->
-<!-- ================================================= -->
+<!-- ========================= -->
 
-<div id="orderModal" class="modal">
+<div
+    id="orderModal"
+    class="order-modal"
+    style="display: none;">
 
-    <div class="modal-box">
+    <div class="order-box">
 
         <button
             type="button"
-            class="close-button"
+            class="close-order"
             onclick="closeOrder()">
 
             ×
@@ -343,92 +375,264 @@
 
 
         <h2>
-            Zamówienie
+            Zamów pakiet
         </h2>
 
-        <p class="modal-subtitle">
-            Uzupełnij informacje dotyczące zamówienia.
+
+        <p>
+            Wybrany pakiet:
         </p>
 
 
-        <label for="package">
-            Wybrany pakiet
+        <strong id="selectedPackage">
+            —
+        </strong>
+
+
+        <label for="clientName">
+            Imię / nazwa firmy
         </label>
 
-        <select id="package">
-
-            <option value="START">
-                START — 149 zł
-            </option>
-
-            <option value="PRO">
-                PRO — 299 zł
-            </option>
-
-            <option value="PREMIUM">
-                PREMIUM — 499 zł
-            </option>
-
-        </select>
+        <input
+            type="text"
+            id="clientName"
+            placeholder="Wpisz imię lub nazwę firmy">
 
 
-        <label for="payment">
-            Metoda płatności
+        <label for="clientPhone">
+            Numer telefonu
         </label>
 
-        <select id="payment">
-
-            <option value="BLIK">
-                BLIK
-            </option>
-
-            <option value="Przelew">
-                Przelew
-            </option>
-
-            <option value="Inna">
-                Inna
-            </option>
-
-        </select>
+        <input
+            type="tel"
+            id="clientPhone"
+            placeholder="Wpisz numer telefonu">
 
 
-        <label class="checkbox-label">
-
-            <input
-                type="checkbox"
-                id="age">
-
-            <span>
-                Potwierdzam, że mam ukończone 18 lat.
-            </span>
-
+        <label for="clientMessage">
+            Dodatkowe informacje
         </label>
+
+        <textarea
+            id="clientMessage"
+            placeholder="Napisz, czego potrzebujesz..."></textarea>
 
 
         <button
             type="button"
-            class="send-button"
+            class="order-button"
             onclick="sendOrder()">
 
-            Wyślij zamówienie →
+            Wyślij zamówienie
 
         </button>
-
-
-        <p class="modal-info">
-            Po kliknięciu otworzy się aplikacja pocztowa
-            z przygotowaną wiadomością.
-        </p>
 
     </div>
 
 </div>
 
 
-<!-- SKRYPT -->
+<!-- ========================= -->
+<!-- JAVASCRIPT -->
+<!-- ========================= -->
 
-<script src="script.js"></script>
+<script>
+
+    /* =========================================
+       TWÓJ ADRES E-MAIL
+       ========================================= */
+
+    const EMAIL = "paweladominik4@gmail.com";
+
+
+    /* Wybrany pakiet */
+
+    let selectedPackage = "";
+
+
+    /* =========================================
+       OTWIERANIE FORMULARZA
+       ========================================= */
+
+    function openOrder(packageName) {
+
+        selectedPackage = packageName;
+
+        document.getElementById("selectedPackage").textContent =
+            packageName;
+
+        document.getElementById("orderModal").style.display =
+            "flex";
+
+        document.body.style.overflow = "hidden";
+    }
+
+
+    /* =========================================
+       ZAMYKANIE FORMULARZA
+       ========================================= */
+
+    function closeOrder() {
+
+        document.getElementById("orderModal").style.display =
+            "none";
+
+        document.body.style.overflow = "";
+    }
+
+
+    /* =========================================
+       WYSYŁANIE ZAMÓWIENIA
+       ========================================= */
+
+    function sendOrder() {
+
+        const name =
+            document.getElementById("clientName").value.trim();
+
+        const phone =
+            document.getElementById("clientPhone").value.trim();
+
+        const message =
+            document.getElementById("clientMessage").value.trim();
+
+
+        /* Sprawdzenie imienia / firmy */
+
+        if (name === "") {
+
+            alert("Wpisz imię lub nazwę firmy.");
+
+            return;
+        }
+
+
+        /* Sprawdzenie telefonu */
+
+        if (phone === "") {
+
+            alert("Wpisz numer telefonu.");
+
+            return;
+        }
+
+
+        /* =========================================
+           TEMAT WIADOMOŚCI
+           ========================================= */
+
+        const subject =
+            "Zamówienie strony internetowej - " +
+            selectedPackage;
+
+
+        /* =========================================
+           TREŚĆ WIADOMOŚCI
+           ========================================= */
+
+        const body =
+            "Dzień dobry,\n\n" +
+
+            "Chcę zamówić pakiet: " +
+            selectedPackage +
+            "\n\n" +
+
+            "Imię / nazwa firmy: " +
+            name +
+            "\n" +
+
+            "Numer telefonu: " +
+            phone +
+            "\n\n" +
+
+            "Dodatkowe informacje:\n" +
+            message +
+            "\n\n" +
+
+            "Pozdrawiam";
+
+
+        /* =========================================
+           ADRES GMAIL
+           ========================================= */
+
+        const gmailURL =
+            "https://mail.google.com/mail/?view=cm&fs=1" +
+            "&to=" + encodeURIComponent(EMAIL) +
+            "&su=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(body);
+
+
+        /* =========================================
+           OTWARCIE GMAIL
+           ========================================= */
+
+        window.location.href = gmailURL;
+    }
+
+
+    /* =========================================
+       PRZYCISK KONTAKTU
+       ========================================= */
+
+    function openGmail() {
+
+        const subject =
+            "Zapytanie dotyczące strony internetowej";
+
+
+        const body =
+            "Dzień dobry,\n\n" +
+            "Chciałbym/chciałabym dowiedzieć się więcej " +
+            "na temat strony internetowej.\n\n" +
+            "Pozdrawiam";
+
+
+        const gmailURL =
+            "https://mail.google.com/mail/?view=cm&fs=1" +
+            "&to=" + encodeURIComponent(EMAIL) +
+            "&su=" + encodeURIComponent(subject) +
+            "&body=" + encodeURIComponent(body);
+
+
+        window.location.href = gmailURL;
+    }
+
+
+    /* =========================================
+       KLIKNIĘCIE POZA OKNEM
+       ========================================= */
+
+    document.addEventListener("click", function(event) {
+
+        const modal =
+            document.getElementById("orderModal");
+
+
+        if (event.target === modal) {
+
+            closeOrder();
+        }
+
+    });
+
+
+    /* =========================================
+       KLAWISZ ESC
+       ========================================= */
+
+    document.addEventListener("keydown", function(event) {
+
+        if (event.key === "Escape") {
+
+            closeOrder();
+        }
+
+    });
+
+</script>
+
 
 </body>
+
 </html>
