@@ -591,3 +591,9 @@ body {
         text-align: center;
     }
 }
+.logo img {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    display: block;
+}
