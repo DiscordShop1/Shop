@@ -1,95 +1,115 @@
 <!DOCTYPE html>
 <html lang="pl">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
     <title>WebCraft — Nowoczesne strony internetowe</title>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
 
+
 <body>
+
+
+<!-- ===================================================== -->
+<!-- NAWIGACJA -->
+<!-- ===================================================== -->
 
 <header class="navbar">
 
     <div class="logo">
-        Web<span>Craft</span>
+        WebCraft
     </div>
 
     <nav>
-        <a href="#start">Start</a>
-        <a href="#oferta">Oferta</a>
-        <a href="#cennik">Cennik</a>
-        <a href="#kontakt">Kontakt</a>
+
+        <a href="#start">
+            Start
+        </a>
+
+        <a href="#oferta">
+            Oferta
+        </a>
+
+        <a href="#cennik">
+            Cennik
+        </a>
+
+        <a href="#kontakt">
+            Kontakt
+        </a>
+
     </nav>
 
-    <a href="#cennik" class="nav-button">
+    <button
+        class="nav-button"
+        type="button"
+        onclick="openOrder()"
+    >
         Zamów stronę
-    </a>
+    </button>
 
 </header>
 
 
-<main>
 
-<!-- ================================================== -->
+<!-- ===================================================== -->
 <!-- START -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
-<section id="start" class="hero">
+<section
+    id="start"
+    class="hero"
+
 
     <div class="hero-content">
 
-        <div class="badge">
-            ✦ Nowi na rynku • Wielkie możliwości
-        </div>
+        <p class="hero-label">
+            NOWOCZESNE STRONY INTERNETOWE
+        </p>
 
         <h1>
-            Twoja strona.
-            <span>Twój wizerunek.</span>
+            Twoja firma zasługuje
+            <br>
+            na <span>profesjonalną stronę.</span>
         </h1>
 
-        <p>
-            Tworzymy nowoczesne, szybkie i przyjemne w użyciu
-            strony internetowe dopasowane do telefonów i komputerów.
+        <p class="hero-description">
+
+            Tworzymy nowoczesne, szybkie i responsywne
+            strony internetowe dopasowane do Twojej firmy.
+
         </p>
+
 
         <div class="hero-buttons">
 
-            <a href="#cennik" class="primary-button">
-                Zobacz cennik →
+            <button
+                type="button"
+                class="primary-button"
+                onclick="openOrder()"
+            >
+                Zamów stronę →
+            </button>
+
+            <a
+                href="#oferta"
+                class="secondary-button"
+            >
+                Zobacz ofertę
             </a>
-
-            <a href="#oferta" class="secondary-button">
-                Dowiedz się więcej
-            </a>
-
-        </div>
-
-    </div>
-
-
-    <div class="hero-card">
-
-        <div class="card-top">
-            <span></span>
-            <span></span>
-            <span></span>
-        </div>
-
-        <div class="website-preview">
-
-            <div class="preview-line"></div>
-            <div class="preview-title"></div>
-
-            <div class="preview-boxes">
-                <div></div>
-                <div></div>
-                <div></div>
-            </div>
-
-            <div class="preview-button"></div>
 
         </div>
 
@@ -98,24 +118,29 @@
 </section>
 
 
-<!-- ================================================== -->
+
+<!-- ===================================================== -->
 <!-- OFERTA -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
-<section id="oferta" class="section">
+<section
+    id="oferta"
+    class="section"
 
-    <div class="section-heading">
 
-        <p>DLACZE WEBCRAFT?</p>
+    <div class="section-header">
+
+        <span class="section-label">
+            OFERTA
+        </span>
 
         <h2>
-            Strona, która robi
-            <span>pierwsze wrażenie.</span>
+            Co możemy dla Ciebie zrobić?
         </h2>
 
         <p>
-            Dopiero zaczynamy swoją działalność, ale od początku
-            stawiamy na jakość, nowoczesny wygląd i wygodę użytkownika.
+            Otrzymasz nowoczesną stronę dopasowaną
+            do charakteru Twojej firmy.
         </p>
 
     </div>
@@ -123,24 +148,8 @@
 
     <div class="features">
 
-        <div class="feature">
 
-            <div class="feature-icon">
-                📱
-            </div>
-
-            <h3>
-                Telefon i komputer
-            </h3>
-
-            <p>
-                Strona będzie dopasowana do różnych rozmiarów ekranów.
-            </p>
-
-        </div>
-
-
-        <div class="feature">
+        <div class="feature-card">
 
             <div class="feature-icon">
                 ⚡
@@ -151,24 +160,65 @@
             </h3>
 
             <p>
-                Tworzymy estetyczne strony z animacjami i efektami.
+                Estetyczny i profesjonalny design,
+                który dobrze prezentuje Twoją firmę.
             </p>
 
         </div>
 
 
-        <div class="feature">
+
+        <div class="feature-card">
 
             <div class="feature-icon">
-                💬
+                📱
             </div>
 
             <h3>
-                Łatwy kontakt
+                Wersja mobilna
             </h3>
 
             <p>
-                Zamówienie możesz rozpocząć bezpośrednio przez naszą stronę.
+                Strona będzie poprawnie wyglądać
+                na telefonach, tabletach i komputerach.
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🚀
+            </div>
+
+            <h3>
+                Szybkie działanie
+            </h3>
+
+            <p>
+                Lekka konstrukcja zapewniająca
+                szybkie ładowanie strony.
+            </p>
+
+        </div>
+
+
+
+        <div class="feature-card">
+
+            <div class="feature-icon">
+                🎨
+            </div>
+
+            <h3>
+                Indywidualny wygląd
+            </h3>
+
+            <p>
+                Kolory, zdjęcia, teksty i układ
+                dopasujemy do Twojej firmy.
             </p>
 
         </div>
@@ -178,27 +228,39 @@
 </section>
 
 
-<!-- ================================================== -->
+
+<!-- ===================================================== -->
 <!-- CENNIK -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
-<section id="cennik" class="section pricing-section">
+<section
+    id="cennik"
+    class="section pricing-section"
 
-    <div class="section-heading">
 
-        <p>CENNIK</p>
+
+    <!-- NAGŁÓWEK CENNIKA -->
+
+    <div class="pricing-header">
+
+        <span class="pricing-label">
+            CENNIK
+        </span>
 
         <h2>
-            Wybierz swój
-            <span>pakiet.</span>
+            Wybierz pakiet dla siebie
         </h2>
 
         <p>
-            Wybierz pakiet, który najlepiej odpowiada Twoim potrzebom.
+            Wybierz rozwiązanie dopasowane do swoich potrzeb.
+            Każdą stronę możemy również indywidualnie dostosować.
         </p>
 
     </div>
 
+
+
+    <!-- KARTY CENOWE -->
 
     <div class="pricing">
 
@@ -219,23 +281,38 @@
                 Podstawowa strona internetowa.
             </p>
 
+
             <ul>
-                <li>✓ Nowoczesny wygląd</li>
-                <li>✓ Wersja mobilna</li>
-                <li>✓ Podstawowe sekcje</li>
-                <li>✓ Kontakt</li>
+
+                <li>
+                    ✓ Nowoczesny wygląd
+                </li>
+
+                <li>
+                    ✓ Wersja mobilna
+                </li>
+
+                <li>
+                    ✓ Podstawowe sekcje
+                </li>
+
+                <li>
+                    ✓ Kontakt
+                </li>
+
             </ul>
+
 
             <button
                 type="button"
                 class="order-button"
-                onclick="openOrder('START')">
-
+                onclick="openOrder('START')"
+            >
                 Zamów pakiet
-
             </button>
 
         </div>
+
 
 
         <!-- PRO -->
@@ -245,6 +322,7 @@
             <div class="popular">
                 NAJCZĘŚCIEJ WYBIERANY
             </div>
+
 
             <h3>
                 PRO
@@ -258,24 +336,42 @@
                 Rozbudowana strona dla firmy.
             </p>
 
+
             <ul>
-                <li>✓ Nowoczesny wygląd</li>
-                <li>✓ Wersja mobilna</li>
-                <li>✓ Rozbudowane sekcje</li>
-                <li>✓ Animacje</li>
-                <li>✓ Formularz kontaktowy</li>
+
+                <li>
+                    ✓ Nowoczesny wygląd
+                </li>
+
+                <li>
+                    ✓ Wersja mobilna
+                </li>
+
+                <li>
+                    ✓ Rozbudowane sekcje
+                </li>
+
+                <li>
+                    ✓ Animacje
+                </li>
+
+                <li>
+                    ✓ Formularz kontaktowy
+                </li>
+
             </ul>
+
 
             <button
                 type="button"
                 class="order-button"
-                onclick="openOrder('PRO')">
-
+                onclick="openOrder('PRO')"
+            >
                 Zamów pakiet
-
             </button>
 
         </div>
+
 
 
         <!-- PREMIUM -->
@@ -294,67 +390,126 @@
                 Profesjonalna strona internetowa.
             </p>
 
+
             <ul>
-                <li>✓ Wszystko z pakietu PRO</li>
-                <li>✓ Zaawansowane animacje</li>
-                <li>✓ Indywidualny wygląd</li>
-                <li>✓ Dodatkowe funkcje</li>
-                <li>✓ Wsparcie</li>
+
+                <li>
+                    ✓ Wszystko z pakietu PRO
+                </li>
+
+                <li>
+                    ✓ Zaawansowane animacje
+                </li>
+
+                <li>
+                    ✓ Indywidualny wygląd
+                </li>
+
+                <li>
+                    ✓ Dodatkowe funkcje
+                </li>
+
+                <li>
+                    ✓ Wsparcie
+                </li>
+
             </ul>
+
 
             <button
                 type="button"
                 class="order-button"
-                onclick="openOrder('PREMIUM')">
-
+                onclick="openOrder('PREMIUM')"
+            >
                 Zamów pakiet
-
             </button>
 
         </div>
 
+
     </div>
 
 </section>
 
 
-<!-- ================================================== -->
+
+<!-- ===================================================== -->
 <!-- KONTAKT -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
-<section id="kontakt" class="section">
+<section
+    id="kontakt"
+    class="section contact-section"
 
-    <div class="section-heading">
 
-        <p>KONTAKT</p>
+    <div class="section-header">
+
+        <span class="section-label">
+            KONTAKT
+        </span>
 
         <h2>
-            Masz pytania?
-            <span>Skontaktuj się z nami.</span>
+            Chcesz zamówić stronę?
         </h2>
 
         <p>
-            Chcesz zamówić stronę lub dowiedzieć się więcej?
-            Napisz do nas.
+            Skontaktuj się z nami i opowiedz,
+            jakiej strony potrzebujesz.
         </p>
 
     </div>
 
+
+    <div class="contact-box">
+
+        <p>
+            📧 Napisz do nas
+        </p>
+
+        <p>
+            Odpowiemy i ustalimy szczegóły Twojej strony.
+        </p>
+
+        <button
+            type="button"
+            class="primary-button"
+            onclick="openOrder()"
+        >
+            Zamów stronę →
+        </button>
+
+    </div>
+
 </section>
 
-</main>
 
 
-<!-- ================================================== -->
+<!-- ===================================================== -->
+<!-- STOPKA -->
+<!-- ===================================================== -->
+
+<footer>
+
+    <p>
+        © 2026 WebCraft. Wszystkie prawa zastrzeżone.
+    </p>
+
+</footer>
+
+
+
+<!-- ===================================================== -->
 <!-- OKNO ZAMÓWIENIA -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
 <div
     id="orderModal"
     class="order-modal"
 
 
+
     <div class="order-box">
+
 
         <!-- ZAMKNIĘCIE -->
 
@@ -368,19 +523,106 @@
 
 
 
-        <!-- INFORMACJA O WIADOMOŚCI -->
+        <!-- TYTUŁ -->
 
- 
+        <h2>
+            Zamówienie
+        </h2>
+
+
+
+        <!-- INFORMACJA GMAIL -->
+
+        <div class="gmail-info">
+
+            <span class="gmail-icon">
+                ✉
+            </span>
+
+            <div>
+
+                <strong>
+                    Ważna informacja
+                </strong>
+
+                <p>
+                    Aby wysłać zamówienie, musisz być
+                    zalogowany do aplikacji Gmail
+                    na swoim urządzeniu.
+                </p>
+
+            </div>
+
+        </div>
+
+
+
+        <!-- PAKIET -->
+
+        <label for="package">
+            Wybrany pakiet
+        </label>
+
+
+        <select id="package">
+
+            <option value="START">
+                START — 149 zł
+            </option>
+
+            <option value="PRO">
+                PRO — 299 zł
+            </option>
+
+            <option value="PREMIUM">
+                PREMIUM — 499 zł
+            </option>
+
+        </select>
+
+
+
+        <!-- WIEK -->
+
+        <label class="age-check">
+
+            <input
+                type="checkbox"
+                id="age"
+            >
+
+            <span>
+                Potwierdzam, że mam ukończone 18 lat.
+            </span>
+
+        </label>
+
+
+
+        <!-- WYSŁANIE -->
+
+        <button
+            type="button"
+            class="send-order"
+            onclick="sendOrder()"
+        >
+            Wyślij zamówienie →
+        </button>
+
 
     </div>
 
 </div>
 
-<!-- ================================================== -->
+
+
+<!-- ===================================================== -->
 <!-- JAVASCRIPT -->
-<!-- ================================================== -->
+<!-- ===================================================== -->
 
 <script src="script.js"></script>
 
+
 </body>
+
 </html>
