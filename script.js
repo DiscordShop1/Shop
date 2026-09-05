@@ -1,8 +1,13 @@
-Gotowy plik "script.js"
+// ======================================================
+// WEBCRAFT — SYSTEM ZAMÓWIEŃ I KONTAKTU
+// ======================================================
+
 
 // ======================================================
-// WEBCRAFT — SYSTEM ZAMÓWIEŃ
+// ADRES E-MAIL WEBCRAFT
 // ======================================================
+
+const WEBCRAFT_EMAIL = "paweladominik4@gmail.com";
 
 
 // ======================================================
@@ -61,7 +66,7 @@ document.addEventListener("click", function(event) {
 
 
 // ======================================================
-// ESC — ZAMYKANIE OKNA
+// ESC — ZAMYKANIE
 // ======================================================
 
 document.addEventListener("keydown", function(event) {
@@ -71,6 +76,39 @@ document.addEventListener("keydown", function(event) {
     }
 
 });
+
+
+// ======================================================
+// KONTAKT — GOTOWA WIADOMOŚĆ W GMAILU
+// ======================================================
+
+function openGmail() {
+
+    const subject =
+        "Kontakt — WebCraft";
+
+    const body =
+`Dzień dobry,
+
+chciałbym/chciałabym skontaktować się w sprawie strony internetowej.
+
+Proszę o kontakt.
+
+Pozdrawiam`;
+
+
+    const gmailUrl =
+        "https://mail.google.com/mail/?view=cm&fs=1" +
+        "&to=" +
+        encodeURIComponent(WEBCRAFT_EMAIL) +
+        "&su=" +
+        encodeURIComponent(subject) +
+        "&body=" +
+        encodeURIComponent(body);
+
+
+    window.open(gmailUrl, "_blank");
+}
 
 
 // ======================================================
@@ -89,7 +127,9 @@ function sendOrder() {
         document.getElementById("age");
 
 
-    // Sprawdzenie formularza
+    // ==================================================
+    // SPRAWDZENIE FORMULARZA
+    // ==================================================
 
     if (
         !packageSelect ||
@@ -103,7 +143,9 @@ function sendOrder() {
     }
 
 
-    // Sprawdzenie wieku
+    // ==================================================
+    // SPRAWDZENIE WIEKU
+    // ==================================================
 
     if (!ageCheckbox.checked) {
 
@@ -115,7 +157,9 @@ function sendOrder() {
     }
 
 
-    // Pobranie danych
+    // ==================================================
+    // POBRANIE DANYCH
+    // ==================================================
 
     const selectedPackage =
         packageSelect.value;
@@ -124,7 +168,9 @@ function sendOrder() {
         paymentSelect.value;
 
 
-    // Ceny
+    // ==================================================
+    // CENY
+    // ==================================================
 
     const prices = {
 
@@ -141,14 +187,18 @@ function sendOrder() {
         prices[selectedPackage];
 
 
-    // Temat wiadomości
+    // ==================================================
+    // TEMAT
+    // ==================================================
 
     const subject =
         "Zamówienie WebCraft - " +
         selectedPackage;
 
 
-    // Treść wiadomości
+    // ==================================================
+    // TREŚĆ WIADOMOŚCI
+    // ==================================================
 
     const body =
 `Dzień dobry,
@@ -157,7 +207,7 @@ chcę zamówić stronę internetową.
 
 Pakiet: ${selectedPackage}
 Cena: ${price} zł
-Płatność: ${selectedPayment}
+Metoda płatności: ${selectedPayment}
 
 Potwierdzam, że mam ukończone 18 lat.
 
@@ -167,28 +217,13 @@ Pozdrawiam`;
 
 
     // ==================================================
-    // KOMUNIKAT DLA KLIENTA
-    // ==================================================
-
-    const message =
-        "Aby wysłać zamówienie, upewnij się, że jesteś " +
-        "zalogowany/a do Gmaila na urządzeniu, z którego " +
-        "korzystasz ze strony.\n\n" +
-        "Po kliknięciu OK otworzymy Gmaila z przygotowaną " +
-        "wiadomością do wysłania.";
-
-
-    alert(message);
-
-
-    // ==================================================
     // OTWARCIE GMAILA
     // ==================================================
 
     const gmailUrl =
         "https://mail.google.com/mail/?view=cm&fs=1" +
         "&to=" +
-        encodeURIComponent("paweladominik4@gmail.com") +
+        encodeURIComponent(WEBCRAFT_EMAIL) +
         "&su=" +
         encodeURIComponent(subject) +
         "&body=" +
